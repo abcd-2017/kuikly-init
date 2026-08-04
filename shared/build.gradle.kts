@@ -62,7 +62,9 @@ kotlin {
                 implementation("com.tencent.kuikly-open:core:${Version.getKuiklyVersion()}")
                 implementation("com.tencent.kuikly-open:core-annotations:${Version.getKuiklyVersion()}")
                 implementation("com.tencent.kuikly-open:compose:${Version.getKuiklyVersion()}")
-
+                implementation(project(":common:base"))
+                implementation(project(":business:initTask"))
+                implementation(libs.koin.core)
             }
         }
         val commonTest by getting {
