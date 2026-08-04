@@ -14,9 +14,26 @@ android {
         versionName = "1.0"
     }
 
+    // CI 签名配置（仅在 CI 环境变量存在时生效，本地开发不受影响）
+    val ciKeystorePath = System.getenv("CI_KEYSTORE_PATH")
+    val ciSigningEnabled = ciKeystorePath != null && file(ciKeystorePath).exists()
+    if (ciSigningEnabled) {
+        signingConfigs {
+            create("ci") {
+                storeFile = file(ciKeystorePath)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            if (ciSigningEnabled) {
+                signingConfig = signingConfigs.getByName("ci")
+            }
         }
     }
     compileOptions {

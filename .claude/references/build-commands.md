@@ -32,6 +32,44 @@ OHOS 构建使用独立的 Gradle 配置：
 - `build.gradle.kts` → `build.ohos.gradle.kts`
 - Kotlin `2.0.21-KBA-010` + `ohosArm64` 目标平台
 
+### 构建命令
+
+根 `build.gradle.kts` 注册了 OHOS 专用任务组（Gradle 侧边栏 "harmony" 分组下可见）：
+
+```bash
+# 编译 ohosArm64 release + 复制产物到 ohosApp
+./gradlew :harmonySyncRelease
+
+# 编译 ohosArm64 debug + 复制产物到 ohosApp（热重载用）
+./gradlew :harmonySyncDebug
+
+# 清理 OHOS 产物
+./gradlew :harmonyClean
+```
+
+### 构建产物
+
+| 产物 | 路径 | 说明 |
+|------|------|------|
+| `libshared.so` | `ohosApp/entry/libs/arm64-v8a/` | 鸿蒙 NAPI 共享库（最终产物） |
+| `libshared.so` | `shared/build/bin/ohosArm64/releaseShared/` | 中间产物 |
+| `libshared_api.h` | `shared/build/bin/ohosArm64/releaseShared/` | C/C++ 头文件 |
+| assets 资源 | `ohosApp/entry/src/main/resources/resfile/` | 自动复制的共享资源 |
+
+### 构建原理
+
+根项目使用标准 settings（Kotlin 2.1.21），本身不含 `ohosArm64` target。
+`harmonySyncRelease` 任务通过 `exec` 派生子 Gradle 进程：
+
+```
+./gradlew -c settings.ohos.gradle.kts :shared:linkReleaseSharedOhosArm64 --no-daemon
+```
+
+子进程使用 OHOS settings（Kotlin 2.0.21-KBA-010），可访问 `linkReleaseSharedOhosArm64` 任务。
+编译完成后自动：
+1. 复制 `libshared.so` → `ohosApp/entry/libs/arm64-v8a/`
+2. 复制 `commonMain/assets/` → `ohosApp/entry/src/main/resources/resfile/`
+
 ## 本地开发服务器
 
 ```bash
