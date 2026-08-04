@@ -1,13 +1,7 @@
 package com.kuikly.init.platform
 
-import com.kuikly.init.common.base.platform.DeviceInfo
-import platform.UIKit.UIDevice
-
-class IOSDeviceInfo : DeviceInfo {
-    override fun getDeviceId(): String =
-        UIDevice.currentDevice.identifierForVendor?.UUIDString ?: "unknown"
-
-    override fun getOSVersion(): String = "iOS ${UIDevice.currentDevice.systemVersion}"
-
-    override fun getDeviceModel(): String = UIDevice.currentDevice.model
-}
+/**
+ * 已迁移到 com.kuikly.init.common.base.platform.IOSDeviceInfo
+ *
+ * 此文件保留为空以避免破坏文件结构，将在后续清理。
+ */

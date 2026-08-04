@@ -5,10 +5,10 @@ import com.kuikly.init.common.base.platform.ContextProvider
 import com.kuikly.init.common.base.platform.DeviceInfo
 import com.kuikly.init.common.base.platform.FileSystem
 import com.kuikly.init.common.base.platform.NetworkMonitor
-import com.kuikly.init.platform.AndroidContextProvider
-import com.kuikly.init.platform.AndroidDeviceInfo
-import com.kuikly.init.platform.AndroidFileSystem
-import com.kuikly.init.platform.AndroidNetworkMonitor
+import com.kuikly.init.common.base.platform.AndroidContextProvider
+import com.kuikly.init.common.base.platform.AndroidDeviceInfo
+import com.kuikly.init.common.base.platform.AndroidFileSystem
+import com.kuikly.init.common.base.platform.AndroidNetworkMonitor
 import com.kuikly.init.business.initTask.InitTaskRunner
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin

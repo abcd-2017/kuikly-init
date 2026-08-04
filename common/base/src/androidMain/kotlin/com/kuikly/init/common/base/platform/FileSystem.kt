@@ -1,8 +1,10 @@
-package com.kuikly.init.platform
+package com.kuikly.init.common.base.platform
 
-import com.kuikly.init.common.base.platform.FileSystem
 import java.io.File
 
+/**
+ * Android 平台 FileSystem 实现
+ */
 class AndroidFileSystem : FileSystem {
     override fun readFile(path: String): ByteArray = File(path).readBytes()
     override fun writeFile(path: String, data: ByteArray) { File(path).writeBytes(data) }

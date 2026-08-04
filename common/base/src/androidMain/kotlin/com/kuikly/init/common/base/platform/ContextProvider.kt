@@ -1,9 +1,11 @@
-package com.kuikly.init.platform
+package com.kuikly.init.common.base.platform
 
 import android.app.Application
-import com.kuikly.init.common.base.platform.ContextProvider
 import java.io.File
 
+/**
+ * Android 平台 ContextProvider 实现
+ */
 class AndroidContextProvider(private val app: Application) : ContextProvider {
     override fun getCacheDirPath(): String = app.cacheDir.absolutePath
     override fun getFilesDirPath(): String = app.filesDir.absolutePath

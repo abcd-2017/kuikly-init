@@ -9,11 +9,13 @@ import org.koin.core.qualifier.Qualifier
 actual object KoinContext {
 
     actual inline fun <reified T : Any> get(
-        qualifier: Qualifier?,
-        noinline parameters: ParametersDefinition?
+        qualifier: Any?,
+        noinline parameters: (() -> Any)?
     ): T {
         val koin = org.koin.core.context.GlobalContext.get()
-        return koin.get(T::class, qualifier, parameters)
+        val koinQualifier = qualifier as? Qualifier
+        val koinParams = parameters?.let { ParametersDefinition(it.invoke()) }
+        return koin.get(T::class, koinQualifier, koinParams)
     }
 
     actual fun <T : Any> get(
