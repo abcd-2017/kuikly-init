@@ -6,6 +6,7 @@ import { KuiklyRenderCallback } from '@kuikly-open/render';
 import util from '@ohos.util';
 import fs from '@ohos.file.fs';
 import { fileUri } from '@kit.CoreFileKit';
+import { PlatformServiceLocator } from '../platform/PlatformServiceLocator';
 
 export class KRBridgeModule extends KuiklyRenderBaseModule {
   static readonly MODULE_NAME = "HRBridgeModule";
@@ -21,6 +22,17 @@ export class KRBridgeModule extends KuiklyRenderBaseModule {
   static readonly CURRENT_TIME_STAMP = "currentTimestamp";
   static readonly DATE_FORMATTER = "dateFormatter";
   static readonly READ_ASSET_FILE = "readAssetFile";
+
+  // 平台能力桥接方法
+  static readonly GET_CACHE_DIR = "getCacheDir";
+  static readonly GET_FILES_DIR = "getFilesDir";
+  static readonly GET_DEVICE_ID = "getDeviceId";
+  static readonly GET_OS_VERSION = "getOSVersion";
+  static readonly GET_DEVICE_MODEL = "getDeviceModel";
+  static readonly FILE_EXISTS = "fileExists";
+  static readonly FILE_DELETE = "fileDelete";
+  static readonly IS_NETWORK_CONNECTED = "isNetworkConnected";
+  static readonly GET_NETWORK_TYPE = "getNetworkType";
 
   syncMode(): boolean {
     return false;
@@ -74,10 +86,92 @@ export class KRBridgeModule extends KuiklyRenderBaseModule {
         this.readAssetFile(params, callback);
         break;
       }
+      case KRBridgeModule.GET_CACHE_DIR: {
+        callback({ "path": this.getCacheDir() });
+        break;
+      }
+      case KRBridgeModule.GET_FILES_DIR: {
+        callback({ "path": this.getFilesDir() });
+        break;
+      }
+      case KRBridgeModule.GET_DEVICE_ID: {
+        callback({ "deviceId": this.getDeviceId() });
+        break;
+      }
+      case KRBridgeModule.GET_OS_VERSION: {
+        callback({ "version": this.getOSVersion() });
+        break;
+      }
+      case KRBridgeModule.GET_DEVICE_MODEL: {
+        callback({ "model": this.getDeviceModel() });
+        break;
+      }
+      case KRBridgeModule.FILE_EXISTS: {
+        const existsParams = JSON.parse(params as string) as Record<string, string>;
+        callback({ "exists": this.fileExists(existsParams["path"]) });
+        break;
+      }
+      case KRBridgeModule.FILE_DELETE: {
+        const deleteParams = JSON.parse(params as string) as Record<string, string>;
+        callback({ "success": this.fileDelete(deleteParams["path"]) });
+        break;
+      }
+      case KRBridgeModule.IS_NETWORK_CONNECTED: {
+        callback({ "connected": this.isNetworkConnected() });
+        break;
+      }
+      case KRBridgeModule.GET_NETWORK_TYPE: {
+        callback({ "type": this.getNetworkType() });
+        break;
+      }
       default:
         break;
     }
     return null;
+  }
+
+  // ---- 平台能力方法实现 ----
+
+  private getPlatformLocator(): PlatformServiceLocator {
+    return PlatformServiceLocator.getInstance();
+  }
+
+  private getCacheDir(): string {
+    return this.getPlatformLocator().getContextProvider().getCacheDirPath();
+  }
+
+  private getFilesDir(): string {
+    return this.getPlatformLocator().getContextProvider().getFilesDirPath();
+  }
+
+  private getDeviceId(): string {
+    return this.getPlatformLocator().getDeviceInfo().getDeviceId();
+  }
+
+  private getOSVersion(): string {
+    return this.getPlatformLocator().getDeviceInfo().getOSVersion();
+  }
+
+  private getDeviceModel(): string {
+    return this.getPlatformLocator().getDeviceInfo().getDeviceModel();
+  }
+
+  private fileExists(path: string): boolean {
+    if (!path) return false;
+    return this.getPlatformLocator().getFileSystem().exists(path);
+  }
+
+  private fileDelete(path: string): boolean {
+    if (!path) return false;
+    return this.getPlatformLocator().getFileSystem().delete(path);
+  }
+
+  private isNetworkConnected(): boolean {
+    return this.getPlatformLocator().getNetworkMonitor().isConnected();
+  }
+
+  private getNetworkType(): string {
+    return this.getPlatformLocator().getNetworkMonitor().getNetworkType();
   }
 
   private showAlert(params: KRAny, callback: KuiklyRenderCallback) {

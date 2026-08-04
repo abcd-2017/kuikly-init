@@ -330,6 +330,18 @@ internal class BridgeModule : Module() {
         ).toString()
     }
 
+    /**
+     * 内部同步调用 Native 方法（供平台适配器使用）
+     *
+     * 允许同包内的 BridgeModulePlatformAdapter 通过 BridgeModule 调用 Native 方法。
+     */
+    internal fun syncCallNativeMethodInternal(
+        methodName: String,
+        data: JSONObject?
+    ): String {
+        return syncCallNativeMethod(methodName, data, null)
+    }
+
     companion object {
         const val MODULE_NAME = "HRBridgeModule"
         const val OPEN_PAGE = "openPage"

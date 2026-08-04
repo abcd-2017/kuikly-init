@@ -10,11 +10,20 @@ static napi_value InitKuikly(napi_env env, napi_callback_info info) {
     return result;
 }
 
+static napi_value SetupPlatform(napi_env env, napi_callback_info info) {
+    auto api = libshared_symbols();
+    // 调用 OHOS 平台初始化（Koin + InitTask）
+    // 顶层函数通过 C 互操作导出
+    api->kotlin.root.com.kuikly.init.platform.setupOHOSPlatform();
+    return nullptr;
+}
+
 EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
-        {"initKuikly", nullptr, InitKuikly, nullptr, nullptr, nullptr, napi_default, nullptr}
+        {"initKuikly", nullptr, InitKuikly, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"setupPlatform", nullptr, SetupPlatform, nullptr, nullptr, nullptr, napi_default, nullptr}
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     return exports;

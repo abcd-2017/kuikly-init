@@ -30,6 +30,10 @@ android {
 
 dependencies {
     implementation(project(":shared"))
+    implementation(project(":common:base"))
+    implementation(project(":business:initTask"))
+
+    implementation("io.insert-koin:koin-android:4.0.1")
 
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.appcompat:appcompat:1.3.1")

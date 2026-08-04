@@ -4,7 +4,12 @@ import Napi from 'libentry.so';
 class MyNativeManager extends KuiklyNativeManager {
   protected loadNative(): number {
     // 调用Napi接口，初始化 Kuikly Native
-    return Napi.initKuikly();
+    const handler = Napi.initKuikly();
+    // 初始化 OHOS 平台能力（Koin + InitTask）
+    if (Napi.setupPlatform) {
+      Napi.setupPlatform();
+    }
+    return handler;
   }
 }
 

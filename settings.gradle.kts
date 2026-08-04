@@ -22,8 +22,20 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kuikly"
+rootProject.name = "kuikly-init"
 include(":androidApp")
 include(":shared")
-include(":h5App")
-include(":miniApp")
+
+// common 基础能力模块
+include(":common:util")
+
+// business 业务模块
+include(":business:initTask")
+include(":business:login:api")
+include(":business:login:impl")
+
+include(":common:base")
+
+include(":business:debug:api")
+include(":business:debug:impl")
+
