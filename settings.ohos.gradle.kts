@@ -29,3 +29,17 @@ rootProject.buildFileName = buildFileName
 include(":androidApp")
 include(":shared")
 project(":shared").buildFileName = buildFileName
+
+// common 基础能力模块
+include(":common:util")
+include(":common:base")
+project(":common:base").buildFileName = buildFileName
+
+// business 业务模块
+include(":business:initTask")
+project(":business:initTask").buildFileName = buildFileName
+include(":business:login:api")
+include(":business:login:impl")
+
+include(":business:debug:api")
+include(":business:debug:impl")

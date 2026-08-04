@@ -49,7 +49,10 @@ kotlin {
                 implementation("com.tencent.kuikly-open:core:${Version.getKuiklyOhosVersion()}")
                 implementation("com.tencent.kuikly-open:core-annotations:${Version.getKuiklyOhosVersion()}")
                 implementation("com.tencent.kuikly-open:compose:${Version.getKuiklyOhosVersion()}")
-
+                // 平台能力接口
+                implementation(project(":common:base"))
+                // 初始化任务
+                implementation(project(":business:initTask"))
             }
         }
         val commonTest by getting {
@@ -80,6 +83,9 @@ kotlin {
             iosX64Test.dependsOn(this)
             iosArm64Test.dependsOn(this)
             iosSimulatorArm64Test.dependsOn(this)
+        }
+        val ohosArm64Main by getting {
+            dependsOn(commonMain)
         }
     }
 }
@@ -140,3 +146,7 @@ fun getCommonCompilerArgs(): List<String> {
 fun getLinkerArgs(): List<String> {
     return listOf()
 }
+
+// OHOS 构建任务已统一注册在根 build.gradle.kts 的 "harmony" 分组下
+// (:harmonySyncDebug / :harmonySyncRelease / :harmonyClean)
+// 此处不再重复注册

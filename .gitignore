@@ -5,9 +5,11 @@
 .DS_Store
 /build
 */build
+**/build/
 /captures
 .externalNativeBuild
 .cxx
+**/.cxx/
 local.properties
 *.so
 *.js
@@ -16,6 +18,25 @@ Pods
 Pods/*
 Pods-iosApp/*
 Kotlin-js-store
+.kotlin/
+.gradle/
+build/
+.hvigor/
+**/oh_modules/
+.idea/
+*.log
+*.apk
+*.hap
+*.app
+*.ipa
+
+# OHOS 构建产物（sync 脚本复制的资源）
+ohosApp/entry/src/main/resources/resfile/image_adapter/
+ohosApp/entry/libs/
+
+## Claude Code 输出产物（过程文件，不版本管理）
+.claude/outputs/
+.claude/local/
 
 ## Various settings
 *.pbxuser

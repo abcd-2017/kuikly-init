@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-    <configuration name="ohosApp" default="false" type="ShConfigurationType">
+    <configuration name="assembleOhosHap" default="false" type="ShConfigurationType">
         <option name="SCRIPT_TEXT" value="" />
         <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
-        <option name="SCRIPT_PATH" value="$PROJECT_DIR$/ohosApp/runOhosApp.sh" />
+        <option name="SCRIPT_PATH" value="$PROJECT_DIR$/script/assembleOhosHap.sh" />
         <option name="SCRIPT_OPTIONS" value="" />
         <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
         <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
