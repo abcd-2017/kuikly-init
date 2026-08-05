@@ -123,6 +123,16 @@ ohosApp/
 | `krLogAdapter` | `LogAdapter` | hilog.debug/info/e |
 | `krRouterAdapter` | `RouterAdapter` | @ohos.router.pushUrl/back |
 
+## 环境准备
+
+首次克隆项目后，需创建 `local.properties`（该文件被 `.gitignore` 排除，不会提交）：
+
+```bash
+cp local.properties.example local.properties
+```
+
+模板中的默认值适用于标准 DevEco Studio 安装路径。如果装在其他位置，需同步修改 `kuikly.*` 相关路径。
+
 ## 构建命令
 
 ```bash
