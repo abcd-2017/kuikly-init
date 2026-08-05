@@ -1,6 +1,8 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.google.devtools.ksp")
+    id("com.tencent.kuiklybase.knoi.plugin")
 }
 
 kotlin {
@@ -39,6 +41,11 @@ kotlin {
             dependsOn(commonMain)
         }
     }
+}
+
+dependencies {
+    // KNOI: Kotlin Native Ohos Interaction - Kotlin ↔ ArkTS 互调
+    add("kspOhosArm64", "com.tencent.kuiklybase.knoi:knoi:0.0.4")
 }
 
 android {

@@ -9,6 +9,7 @@ plugins {
     id("com.tencent.kuikly-open.kuikly")
     id("org.jetbrains.compose")
     kotlin("plugin.compose")
+    id("com.tencent.kuiklybase.knoi.plugin")
 }
 
 val KEY_PAGE_NAME = "pageName"

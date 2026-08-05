@@ -3,8 +3,7 @@ package com.kuikly.init.common.base.platform
 /**
  * 文件系统抽象
  */
-interface FileSystem {
-
+expect class FileSystem {
     /** 读取文件内容 */
     fun readFile(path: String): ByteArray
 

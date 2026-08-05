@@ -7,6 +7,9 @@ import { KuiklyRenderAdapterManager } from '@kuikly-open/render';
 import { LogAdapter } from '../kuikly/adapter/LogAdapter';
 import { RouterAdapter } from '../kuikly/adapter/RouterAdapter';
 import { PlatformServiceLocator } from '../kuikly/platform/PlatformServiceLocator';
+import { setup, init, registerServiceProvider } from '@kuiklybase/knoi';
+import { OHOSPlatformServiceImpl } from '../kuikly/platform/OHOSPlatformServiceImpl';
+import { OHOSContextProvider } from '../kuikly/platform/OHOSContextProvider';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -24,6 +27,17 @@ export default class EntryAbility extends UIAbility {
 
     // 初始化 OHOS 平台能力服务定位器
     PlatformServiceLocator.getInstance().init(this.context);
+
+    // KNOI 初始化（Kotlin ↔ ArkTS 互调机制）
+    // libkn.so 为 KMP 生成的动态库名字，需与实际构建产物一致
+    setup("libkn.so", BuildProfile.DEBUG);
+    init();
+
+    // 注册平台服务实现（KNOI 方式）
+    const platformService = new OHOSPlatformServiceImpl();
+    const contextProvider = new OHOSContextProvider(this.context);
+    platformService.setContextProvider(contextProvider);
+    registerServiceProvider("IOHOSPlatformService", false, platformService);
 
     KuiklyRenderAdapterManager.krLogAdapter = new LogAdapter();
     KuiklyRenderAdapterManager.krRouterAdapter = new RouterAdapter();

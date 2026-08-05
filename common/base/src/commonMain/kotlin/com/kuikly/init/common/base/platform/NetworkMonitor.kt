@@ -3,8 +3,7 @@ package com.kuikly.init.common.base.platform
 /**
  * 网络状态抽象
  */
-interface NetworkMonitor {
-
+expect class NetworkMonitor {
     /** 当前是否联网 */
     fun isConnected(): Boolean
 

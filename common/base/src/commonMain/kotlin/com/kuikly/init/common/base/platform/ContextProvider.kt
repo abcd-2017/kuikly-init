@@ -5,8 +5,7 @@ package com.kuikly.init.common.base.platform
  *
  * 提供应用级资源访问能力，各平台实现封装原生上下文。
  */
-interface ContextProvider {
-
+expect class ContextProvider {
     /** 获取缓存目录路径 */
     fun getCacheDirPath(): String
 

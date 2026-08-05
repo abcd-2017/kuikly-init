@@ -3,8 +3,7 @@ package com.kuikly.init.common.base.platform
 /**
  * 设备信息抽象
  */
-interface DeviceInfo {
-
+expect class DeviceInfo {
     /** 设备唯一标识 */
     fun getDeviceId(): String
 
