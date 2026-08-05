@@ -2,6 +2,7 @@ package com.kuikly.init
 
 import android.app.Application
 import com.kuikly.init.business.initTask.InitTaskRunner
+import com.kuikly.init.common.base.platform.AppContext
 import com.kuikly.init.common.base.platform.ContextProvider
 import com.kuikly.init.common.base.platform.DeviceInfo
 import com.kuikly.init.common.base.platform.FileSystem
@@ -19,6 +20,7 @@ class KRApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         application = this
+        AppContext.init(this)
 
         startKoin {
             androidContext(this@KRApplication)

@@ -87,6 +87,35 @@ com.tencent.kuikly.*     ← Kuikly 原生 API（业务代码绝不直接引用�
 **使用方式**：通过 Agent 工具 spawn 多个子 agent
 **工作流**：复杂多阶段任务可使用 Workflow 工具编排
 
+### 流程强制约束（硬规则）
+
+主 agent 派发 subagent 前，必须执行以下检查：
+
+#### 编码前必须有调研结论
+- **禁止**直接派发 developer 处理未调研的能力模块
+- 必须先派发 exporter 完成调研，输出到 `.claude/outputs/research/`
+- 调研完成后，主 agent 向用户展示方案，获得批准后再派发 developer
+
+#### 派发前自检清单
+在调用 Agent 工具前，逐项确认：
+1. [ ] 该能力是否已有调研报告？（无则先派 exporter）
+2. [ ] 方案是否已获得用户批准？（无则先展示方案等待批准）
+3. [ ] 是否使用了正确的 `subagent_type`？（exporter / developer / reviewer / leader，禁止凭空造角色）
+4. [ ] 并行任务是否满足 Agent Teams 量化标准？
+5. [ ] 是否传入了正确的 `model` 参数？（避免继承父 session 不支持的模型）
+
+#### 违规阻断
+任何 subagent 派发违反上述规则时，主 agent 必须：
+- 停止派发
+- 向用户说明违规点
+- 补足缺失步骤后再继续
+
+#### 代码真实性与可行性
+- 禁止编造不存在的 API、库、参数
+- 不确定时必须通过 WebSearch / WebFetch 查阅官方文档
+- 无法确认的方案标注为"待验证"，不写入代码
+- OHOS 侧实现必须基于实际可用的 `@ohos.*` API
+
 ### 主 Agent 与 Exporter 的边界
 
 | 角色 | 职责边界 |
