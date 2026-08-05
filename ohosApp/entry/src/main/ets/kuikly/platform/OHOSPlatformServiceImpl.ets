@@ -279,6 +279,75 @@ export class OHOSPlatformServiceImpl {
         }
     }
 
+    // ==================== 对话框 ====================
+
+    showAlert(title: string, message: string, confirmText: string): void {
+        try {
+            promptAction.showDialog({
+                title: title,
+                message: message,
+                buttons: [
+                    { text: confirmText, color: '#007DFF' }
+                ]
+            })
+        } catch (e) {
+            console.error(`[OHOSPlatformService] showAlert failed: ${e}`)
+        }
+    }
+
+    /**
+     * Confirm 确认框
+     *
+     * 注意：promptAction.showDialog 返回 Promise（异步），KNOI 同步调用无法等待其结果。
+     * 当前实现仅弹出对话框，返回值固定为 0（占位）。
+     * TODO: 需改用 KNOI 异步回调机制或原生端事件推送，才能获取用户实际选择。
+     */
+    showConfirm(title: string, message: string, confirmText: string, cancelText: string): number {
+        try {
+            promptAction.showDialog({
+                title: title,
+                message: message,
+                buttons: [
+                    { text: cancelText, color: '#999999' },
+                    { text: confirmText, color: '#007DFF' }
+                ]
+            }).then((result) => {
+                console.info(`[OHOSPlatformService] showConfirm result.index: ${result.index}`)
+            })
+        } catch (e) {
+            console.error(`[OHOSPlatformService] showConfirm failed: ${e}`)
+        }
+        return 0 // 占位：异步结果无法通过同步 KNOI 调用返回
+    }
+
+    /**
+     * Action Sheet
+     *
+     * 注意：同上，showDialog 返回 Promise，同步调用无法获取用户选择。
+     * promptAction.showDialog 最多支持 6 个按钮。
+     * TODO: 需改用 KNOI 异步回调机制或原生端事件推送，才能获取用户实际选择。
+     */
+    showActionSheet(title: string | null, message: string | null, options: string[]): number {
+        try {
+            const buttons: { text: string, color: string }[] = []
+            const maxOptions = Math.min(options.length, 5)
+            for (let i = 0; i < maxOptions; i++) {
+                buttons.push({ text: options[i], color: '#007DFF' })
+            }
+            buttons.push({ text: '取消', color: '#999999' })
+            promptAction.showDialog({
+                title: title ?? undefined,
+                message: message ?? undefined,
+                buttons: buttons
+            }).then((result) => {
+                console.info(`[OHOSPlatformService] showActionSheet result.index: ${result.index}`)
+            })
+        } catch (e) {
+            console.error(`[OHOSPlatformService] showActionSheet failed: ${e}`)
+        }
+        return 0 // 占位：异步结果无法通过同步 KNOI 调用返回
+    }
+
     /**
      * 将 URI 列表解析为文件信息数组
      *
