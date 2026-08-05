@@ -53,6 +53,8 @@ ohosApp/entry/libs/
 **/*.xcuserdatad/**
 **/xcshareddata/
 **/IDEWorkspaceChecks.plist
+**/xcworkspace/
+iosApp/iosApp.xcworkspace/
 
 ## Other
 *.moved-aside
