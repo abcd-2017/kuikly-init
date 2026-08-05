@@ -2,6 +2,56 @@
 
 基于 **Kuikly** 的跨端脚手架项目，支持 Android / iOS / HarmonyOS / Web 四端。抽象系统级基础能力（导航、网络、存储、日志、平台桥等），让后续业务项目开箱即用。
 
+## 快速开始
+
+### 环境依赖
+
+| 平台 | 必需 | 说明 |
+|------|------|------|
+| Android | Android SDK + JDK 17 | `local.properties` 中 `sdk.dir` 指向 SDK 路径 |
+| iOS | Xcode + CocoaPods | `gem install cocoapods` |
+| HarmonyOS | DevEco Studio | 提供 hvigor 构建工具链 |
+
+### 首次拉取后必须执行
+
+**1. 配置 DevEco Studio SDK 路径**
+
+在 `ohosApp/local.properties` 中添加本机 DevEco Studio 的 SDK 路径：
+
+```properties
+harmony.sdk.path=<你的 DevEco Studio 安装目录>/sdk
+```
+
+> 如何找到路径：DevEco Studio → File → Settings → SDK → OpenHarmony → SDK 路径
+
+**2. HarmonyOS 项目同步**（生成 `BuildProfile.ets` 等编译必要文件）：
+
+```bash
+cd ohosApp
+hvigorw --sync -p product=default
+```
+
+> `hvigorw` 位于 DevEco Studio 安装目录的 `tools/hvigor/bin/` 下，确保该目录在 PATH 中，或使用绝对路径。
+
+**3. iOS 依赖安装**：
+
+```bash
+cd iosApp && pod install
+```
+
+### 验证构建
+
+```bash
+# Android
+./gradlew :androidApp:assembleDebug
+
+# HarmonyOS
+./gradlew :harmonySyncDebug
+
+# iOS（需先 pod install）
+./gradlew :shared:syncFramework -Pkotlin.native.cocoapods.platform=IOS -Pkotlin.native.cocoapods.archs=arm64
+```
+
 ## 技术选型
 
 | 维度 | 选型 | 说明 |
