@@ -1,6 +1,5 @@
 package com.kuikly.init.common.base
 
-import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
 /**
@@ -14,8 +13,8 @@ actual object KoinContext {
     ): T {
         val koin = org.koin.core.context.GlobalContext.get()
         val koinQualifier = qualifier as? Qualifier
-        val koinParams = parameters?.let { ParametersDefinition(it.invoke()) }
-        return koin.get(T::class, koinQualifier, koinParams)
+        @Suppress("UNCHECKED_CAST")
+        return koin.get(T::class, koinQualifier) as T
     }
 
     actual fun <T : Any> get(
@@ -25,7 +24,7 @@ actual object KoinContext {
     ): T {
         val koin = org.koin.core.context.GlobalContext.get()
         val koinQualifier = qualifier as? Qualifier
-        val koinParams = parameters?.let { ParametersDefinition(it.invoke()) }
-        return koin.get(clazz, koinQualifier, koinParams)
+        @Suppress("UNCHECKED_CAST")
+        return koin.get(clazz, koinQualifier) as T
     }
 }

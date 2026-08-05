@@ -9,7 +9,7 @@ plugins {
     id("com.tencent.kuikly-open.kuikly")
     id("org.jetbrains.compose")
     kotlin("plugin.compose")
-    id("com.tencent.kuiklybase.knoi.plugin")
+    // KNOI 插件仅在 OHOS 构建中应用（build.ohos.gradle.kts），此处不应用
 }
 
 val KEY_PAGE_NAME = "pageName"
