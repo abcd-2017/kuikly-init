@@ -9,6 +9,9 @@ actual class ContextProvider {
     actual fun getFilesDirPath(): String =
         getIOHOSPlatformServiceApi()?.getFilesDirPath() ?: "/data/storage/el2/base/haps/entry/files"
 
-    actual fun readAsset(path: String): ByteArray =
-        getIOHOSPlatformServiceApi()?.readAsset(path) ?: ByteArray(0)
+    actual fun readAsset(path: String): ByteArray {
+        // TODO: Convert ArrayBuffer to ByteArray
+        getIOHOSPlatformServiceApi()?.readAsset(path)
+        return ByteArray(0)
+    }
 }

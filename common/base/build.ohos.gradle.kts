@@ -44,8 +44,6 @@ kotlin {
 }
 
 dependencies {
-    // KNOI: Kotlin Native Ohos Interaction - Kotlin ↔ ArkTS 互调
-    add("kspOhosArm64", "com.tencent.kuiklybase.knoi:knoi:0.0.4")
 }
 
 android {

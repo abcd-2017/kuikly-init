@@ -1,6 +1,7 @@
 package com.kuikly.init.common.base
 
 import com.tencent.tmm.knoi.annotation.ServiceConsumer
+import com.tencent.tmm.knoi.type.ArrayBuffer
 
 /**
  * OHOS 平台能力服务接口（KNOI）
@@ -17,7 +18,7 @@ interface IOHOSPlatformService {
     fun getFilesDirPath(): String
 
     /** 读取 assets/rawfile 资源 */
-    fun readAsset(path: String): ByteArray
+    fun readAsset(path: String): ArrayBuffer
 
     /** 设备唯一标识 */
     fun getDeviceId(): String
@@ -29,10 +30,10 @@ interface IOHOSPlatformService {
     fun getDeviceModel(): String
 
     /** 读取文件内容 */
-    fun readFile(path: String): ByteArray
+    fun readFile(path: String): ArrayBuffer
 
     /** 写入文件内容 */
-    fun writeFile(path: String, data: ByteArray)
+    fun writeFile(path: String, data: ArrayBuffer)
 
     /** 判断文件是否存在 */
     fun fileExists(path: String): Boolean
