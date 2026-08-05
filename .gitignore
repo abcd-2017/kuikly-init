@@ -11,6 +11,8 @@
 .cxx
 **/.cxx/
 local.properties
+# OHOS 项目级配置（模块名/资源路径），各机器通用，需提交
+!ohosApp/local.properties
 *.so
 *.js
 node_modules
