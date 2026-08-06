@@ -27,7 +27,8 @@ actual class NtpClock {
     actual suspend fun getServerTime(ntpServer: String): Long? = mutex.withLock {
         try {
             // 桩实现：使用系统时间作为回退
-            // TODO: 替换为真实 NTP UDP socket 实现
+            // TODO: 替换为真实 NTP UDP socket 实现（详见类 KDoc）
+            // 当前返回本地时间，offset 为 0，不保证时间精度
             val now = (NSDate().timeIntervalSince1970() * 1000).toLong()
             cachedOffset = 0L
             now

@@ -12,11 +12,6 @@ kotlin {
         }
     }
 
-    js(IR) {
-        browser()
-        binaries.executable()
-    }
-
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -32,10 +27,8 @@ kotlin {
             dependencies {
                 implementation("androidx.appcompat:appcompat:1.6.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+                implementation("androidx.biometric:biometric:1.1.0")
             }
-        }
-        val jsMain by getting {
-            dependsOn(commonMain)
         }
         val iosX64Main by getting
         val iosArm64Main by getting

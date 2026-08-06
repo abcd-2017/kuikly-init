@@ -6,8 +6,9 @@ name: Kuikly CI
 # 功能：push / PR 时自动运行 lint 和 test，编译通过才可 merge
 # 状态：配置完整，入口暂时关闭。恢复时取消下方注释即可。
 # ============================================================
-on: []
-# 恢复时取消以下注释：
+on:
+  workflow_dispatch:
+# 恢复时替换为以下配置：
 # on:
 #   push:
 #     branches: [main, develop, 'feature/**']

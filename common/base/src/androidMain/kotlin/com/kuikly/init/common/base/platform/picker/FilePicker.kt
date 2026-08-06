@@ -1,38 +1,88 @@
 package com.kuikly.init.common.base.platform.picker
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
+import com.kuikly.init.common.base.platform.ActivityResultBridge
 import com.kuikly.init.common.base.platform.AppContext
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 /**
  * Android 文件选择器实现
  *
- * 基于 Intent.ACTION_OPEN_DOCUMENT，通过 suspendCancellableCoroutine 包装回调。
+ * 基于 Intent.ACTION_OPEN_DOCUMENT / ACTION_GET_CONTENT，通过 ActivityResultBridge 获取结果。
+ * 支持单选和多选文件、图片、文档。
  *
- * 注意：此实现需要在 Activity 上下文中启动 Intent。当前通过 AppContext.application
- * 发送 Intent 会失败（需要 Activity 上下文），因此标记为 TODO。
- *
- * 正确做法：通过 Kuikly 的 Page 生命周期获取当前 Activity，或使用
- * ActivityResultContracts 注册回调。
+ * 注意：
+ * - 需要宿主 Activity 在 onActivityResult 中调用 ActivityResultBridge.handleResult()。
+ * - 返回的路径为 content:// URI，需要通过 ContentResolver 读取。
  */
 actual class FilePicker {
 
-    actual suspend fun pickFile(mimeType: String, allowMultiple: Boolean): List<PickedFile> {
-        // TODO: 需要 Activity 上下文才能启动 ACTION_OPEN_DOCUMENT
-        // 当前 AppContext.application 无法直接 startActivity（FLAG_ACTIVITY_NEW_TASK 也无法返回结果）
-        // 后续需通过 Kuikly Page 的 currentActivity 获取 Activity 实例
-        return emptyList()
-    }
+    actual suspend fun pickFile(mimeType: String, allowMultiple: Boolean): List<PickedFile> =
+        launchPickerIntent(mimeType, allowMultiple)
 
-    actual suspend fun pickImage(allowMultiple: Boolean): List<PickedFile> {
-        // TODO: 同 pickFile，需要 Activity 上下文
-        return emptyList()
-    }
+    actual suspend fun pickImage(allowMultiple: Boolean): List<PickedFile> =
+        launchPickerIntent("image/*", allowMultiple)
 
-    actual suspend fun pickDocument(allowMultiple: Boolean): List<PickedFile> {
-        // TODO: 同 pickFile，需要 Activity 上下文
-        return emptyList()
-    }
+    actual suspend fun pickDocument(allowMultiple: Boolean): List<PickedFile> =
+        launchPickerIntent("application/*", allowMultiple)
+
+    /**
+     * 启动文件选择 Intent 并等待结果
+     */
+    private suspend fun launchPickerIntent(mimeType: String, allowMultiple: Boolean): List<PickedFile> =
+        suspendCancellableCoroutine { continuation ->
+            try {
+                val activity = AppContext.currentActivity
+                if (activity == null) {
+                    continuation.resume(emptyList())
+                    return@suspendCancellableCoroutine
+                }
+
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = mimeType
+                    putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultiple)
+                }
+
+                val requestCode = ActivityResultBridge.register { resultCode, data ->
+                    if (continuation.isActive) {
+                        if (resultCode == Activity.RESULT_OK) {
+                            val files = mutableListOf<PickedFile>()
+                            // 处理多选
+                            if (allowMultiple) {
+                                data?.clipData?.let { clipData ->
+                                    for (i in 0 until clipData.itemCount) {
+                                        clipData.getItemAt(i).uri?.let { uri ->
+                                            files.add(resolveFileInfo(uri))
+                                        }
+                                    }
+                                }
+                            }
+                            // 处理单选
+                            if (files.isEmpty()) {
+                                data?.data?.let { uri ->
+                                    files.add(resolveFileInfo(uri))
+                                }
+                            }
+                            continuation.resume(files)
+                        } else {
+                            // 用户取消选择
+                            continuation.resume(emptyList())
+                        }
+                    }
+                }
+
+                activity.startActivityForResult(intent, requestCode)
+            } catch (e: Exception) {
+                if (continuation.isActive) {
+                    continuation.resume(emptyList())
+                }
+            }
+        }
 
     /**
      * 从 URI 解析文件信息

@@ -12,11 +12,6 @@ kotlin {
         }
     }
 
-    js(IR) {
-        browser()
-        binaries.executable()
-    }
-
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -27,9 +22,6 @@ kotlin {
                 implementation(project(":common:base"))
                 implementation(libs.koin.core)
             }
-        }
-        val jsMain by getting {
-            dependsOn(commonMain)
         }
         val iosX64Main by getting
         val iosArm64Main by getting

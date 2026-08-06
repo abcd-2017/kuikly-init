@@ -58,6 +58,22 @@ class KuiklyRenderActivity : AppCompatActivity(), KuiklyRenderViewBaseDelegatorD
         kuiklyRenderViewDelegator.onDetach()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        com.kuikly.init.common.base.platform.ActivityResultBridge.handleResult(requestCode, resultCode, data)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        com.kuikly.init.common.base.platform.PermissionResultBridge.handleResult(
+            requestCode, permissions, grantResults
+        )
+    }
+
     override fun onPause() {
         super.onPause()
         kuiklyRenderViewDelegator.onPause()

@@ -8,6 +8,7 @@ import { LogAdapter } from '../kuikly/adapter/LogAdapter';
 import { RouterAdapter } from '../kuikly/adapter/RouterAdapter';
 import { PlatformServiceLocator } from '../kuikly/platform/PlatformServiceLocator';
 import { setup, init, registerServiceProvider } from '@kuiklybase/knoi';
+import BuildProfile from '@kuiklybase/knoi/BuildProfile';
 import { OHOSPlatformServiceImpl } from '../kuikly/platform/OHOSPlatformServiceImpl';
 import { OHOSContextProvider } from '../kuikly/platform/OHOSContextProvider';
 
@@ -29,8 +30,8 @@ export default class EntryAbility extends UIAbility {
     PlatformServiceLocator.getInstance().init(this.context);
 
     // KNOI 初始化（Kotlin ↔ ArkTS 互调机制）
-    // libkn.so 为 KMP 生成的动态库名字，需与实际构建产物一致
-    setup("libkn.so", BuildProfile.DEBUG);
+    // libshared.so 为 KMP 生成的动态库名字，需与实际构建产物一致
+    setup("libshared.so", BuildProfile.DEBUG);
     init();
 
     // 注册平台服务实现（KNOI 方式）

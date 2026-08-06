@@ -5,15 +5,16 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AlertDialog
 import com.kuikly.init.common.base.platform.AppContext
-import kotlin.coroutines.resume
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 
 /**
  * Android 对话框实现
  *
  * 基于 AlertDialog.Builder，通过 Handler(Looper.getMainLooper()) 确保主线程。
- * 使用 suspendCoroutine 桥接回调式 API 为挂起函数。
+ * 异步方法通过 callback 返回结果，内部使用 suspendCancellableCoroutine 桥接。
  */
 actual class Dialog(private val context: Context) {
 
@@ -33,54 +34,66 @@ actual class Dialog(private val context: Context) {
         }
     }
 
-    actual suspend fun showConfirm(
+    actual fun showConfirm(
         title: String,
         message: String,
         confirmText: String,
-        cancelText: String
-    ): Boolean = suspendCancellableCoroutine { continuation ->
-        mainHandler.post {
-            try {
-                AlertDialog.Builder(context)
-                    .setTitle(title)
-                    .setMessage(message)
-                    .setPositiveButton(confirmText) { dialog, _ ->
-                        dialog.dismiss()
-                        continuation.resume(true)
+        cancelText: String,
+        callback: (Int) -> Unit
+    ) {
+        runBlocking {
+            val result = suspendCancellableCoroutine { continuation ->
+                mainHandler.post {
+                    try {
+                        AlertDialog.Builder(context)
+                            .setTitle(title)
+                            .setMessage(message)
+                            .setPositiveButton(confirmText) { dialog, _ ->
+                                dialog.dismiss()
+                                continuation.resume(0)
+                            }
+                            .setNegativeButton(cancelText) { dialog, _ ->
+                                dialog.dismiss()
+                                continuation.resume(1)
+                            }
+                            .show()
+                    } catch (e: Exception) {
+                        continuation.resume(-1)
                     }
-                    .setNegativeButton(cancelText) { dialog, _ ->
-                        dialog.dismiss()
-                        continuation.resume(false)
-                    }
-                    .show()
-            } catch (e: Exception) {
-                continuation.resume(false)
+                }
             }
+            callback(result)
         }
     }
 
-    actual suspend fun showActionSheet(
+    actual fun showActionSheet(
         title: String?,
         message: String?,
-        options: List<String>
-    ): Int = suspendCancellableCoroutine { continuation ->
-        mainHandler.post {
-            try {
-                val items = options.toTypedArray()
-                AlertDialog.Builder(context)
-                    .apply { title?.let { setTitle(it) } }
-                    .apply { message?.let { setMessage(it) } }
-                    .setItems(items) { dialog, which ->
-                        dialog.dismiss()
-                        continuation.resume(which)
-                    }
-                    .setOnCancelListener {
+        options: List<String>,
+        callback: (Int) -> Unit
+    ) {
+        runBlocking {
+            val result = suspendCancellableCoroutine { continuation ->
+                mainHandler.post {
+                    try {
+                        val items = options.toTypedArray()
+                        AlertDialog.Builder(context)
+                            .apply { title?.let { setTitle(it) } }
+                            .apply { message?.let { setMessage(it) } }
+                            .setItems(items) { dialog, which ->
+                                dialog.dismiss()
+                                continuation.resume(which)
+                            }
+                            .setOnCancelListener {
+                                continuation.resume(-1)
+                            }
+                            .show()
+                    } catch (e: Exception) {
                         continuation.resume(-1)
                     }
-                    .show()
-            } catch (e: Exception) {
-                continuation.resume(-1)
+                }
             }
+            callback(result)
         }
     }
 }

@@ -1,11 +1,8 @@
 package com.kuikly.init.common.base.platform.share
 
 import platform.Foundation.NSOperationQueue
+import platform.Foundation.NSURL
 import platform.UIKit.UIActivityViewController
-import platform.UIKit.UIAlertAction
-import platform.UIKit.UIAlertActionStyleCancel
-import platform.UIKit.UIAlertController
-import platform.UIKit.UIAlertControllerStyleAlert
 import platform.UIKit.UIApplication
 import platform.UIKit.UIViewController
 import platform.UIKit.UIWindow
@@ -41,11 +38,15 @@ actual class Share {
     }
 
     actual fun shareImage(localPath: String) {
-        // TODO: 需将本地路径转为 UIImage 后调用 shareContent(listOf(image))
+        // 将本地路径转为 NSURL，UIActivityViewController 会自动识别图片类型
+        val url = NSURL.fileURLWithPath(localPath)
+        shareContent(url)
     }
 
     actual fun shareFile(localPath: String, mimeType: String?) {
-        // TODO: 需将本地路径转为 NSURL 后调用 shareContent(listOf(url))
+        // 将本地路径转为 NSURL，UIActivityViewController 会根据扩展名推断类型
+        val url = NSURL.fileURLWithPath(localPath)
+        shareContent(url)
     }
 
     private fun shareContent(item: Any) {

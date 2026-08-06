@@ -1,5 +1,10 @@
 package com.kuikly.init.base
 
+import com.kuikly.init.common.base.platform.clipboard.Clipboard
+import com.kuikly.init.common.base.platform.keyboard.Keyboard
+import com.kuikly.init.common.base.platform.phone.Phone
+import com.kuikly.init.common.base.platform.toast.Toast
+import com.kuikly.init.common.base.platform.toast.ToastDuration
 import com.tencent.kuikly.core.base.toInt
 import com.tencent.kuikly.core.module.CallbackFn
 import com.tencent.kuikly.core.module.Module
@@ -24,12 +29,12 @@ internal class BridgeModule : Module() {
         callNativeMethod(LOG, methodArgs, null)
     }
 
+    @Deprecated("Use Clipboard.copyText instead")
     fun copyToPasteboard(content: String) {
-        val methodArgs = JSONObject()
-        methodArgs.put("content", content)
-        callNativeMethod("copyToPasteboard", methodArgs, null)
+        Clipboard().copyText(content)
     }
 
+    @Deprecated("Use Dialog instead")
     fun showAlert(
         title: String?,
         message: String?,
@@ -59,16 +64,14 @@ internal class BridgeModule : Module() {
     }
 
     // 拨打电话
+    @Deprecated("Use Phone.call instead")
     fun callPhone(phoneNumber: String) {
-        val methodArgs = JSONObject()
-        methodArgs.put("phoneNumber", phoneNumber)
-        callNativeMethod("callPhone", methodArgs, null)
+        Phone().call(phoneNumber)
     }
 
+    @Deprecated("Use Toast.show instead")
     fun toast(content: String) {
-        val methodArgs = JSONObject()
-        methodArgs.put("content", content)
-        callNativeMethod("toast", methodArgs, null)
+        Toast().show(content, ToastDuration.SHORT)
     }
 
     fun openPage(
@@ -285,8 +288,10 @@ internal class BridgeModule : Module() {
         return syncCallNativeMethod(SIGN_ALERT, params, null)
     }
 
+    @Deprecated("Use Keyboard.hide instead")
     fun closeKeyboard(data: JSONObject? = null, callbackFn: CallbackFn? = null): String {
-        return syncCallNativeMethod(CLOSE_KEYBOARD, data, callbackFn)
+        Keyboard().hide()
+        return ""
     }
 
     fun humanVerification(params: JSONObject, callbackFn: CallbackFn? = null): String {

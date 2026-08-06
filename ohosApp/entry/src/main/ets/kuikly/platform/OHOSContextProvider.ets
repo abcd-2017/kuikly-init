@@ -15,6 +15,11 @@ export class OHOSContextProvider {
     this.context = context;
   }
 
+  /** 获取原始 UIAbilityContext */
+  getContext(): common.UIAbilityContext {
+    return this.context
+  }
+
   /** 获取缓存目录路径 */
   getCacheDirPath(): string {
     return this.context.cacheDir;

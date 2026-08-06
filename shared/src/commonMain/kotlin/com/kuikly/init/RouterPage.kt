@@ -35,8 +35,8 @@ import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 import com.tencent.kuikly.core.pager.Pager
 import com.tencent.kuikly.core.utils.urlParams
 import com.kuikly.init.base.BasePager
-import com.kuikly.init.base.bridgeModule
 import com.kuikly.init.base.Utils
+import com.kuikly.init.common.base.platform.toast.Toast
 import com.tencent.kuikly.compose.foundation.layout.fillMaxWidth
 
 @Page("router", supportInLocal = true)
@@ -114,7 +114,7 @@ internal fun ComposeRouteImpl() {
                 ).padding(12.dp),
                 onClick = {
                     if (textFieldValue.isEmpty()) {
-                        Utils.bridgeModule(localPager.pagerId).toast("请输入PageName")
+                        Toast().show("请输入PageName")
                     } else {
                         localPager.acquireModule<SharedPreferencesModule>(
                             SharedPreferencesModule.MODULE_NAME

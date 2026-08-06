@@ -1,6 +1,9 @@
 package com.kuikly.init.common.base.platform.picker
 
 import kotlinx.coroutines.suspendCancellableCoroutine
+import platform.Foundation.NSFileSize
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSNumber
 import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
@@ -98,9 +101,27 @@ actual class FilePicker {
         return PickedFile(
             path = url.absoluteString ?: url.path ?: "",
             name = name,
-            size = -1L, // TODO: 通过 NSFileManager 获取文件大小
+            size = getFileSize(url),
             mimeType = mimeType
         )
+    }
+
+    /**
+     * 通过 NSFileManager 获取文件大小
+     */
+    private fun getFileSize(url: NSURL): Long {
+        return try {
+            val filePath = url.path ?: return -1L
+            val attributes = NSFileManager.defaultManager.attributesOfItemAtPath(filePath, null)
+            if (attributes != null) {
+                val size = attributes[NSFileSize] as? NSNumber
+                size?.longValue ?: -1L
+            } else {
+                -1L
+            }
+        } catch (e: Exception) {
+            -1L
+        }
     }
 
     /**

@@ -69,6 +69,19 @@ fun Project.execHarmonySync(buildType: String) {
         throw GradleException("[harmony] 未找到产物: ${soPath}")
     }
 
+    // 2.5 复制 libshared_api.h（KMP C 互操作头文件，供 entry napi_init.cpp include）
+    val headerSource = soFile.parentFile.resolve("libshared_api.h")
+    val headerDestDir = "${rootDir}/ohosApp/entry/src/main/cpp/include"
+    if (headerSource.exists()) {
+        copy {
+            from(headerSource)
+            into(file(headerDestDir))
+        }
+        logger.lifecycle("[harmony] ✓ libshared_api.h → ${headerDestDir}")
+    } else {
+        logger.warn("[harmony] ⚠ 未找到头文件: ${headerSource}（跳过，可能未触发 KMP 代码生成）")
+    }
+
     // 3. 复制 assets 资源
     val assetsDir = file(ohosAssetsSrc)
     if (assetsDir.exists() && assetsDir.listFiles()?.isNotEmpty() == true) {

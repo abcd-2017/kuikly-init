@@ -127,11 +127,11 @@ interface IOHOSPlatformService {
     /** Alert 提示框：标题 + 消息 + 确认按钮 */
     fun showAlert(title: String, message: String, confirmText: String)
 
-    /** Confirm 确认框：返回 0=确认, 1=取消 */
-    fun showConfirm(title: String, message: String, confirmText: String, cancelText: String): Int
+    /** Confirm 确认框：callback 返回 0=确认, 1=取消 */
+    fun showConfirm(title: String, message: String, confirmText: String, cancelText: String, callback: (Int) -> Unit)
 
-    /** Action Sheet：多选项，返回用户选择的索引（-1 表示取消） */
-    fun showActionSheet(title: String?, message: String?, options: List<String>): Int
+    /** Action Sheet：多选项，callback 返回用户选择的索引（-1 表示取消） */
+    fun showActionSheet(title: String?, message: String?, options: List<String>, callback: (Int) -> Unit)
 
     // ==================== 文件选择器 ====================
 
@@ -159,4 +159,154 @@ interface IOHOSPlatformService {
      * @return JSON 字符串
      */
     fun pickDocument(allowMultiple: Boolean): String
+
+    // ==================== 键盘控制 ====================
+
+    /** 隐藏软键盘 */
+    fun hideKeyboard()
+
+    /** 显示软键盘（OHOS 正常输入框系统自动弹出） */
+    fun showKeyboard()
+
+    // ==================== 电话拨打 ====================
+
+    /** 拨打电话（跳转到拨号界面） */
+    fun callPhone(phoneNumber: String)
+
+    // ==================== 权限请求 ====================
+
+    /**
+     * 同步检查权限状态
+     *
+     * @param tokenID 应用 tokenID（0 表示默认）
+     * @param permission 权限名称（如 "ohos.permission.CAMERA"）
+     * @return "GRANTED" / "DENIED" / "NOT_DETERMINED"
+     */
+    fun checkPermissionSync(tokenID: Long, permission: String): String
+
+    /**
+     * 异步申请权限
+     *
+     * @param context Ability 上下文（null 表示不使用）
+     * @param permissions 权限列表
+     * @param callback 回调返回 "GRANTED" / "DENIED"
+     */
+    fun requestPermissions(context: Any?, permissions: List<String>, callback: (String) -> Unit)
+
+    // ==================== 屏幕信息 ====================
+
+    /** 屏幕宽度（像素） */
+    fun getScreenWidth(): Int
+
+    /** 屏幕高度（像素） */
+    fun getScreenHeight(): Int
+
+    /** 屏幕 DPI */
+    fun getScreenDensityDpi(): Int
+
+    /** 屏幕密度比例 */
+    fun getScreenDensity(): Float
+
+    /** 屏幕旋转方向（0/90/180/270） */
+    fun getScreenRotation(): Int
+
+    // ==================== 应用信息 ====================
+
+    /** 应用名称 */
+    fun getAppName(): String
+
+    /** 包名 */
+    fun getAppPackageName(): String
+
+    /** 版本名称 */
+    fun getVersionName(): String
+
+    /** 版本号 */
+    fun getVersionCode(): Long
+
+    /** 构建类型（debug / release） */
+    fun getBuildType(): String
+
+    // ==================== 生物识别 ====================
+
+    /** 检查设备是否支持生物识别 */
+    fun isBiometricSupported(): Boolean
+
+    /** 获取支持的生物识别类型（JSON 数组，如 ["FACE","FINGERPRINT"]） */
+    fun getSupportedBiometricTypes(): String
+
+    /**
+     * 发起生物识别认证
+     *
+     * @param title 认证对话框标题
+     * @param cancelText 取消按钮文案
+     * @param callback 回调返回 JSON 字符串，格式：{"result":"SUCCESS"} 或 {"result":"FAILED"} / {"result":"CANCELED"} / {"result":"NOT_SUPPORTED"}
+     */
+    fun authenticate(title: String, cancelText: String, callback: (String) -> Unit)
+
+    // ==================== 震动反馈 ====================
+
+    /**
+     * 冲击反馈
+     *
+     * @param style 0=HEAVY, 1=MEDIUM, 2=LIGHT
+     */
+    fun hapticImpact(style: Int)
+
+    /**
+     * 通知反馈
+     *
+     * @param type 0=SUCCESS, 1=WARNING, 2=FAILURE
+     */
+    fun hapticNotification(type: Int)
+
+    /** 选择变更反馈（轻点） */
+    fun hapticSelectionChanged()
+
+    /** 停止当前震动 */
+    fun hapticStop()
+
+    // ==================== 地理位置 ====================
+
+    /** 请求定位权限（返回是否授权） */
+    fun requestLocationPermission(): Boolean
+
+    /**
+     * 获取当前位置
+     *
+     * @param accuracy 精度等级（0=COARSE, 1=BALANCED, 2=PRECISE）
+     * @param callback 回调返回 JSON 字符串，格式：{"latitude":31.23,"longitude":121.47,...}
+     */
+    fun getCurrentLocation(accuracy: Int, callback: (String) -> Unit)
+
+    // ==================== 扫码 ====================
+
+    /**
+     * 启动扫码
+     *
+     * @param callback 回调返回 JSON 字符串，格式：{"content":"...","format":"QR_CODE"}
+     */
+    fun startScan(callback: (String) -> Unit)
+
+    /** 停止扫码 */
+    fun stopScan()
+
+    // ==================== 电池状态 ====================
+
+    /** 电量百分比（0-100），未知时为 -1 */
+    fun getBatteryLevel(): Int
+
+    /** 是否正在充电 */
+    fun isCharging(): Boolean
+
+    /** 是否低电量（电量 <= 20%） */
+    fun isLowBattery(): Boolean
+
+    // ==================== 系统设置 ====================
+
+    /** 打开系统设置首页 */
+    fun openSystemSettings()
+
+    /** 打开当前应用的设置详情页 */
+    fun openAppSettings()
 }

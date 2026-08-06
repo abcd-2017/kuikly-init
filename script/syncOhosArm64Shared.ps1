@@ -75,6 +75,17 @@ if (Test-Path $SoSource) {
     throw "Artifact not found: $SoSource"
 }
 
+# --- Copy libshared_api.h (KMP C 互操作头文件) ---
+$HeaderSource = Join-Path (Split-Path $SoSource) "libshared_api.h"
+$HeaderDestDir = "$ProjectRoot\ohosApp\entry\src\main\cpp\include"
+if (Test-Path $HeaderSource) {
+    if (-not (Test-Path $HeaderDestDir)) { New-Item -ItemType Directory -Path $HeaderDestDir -Force | Out-Null }
+    Copy-Item $HeaderSource $HeaderDestDir -Force
+    Write-Host "  [OK] libshared_api.h -> $HeaderDestDir" -ForegroundColor Green
+} else {
+    Write-Host "  [WARN] 未找到头文件: $HeaderSource（跳过）" -ForegroundColor Yellow
+}
+
 # --- Copy assets ---
 if ((Test-Path $AssetsSrc) -and (Get-ChildItem $AssetsSrc -ErrorAction SilentlyContinue)) {
     if (-not (Test-Path $AssetsDest)) { New-Item -ItemType Directory -Path $AssetsDest -Force | Out-Null }

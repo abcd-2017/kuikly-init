@@ -10,8 +10,11 @@ actual class ContextProvider {
         getIOHOSPlatformServiceApi()?.getFilesDirPath() ?: "/data/storage/el2/base/haps/entry/files"
 
     actual fun readAsset(path: String): ByteArray {
-        // TODO: Convert ArrayBuffer to ByteArray
-        getIOHOSPlatformServiceApi()?.readAsset(path)
-        return ByteArray(0)
+        return try {
+            val arrayBuffer = getIOHOSPlatformServiceApi()?.readAsset(path)
+            arrayBuffer?.toByteArray() ?: ByteArray(0)
+        } catch (e: Exception) {
+            ByteArray(0)
+        }
     }
 }
