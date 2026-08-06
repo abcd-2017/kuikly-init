@@ -1,5 +1,6 @@
 package com.kuikly.init.platform
 
+import com.kuikly.init.business.debug.impl.DebugModule
 import com.kuikly.init.business.initTask.InitTaskRunner
 import com.kuikly.init.common.base.platform.ContextProvider
 import com.kuikly.init.common.base.platform.DeviceInfo
@@ -15,6 +16,7 @@ fun setupIOSKoin() {
             + module { single<DeviceInfo> { DeviceInfo() } }
             + module { single<FileSystem> { FileSystem() } }
             + module { single<NetworkMonitor> { NetworkMonitor() } }
+            + DebugModule
         )
     }
 
