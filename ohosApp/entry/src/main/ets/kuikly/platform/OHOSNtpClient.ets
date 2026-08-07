@@ -74,12 +74,12 @@ export class OHOSNtpClient {
       }, OHOSNtpClient.DEFAULT_TIMEOUT);
 
       // 监听响应
-      udpSocket.on('message', (msg: socket.ReceiveMessage) => {
+      udpSocket.on('message', (msg: socket.SocketMessageInfo) => {
         if (resolved) return;
         resolved = true;
         clearTimeout(timeoutHandle);
         try {
-          const result = this.parseNtpResponse(msg.data);
+          const result = this.parseNtpResponse(msg.message);
           resolve(result);
         } catch (e) {
           reject(e);

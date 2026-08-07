@@ -9,7 +9,7 @@ export class OHOSAppInfo {
   /** 应用名称 */
   getAppName(): string {
     try {
-      const info = bundleManager.getBundleInfoForSelf(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
+      const info = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
       return info.name || '';
     } catch (e) {
       console.error(`[OHOSAppInfo] getAppName failed: ${e}`);
@@ -20,8 +20,9 @@ export class OHOSAppInfo {
   /** 包名 */
   getAppPackageName(): string {
     try {
-      const info = bundleManager.getBundleInfoForSelf(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
-      return info.bundleName || '';
+      const info = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
+      // API 12: BundleInfo 不再有 bundleName 属性，使用 appInfo.name
+      return info.appInfo.name || '';
     } catch (e) {
       console.error(`[OHOSAppInfo] getAppPackageName failed: ${e}`);
       return '';
@@ -31,7 +32,7 @@ export class OHOSAppInfo {
   /** 版本名称 */
   getVersionName(): string {
     try {
-      const info = bundleManager.getBundleInfoForSelf(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
+      const info = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
       return info.versionName || '';
     } catch (e) {
       console.error(`[OHOSAppInfo] getVersionName failed: ${e}`);
@@ -42,7 +43,7 @@ export class OHOSAppInfo {
   /** 版本号 */
   getVersionCode(): number {
     try {
-      const info = bundleManager.getBundleInfoForSelf(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
+      const info = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
       return info.versionCode;
     } catch (e) {
       console.error(`[OHOSAppInfo] getVersionCode failed: ${e}`);

@@ -1,13 +1,12 @@
 import { pasteboard } from "@kit.BasicServicesKit"
 import promptAction from "@ohos.promptAction"
-import { systemShare } from "@kit.ShareKit"
-import { picker } from "@kit.CoreFileKit"
-import { inputMethod } from "@kit.InputMethodKit"
+import picker from "@ohos.file.picker"
+import inputMethod from "@ohos.inputMethod"
 import { call } from "@kit.TelephonyKit"
 import common from "@ohos.app.ability.common"
-import { abilityAccessCtrl, bundleManager } from "@kit.AbilityKit"
-import userAuth from "@kit.UserAuthenticationKit"
-import vibrator from "@kit.SensorServiceKit"
+import { abilityAccessCtrl, bundleManager, Permissions } from "@kit.AbilityKit"
+import userAuth from "@ohos.userIAM.userAuth"
+import vibrator from "@ohos.vibrator"
 import { OHOSContextProvider } from "./OHOSContextProvider"
 import { OHOSDeviceInfo } from "./OHOSDeviceInfo"
 import { OHOSFileSystem } from "./OHOSFileSystem"
@@ -16,9 +15,18 @@ import { OHOSNtpClient } from "./OHOSNtpClient"
 import { OHOSCrypto } from "./OHOSCrypto"
 import { OHOSScreenInfo } from "./OHOSScreenInfo"
 import { OHOSAppInfo } from "./OHOSAppInfo"
-import geoLocationManager from "@kit.LocationKit"
-import { scanBarcode } from "@kit.ScanKit"
+import geoLocationManager from "@ohos.geoLocationManager"
 import batteryInfo from "@ohos.batteryInfo"
+
+/**
+ * 文件信息接口
+ */
+interface FileInfo {
+    path: string;
+    name: string;
+    size: number;
+    mimeType: string;
+}
 
 /**
  * OHOS 平台能力服务实现（KNOI 方式）
@@ -152,7 +160,7 @@ export class OHOSPlatformServiceImpl {
     setPasteboardText(content: string): void {
         try {
             const pasteData = pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, content)
-            pasteboard.getSystemPasteboard().setData(pasteData)
+            pasteboard.getSystemPasteboard().setDataSync(pasteData)
         } catch (e) {
             console.error(`[OHOSPlatformService] setPasteboardText failed: ${e}`)
         }
@@ -160,7 +168,7 @@ export class OHOSPlatformServiceImpl {
 
     getPasteboardText(): string {
         try {
-            const data = pasteboard.getSystemPasteboard().getData()
+            const data = pasteboard.getSystemPasteboard().getDataSync()
             return data.getPrimaryText() ?? ""
         } catch (e) {
             console.error(`[OHOSPlatformService] getPasteboardText failed: ${e}`)
@@ -170,7 +178,7 @@ export class OHOSPlatformServiceImpl {
 
     clearPasteboard(): void {
         try {
-            pasteboard.getSystemPasteboard().clearData()
+            pasteboard.getSystemPasteboard().clearDataSync()
         } catch (e) {
             console.error(`[OHOSPlatformService] clearPasteboard failed: ${e}`)
         }
@@ -190,56 +198,23 @@ export class OHOSPlatformServiceImpl {
     }
 
     // ==================== 系统分享 ====================
+    // API 12 中 @kit.ShareKit / systemShare 已移除，暂降级为空操作
+    // TODO: 后续可接入 @ohos.data.dataShare 或其他分享方案
 
     shareText(text: string): void {
-        try {
-            const shareData: systemShare.ShareData = {
-                shareType: systemShare.ShareType.SHARE_TYPE_TEXT,
-                text: text
-            }
-            systemShare.getShareController(this.contextProvider?.getContext()).showShare(shareData)
-        } catch (e) {
-            console.error(`[OHOSPlatformService] shareText failed: ${e}`)
-        }
+        console.warn("[OHOSPlatformService] shareText: not supported on OHOS API 12")
     }
 
     shareLink(url: string, title: string | null, description: string | null): void {
-        try {
-            const shareData: systemShare.ShareData = {
-                shareType: systemShare.ShareType.SHARE_TYPE_URL,
-                url: url,
-                title: title ?? "",
-                description: description ?? ""
-            }
-            systemShare.getShareController(this.contextProvider?.getContext()).showShare(shareData)
-        } catch (e) {
-            console.error(`[OHOSPlatformService] shareLink failed: ${e}`)
-        }
+        console.warn("[OHOSPlatformService] shareLink: not supported on OHOS API 12")
     }
 
     shareImage(localPath: string): void {
-        try {
-            const shareData: systemShare.ShareData = {
-                shareType: systemShare.ShareType.SHARE_TYPE_IMAGE,
-                localPath: localPath
-            }
-            systemShare.getShareController(this.contextProvider?.getContext()).showShare(shareData)
-        } catch (e) {
-            console.error(`[OHOSPlatformService] shareImage failed: ${e}`)
-        }
+        console.warn("[OHOSPlatformService] shareImage: not supported on OHOS API 12")
     }
 
     shareFile(localPath: string, mimeType: string | null): void {
-        try {
-            const shareData: systemShare.ShareData = {
-                shareType: systemShare.ShareType.SHARE_TYPE_FILE,
-                localPath: localPath,
-                mimeType: mimeType ?? ""
-            }
-            systemShare.getShareController(this.contextProvider?.getContext()).showShare(shareData)
-        } catch (e) {
-            console.error(`[OHOSPlatformService] shareFile failed: ${e}`)
-        }
+        console.warn("[OHOSPlatformService] shareFile: not supported on OHOS API 12")
     }
 
     // ==================== 文件选择器 ====================
@@ -250,13 +225,12 @@ export class OHOSPlatformServiceImpl {
             options.selectMode = picker.DocumentSelectMode.FILE
             options.maxSelectNumber = allowMultiple ? 10 : 1
 
-            // picker.select 返回 Promise，使用 .then() 处理异步结果
-            // 注意：KNOI 同步调用无法等待 Promise，此处仅发起选择，结果通过回调处理
-            // TODO: 需改用 KNOI 异步回调机制获取实际选择结果
-            picker.select(options).then((uris: string[]) => {
+            // API 12: picker.select 改为 DocumentViewPicker 实例方法
+            const documentViewPicker = new picker.DocumentViewPicker()
+            documentViewPicker.select(options).then((uris: string[]) => {
                 const files = this.resolveFileInfos(uris)
                 console.info(`[OHOSPlatformService] pickFile result: ${JSON.stringify({ files: files })}`)
-            }).catch((err: object) => {
+            }).catch((err: Object) => {
                 console.error(`[OHOSPlatformService] pickFile error: ${err}`)
             })
             return JSON.stringify({ files: [] })
@@ -270,17 +244,16 @@ export class OHOSPlatformServiceImpl {
         try {
             const options = new picker.DocumentSelectOptions()
             options.selectMode = picker.DocumentSelectMode.FILE
-            // OHOS picker 不直接支持 MIME 过滤，选择后需自行判断
             options.maxSelectNumber = allowMultiple ? 10 : 1
 
-            // picker.select 返回 Promise，使用 .then() 处理异步结果
-            // TODO: 需改用 KNOI 异步回调机制获取实际选择结果
-            picker.select(options).then((uris: string[]) => {
+            const documentViewPicker = new picker.DocumentViewPicker()
+            documentViewPicker.select(options).then((uris: string[]) => {
                 const files = this.resolveFileInfos(uris).filter((f) => {
-                    return f.mimeType?.startsWith("image/") ?? false
+                    const mime = f.mimeType as string | null
+                    return mime !== null && mime !== undefined && mime.startsWith("image/")
                 })
                 console.info(`[OHOSPlatformService] pickImage result: ${JSON.stringify({ files: files })}`)
-            }).catch((err: object) => {
+            }).catch((err: Object) => {
                 console.error(`[OHOSPlatformService] pickImage error: ${err}`)
             })
             return JSON.stringify({ files: [] })
@@ -296,12 +269,11 @@ export class OHOSPlatformServiceImpl {
             options.selectMode = picker.DocumentSelectMode.FILE
             options.maxSelectNumber = allowMultiple ? 10 : 1
 
-            // picker.select 返回 Promise，使用 .then() 处理异步结果
-            // TODO: 需改用 KNOI 异步回调机制获取实际选择结果
-            picker.select(options).then((uris: string[]) => {
+            const documentViewPicker = new picker.DocumentViewPicker()
+            documentViewPicker.select(options).then((uris: string[]) => {
                 const files = this.resolveFileInfos(uris)
                 console.info(`[OHOSPlatformService] pickDocument result: ${JSON.stringify({ files: files })}`)
-            }).catch((err: object) => {
+            }).catch((err: Object) => {
                 console.error(`[OHOSPlatformService] pickDocument error: ${err}`)
             })
             return JSON.stringify({ files: [] })
@@ -315,12 +287,13 @@ export class OHOSPlatformServiceImpl {
 
     showAlert(title: string, message: string, confirmText: string): void {
         try {
+            const buttons: promptAction.Button[] = [
+                { text: confirmText, color: '#007DFF' }
+            ]
             promptAction.showDialog({
                 title: title,
                 message: message,
-                buttons: [
-                    { text: confirmText, color: '#007DFF' }
-                ]
+                buttons: buttons
             })
         } catch (e) {
             console.error(`[OHOSPlatformService] showAlert failed: ${e}`)
@@ -337,16 +310,17 @@ export class OHOSPlatformServiceImpl {
      */
     showConfirm(title: string, message: string, confirmText: string, cancelText: string, callback: (result: number) => void): void {
         try {
+            const buttons: promptAction.Button[] = [
+                { text: cancelText, color: '#999999' },
+                { text: confirmText, color: '#007DFF' }
+            ]
             promptAction.showDialog({
                 title: title,
                 message: message,
-                buttons: [
-                    { text: cancelText, color: '#999999' },
-                    { text: confirmText, color: '#007DFF' }
-                ]
-            }).then((result) => {
+                buttons: buttons
+            }).then((result: promptAction.ShowDialogSuccessResponse) => {
                 callback(result.index)
-            }).catch((err: object) => {
+            }).catch((err: Object) => {
                 console.error(`[OHOSPlatformService] showConfirm error: ${err}`)
                 callback(-1)
             })
@@ -366,7 +340,7 @@ export class OHOSPlatformServiceImpl {
      */
     showActionSheet(title: string | null, message: string | null, options: string[], callback: (result: number) => void): void {
         try {
-            const buttons: { text: string, color: string }[] = []
+            const buttons: promptAction.Button[] = []
             const maxOptions = Math.min(options.length, 5)
             for (let i = 0; i < maxOptions; i++) {
                 buttons.push({ text: options[i], color: '#007DFF' })
@@ -376,9 +350,9 @@ export class OHOSPlatformServiceImpl {
                 title: title ?? undefined,
                 message: message ?? undefined,
                 buttons: buttons
-            }).then((result) => {
+            }).then((result: promptAction.ShowDialogSuccessResponse) => {
                 callback(result.index)
-            }).catch((err: object) => {
+            }).catch((err: Object) => {
                 console.error(`[OHOSPlatformService] showActionSheet error: ${err}`)
                 callback(-1)
             })
@@ -425,7 +399,7 @@ export class OHOSPlatformServiceImpl {
     checkPermissionSync(tokenID: number, permission: string): string {
         try {
             const atManager = abilityAccessCtrl.createAtManager()
-            const result = atManager.checkAccessTokenSync(tokenID, permission as abilityAccessCtrl.PermissionName)
+            const result = atManager.checkAccessTokenSync(tokenID, permission as Permissions)
             if (result === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
                 return "GRANTED"
             } else if (result === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
@@ -447,7 +421,7 @@ export class OHOSPlatformServiceImpl {
                 callback("DENIED")
                 return
             }
-            atManager.requestPermissionsFromUser(ctx, permissions as abilityAccessCtrl.PermissionName[], (err, result) => {
+            atManager.requestPermissionsFromUser(ctx, permissions as Permissions[], (err, result) => {
                 if (err) {
                     console.error(`[OHOSPlatformService] requestPermissions error: ${err}`)
                     callback("DENIED")
@@ -507,13 +481,21 @@ export class OHOSPlatformServiceImpl {
     }
 
     // ==================== 生物识别 ====================
+    // API 12: getAuthInstance 已废弃，改用 getUserAuthInstance(authParam, widgetParam)
+    // AuthInstance.auth() 改为 AuthInstance.start() + on('result', callback)
 
     isBiometricSupported(): boolean {
         try {
             const challenge = new Uint8Array(8)
-            const authType = userAuth.UserAuthType.FACE
-            const authTrustLevel = userAuth.AuthTrustLevel.ATL1
-            const authInstance = userAuth.getAuthInstance(challenge, authType, authTrustLevel)
+            const authParam: userAuth.AuthParam = {
+                challenge: challenge,
+                authType: [userAuth.UserAuthType.FACE],
+                authTrustLevel: userAuth.AuthTrustLevel.ATL1
+            }
+            const widgetParam: userAuth.WidgetParam = {
+                title: '生物识别'
+            }
+            const authInstance = userAuth.getUserAuthInstance(authParam, widgetParam)
             return authInstance !== null && authInstance !== undefined
         } catch (e) {
             console.error(`[OHOSPlatformService] isBiometricSupported failed: ${e}`)
@@ -527,9 +509,15 @@ export class OHOSPlatformServiceImpl {
             // 检查人脸
             try {
                 const challenge = new Uint8Array(8)
-                const authType = userAuth.UserAuthType.FACE
-                const authTrustLevel = userAuth.AuthTrustLevel.ATL1
-                const faceInstance = userAuth.getAuthInstance(challenge, authType, authTrustLevel)
+                const authParam: userAuth.AuthParam = {
+                    challenge: challenge,
+                    authType: [userAuth.UserAuthType.FACE],
+                    authTrustLevel: userAuth.AuthTrustLevel.ATL1
+                }
+                const widgetParam: userAuth.WidgetParam = {
+                    title: '生物识别'
+                }
+                const faceInstance = userAuth.getUserAuthInstance(authParam, widgetParam)
                 if (faceInstance !== null && faceInstance !== undefined) {
                     types.push("FACE")
                 }
@@ -539,9 +527,15 @@ export class OHOSPlatformServiceImpl {
             // 检查指纹
             try {
                 const challenge = new Uint8Array(8)
-                const authType = userAuth.UserAuthType.FINGERPRINT
-                const authTrustLevel = userAuth.AuthTrustLevel.ATL1
-                const fpInstance = userAuth.getAuthInstance(challenge, authType, authTrustLevel)
+                const authParam: userAuth.AuthParam = {
+                    challenge: challenge,
+                    authType: [userAuth.UserAuthType.FINGERPRINT],
+                    authTrustLevel: userAuth.AuthTrustLevel.ATL1
+                }
+                const widgetParam: userAuth.WidgetParam = {
+                    title: '生物识别'
+                }
+                const fpInstance = userAuth.getUserAuthInstance(authParam, widgetParam)
                 if (fpInstance !== null && fpInstance !== undefined) {
                     types.push("FINGERPRINT")
                 }
@@ -560,24 +554,34 @@ export class OHOSPlatformServiceImpl {
     authenticate(title: string, cancelText: string, callback: (result: string) => void): void {
         try {
             const challenge = new Uint8Array(8)
-            const authType = userAuth.UserAuthType.FACE
-            const authTrustLevel = userAuth.AuthTrustLevel.ATL1
-            const authInstance = userAuth.getAuthInstance(challenge, authType, authTrustLevel)
+            const authParam: userAuth.AuthParam = {
+                challenge: challenge,
+                authType: [userAuth.UserAuthType.FACE],
+                authTrustLevel: userAuth.AuthTrustLevel.ATL1
+            }
+            const widgetParam: userAuth.WidgetParam = {
+                title: title,
+                navigationButtonText: cancelText
+            }
+            const authInstance = userAuth.getUserAuthInstance(authParam, widgetParam)
             if (authInstance === null || authInstance === undefined) {
                 callback(JSON.stringify({ result: "NOT_SUPPORTED" }))
                 return
             }
 
-            authInstance.auth(challenge, authType, authTrustLevel, {
-                onResult: (result: userAuth.AuthResult) => {
-                    callback(JSON.stringify({ result: "SUCCESS", token: result.token }))
-                },
-                onAcquireInfo: (module: number, acquireInfo: number) => {
-                    if (acquireInfo === 1) {
+            // API 12: 使用 on('result', IAuthCallback) + start()
+            authInstance.on('result', {
+                onResult: (result: userAuth.UserAuthResult) => {
+                    if (result.result === userAuth.UserAuthResultCode.SUCCESS) {
+                        callback(JSON.stringify({ result: "SUCCESS", token: result.token }))
+                    } else if (result.result === userAuth.UserAuthResultCode.CANCELED) {
                         callback(JSON.stringify({ result: "CANCELED" }))
+                    } else {
+                        callback(JSON.stringify({ result: "FAILED" }))
                     }
-                },
+                }
             })
+            authInstance.start()
         } catch (e) {
             console.error(`[OHOSPlatformService] authenticate failed: ${e}`)
             callback(JSON.stringify({ result: "FAILED" }))
@@ -585,25 +589,29 @@ export class OHOSPlatformServiceImpl {
     }
 
     // ==================== 震动反馈 ====================
+    // API 12: EffectId 已废弃，改用 HapticFeedback 枚举
+    // VibrateEffect 改为 VibratePreset 接口 (type: 'preset', effectId: string)
+    // VibratorAttribute 改为 VibrateAttribute (usage: Usage)
+    // VibratorStopMode.STOP_MODE_IMMIDIATELY 改为 VIBRATOR_STOP_MODE_PRESET
 
     hapticImpact(style: number): void {
         try {
             // style: 0=HEAVY, 1=MEDIUM, 2=LIGHT
             const effectId = [
-                vibrator.EffectId.HAPTIC_HEAVY_CLICK,
-                vibrator.EffectId.HAPTIC_MEDIUM_CLICK,
-                vibrator.EffectId.HAPTIC_LIGHT_CLICK
-            ][style] ?? vibrator.EffectId.HAPTIC_MEDIUM_CLICK
-            const effect: vibrator.VibrateEffect = {
-                type: vibrator.EffectType.VIBRATE_PRESET,
+                vibrator.HapticFeedback.EFFECT_HARD,
+                vibrator.HapticFeedback.EFFECT_SOFT,
+                vibrator.HapticFeedback.EFFECT_SHARP
+            ][style] ?? vibrator.HapticFeedback.EFFECT_SOFT
+            const effect: vibrator.VibratePreset = {
+                type: 'preset',
                 effectId: effectId
             }
-            const attribute: vibrator.VibratorAttribute = {
-                usage: 'unknown'
+            const attribute: vibrator.VibrateAttribute = {
+                usage: 'touch'
             }
             vibrator.startVibration(effect, attribute).then(() => {
                 console.info('[OHOSPlatformService] hapticImpact started')
-            }).catch((err: object) => {
+            }).catch((err: Object) => {
                 console.error(`[OHOSPlatformService] hapticImpact failed: ${err}`)
             })
         } catch (e) {
@@ -615,20 +623,20 @@ export class OHOSPlatformServiceImpl {
         try {
             // type: 0=SUCCESS, 1=WARNING, 2=FAILURE
             const effectId = [
-                vibrator.EffectId.HAPTIC_HEAVY_CLICK,
-                vibrator.EffectId.HAPTIC_MEDIUM_CLICK,
-                vibrator.EffectId.HAPTIC_LIGHT_CLICK
-            ][type] ?? vibrator.EffectId.HAPTIC_MEDIUM_CLICK
-            const effect: vibrator.VibrateEffect = {
-                type: vibrator.EffectType.VIBRATE_PRESET,
+                vibrator.HapticFeedback.EFFECT_NOTICE_SUCCESS,
+                vibrator.HapticFeedback.EFFECT_NOTICE_WARNING,
+                vibrator.HapticFeedback.EFFECT_NOTICE_FAILURE
+            ][type] ?? vibrator.HapticFeedback.EFFECT_SOFT
+            const effect: vibrator.VibratePreset = {
+                type: 'preset',
                 effectId: effectId
             }
-            const attribute: vibrator.VibratorAttribute = {
-                usage: 'unknown'
+            const attribute: vibrator.VibrateAttribute = {
+                usage: 'notification'
             }
             vibrator.startVibration(effect, attribute).then(() => {
                 console.info('[OHOSPlatformService] hapticNotification started')
-            }).catch((err: object) => {
+            }).catch((err: Object) => {
                 console.error(`[OHOSPlatformService] hapticNotification failed: ${err}`)
             })
         } catch (e) {
@@ -638,16 +646,16 @@ export class OHOSPlatformServiceImpl {
 
     hapticSelectionChanged(): void {
         try {
-            const effect: vibrator.VibrateEffect = {
-                type: vibrator.EffectType.VIBRATE_PRESET,
-                effectId: vibrator.EffectId.HAPTIC_LIGHT_CLICK
+            const effect: vibrator.VibratePreset = {
+                type: 'preset',
+                effectId: vibrator.HapticFeedback.EFFECT_SHARP
             }
-            const attribute: vibrator.VibratorAttribute = {
-                usage: 'unknown'
+            const attribute: vibrator.VibrateAttribute = {
+                usage: 'touch'
             }
             vibrator.startVibration(effect, attribute).then(() => {
                 console.info('[OHOSPlatformService] hapticSelectionChanged started')
-            }).catch((err: object) => {
+            }).catch((err: Object) => {
                 console.error(`[OHOSPlatformService] hapticSelectionChanged failed: ${err}`)
             })
         } catch (e) {
@@ -657,9 +665,9 @@ export class OHOSPlatformServiceImpl {
 
     hapticStop(): void {
         try {
-            vibrator.stopVibration(vibrator.VibratorStopMode.STOP_MODE_IMMIDIATELY).then(() => {
+            vibrator.stopVibration(vibrator.VibratorStopMode.VIBRATOR_STOP_MODE_PRESET).then(() => {
                 console.info('[OHOSPlatformService] hapticStop success')
-            }).catch((err: object) => {
+            }).catch((err: Object) => {
                 console.error(`[OHOSPlatformService] hapticStop failed: ${err}`)
             })
         } catch (e) {
@@ -683,7 +691,7 @@ export class OHOSPlatformServiceImpl {
             }
             // 异步申请权限，返回占位值
             // TODO: 需改用 KNOI 异步回调机制获取实际授权结果
-            atManager.requestPermissionsFromUser(ctx, permissions as abilityAccessCtrl.PermissionName[], (err, result) => {
+            atManager.requestPermissionsFromUser(ctx, permissions as Permissions[], (err, result) => {
                 if (err) {
                     console.error(`[OHOSPlatformService] requestLocationPermission error: ${err}`)
                 } else {
@@ -701,8 +709,7 @@ export class OHOSPlatformServiceImpl {
         try {
             // accuracy: 0=COARSE, 1=BALANCED, 2=PRECISE
             const request: geoLocationManager.CurrentLocationRequest = {
-                priority: geoLocationManager.LocationRequestPriority.FIX_FIRST,
-                timeoutMs: 10000
+                priority: geoLocationManager.LocationRequestPriority.FIRST_FIX
             }
             // 根据精度调整优先级
             if (accuracy === 0) {
@@ -736,42 +743,25 @@ export class OHOSPlatformServiceImpl {
     }
 
     // ==================== 扫码 ====================
+    // API 12 中 @kit.ScanKit / scanBarcode 已移除，暂降级为空操作
+    // TODO: 后续可接入 @ohos.scan (系统扫描) 或其他扫码方案
 
     startScan(callback: (result: string) => void): void {
-        try {
-            scanBarcode.startScan().then((scanResult: scanBarcode.ScanResult) => {
-                if (scanResult) {
-                    const result = JSON.stringify({
-                        content: scanResult.value,
-                        format: scanResult.scanType
-                    })
-                    callback(result)
-                } else {
-                    callback("{}")
-                }
-            }).catch((err: object) => {
-                console.error(`[OHOSPlatformService] startScan error: ${err}`)
-                callback("{}")
-            })
-        } catch (e) {
-            console.error(`[OHOSPlatformService] startScan failed: ${e}`)
-            callback("{}")
-        }
+        console.warn("[OHOSPlatformService] startScan: not supported on OHOS API 12")
+        callback("{}")
     }
 
     stopScan(): void {
-        try {
-            scanBarcode.stopScan()
-        } catch (e) {
-            console.error(`[OHOSPlatformService] stopScan failed: ${e}`)
-        }
+        console.warn("[OHOSPlatformService] stopScan: not supported on OHOS API 12")
     }
 
     // ==================== 电池状态 ====================
+    // API 12: batteryInfo.level → batteryInfo.batterySOC
+    // batteryInfo.isCharging() → batteryInfo.chargingStatus === BatteryChargeState.ENABLE
 
     getBatteryLevel(): number {
         try {
-            return batteryInfo.level
+            return batteryInfo.batterySOC
         } catch (e) {
             console.error(`[OHOSPlatformService] getBatteryLevel failed: ${e}`)
             return -1
@@ -780,7 +770,8 @@ export class OHOSPlatformServiceImpl {
 
     isCharging(): boolean {
         try {
-            return batteryInfo.isCharging()
+            return batteryInfo.chargingStatus === batteryInfo.BatteryChargeState.ENABLE ||
+                   batteryInfo.chargingStatus === batteryInfo.BatteryChargeState.FULL
         } catch (e) {
             console.error(`[OHOSPlatformService] isCharging failed: ${e}`)
             return false
@@ -789,7 +780,7 @@ export class OHOSPlatformServiceImpl {
 
     isLowBattery(): boolean {
         try {
-            return batteryInfo.level <= 20
+            return batteryInfo.batterySOC <= 20
         } catch (e) {
             console.error(`[OHOSPlatformService] isLowBattery failed: ${e}`)
             return false
@@ -814,8 +805,8 @@ export class OHOSPlatformServiceImpl {
      * 注意：OHOS picker 返回的 URI 需要通过文件系统获取详细信息。
      * 当前实现仅返回 URI 和从 URI 中提取的文件名。
      */
-    private resolveFileInfos(uris: string[]): Array<Record<string, Object>> {
-        const result: Array<Record<string, Object>> = []
+    private resolveFileInfos(uris: string[]): Array<FileInfo> {
+        const result: Array<FileInfo> = []
         for (const uri of uris) {
             try {
                 // 从 URI 提取文件名（OHOS URI 格式：file://.../filename.ext）
@@ -825,7 +816,7 @@ export class OHOSPlatformServiceImpl {
                     path: uri,
                     name: name,
                     size: -1,
-                    mimeType: null
+                    mimeType: ''
                 })
             } catch (e) {
                 console.error(`[OHOSPlatformService] resolveFileInfo failed for ${uri}: ${e}`)

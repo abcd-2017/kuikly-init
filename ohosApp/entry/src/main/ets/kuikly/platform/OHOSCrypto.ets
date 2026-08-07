@@ -9,6 +9,11 @@ import util from '@ohos.util';
  * - MD5/SHA-256: cryptoFramework.createMd
  * - HMAC: cryptoFramework.createMac
  * - Base64: @ohos.util.base64
+ *
+ * API 12 变更：
+ * - generator.convertSync → convertKeySync
+ * - IvParamsSpec 需要 algName 属性
+ * - md.digestSync() 不再接受参数，改用 md.updateSync(input) + md.digestSync()
  */
 export class OHOSCrypto {
 
@@ -20,14 +25,17 @@ export class OHOSCrypto {
 
             // AES-256-CBC with PKCS5 padding
             const generator = cryptoFramework.createSymKeyGenerator('AES256');
-            const symKey = generator.convertSync({ data: keyBytes });
+            const symKey = generator.convertKeySync({ data: keyBytes });
 
             const cipher = cryptoFramework.createCipher('AES256|CBC|PKCS5');
             const encryptoData: cryptoFramework.DataBlob = { data: this.stringToBytes(plaintext) };
 
-            // Initialize cipher with IV (IvParamsSpec = { data: Uint8Array })
-            const ivParams: cryptoFramework.IvParamsSpec = { data: ivBytes };
-            cipher.initSync(cryptoFramework.CryptoMode.ENCRYPT_MODE, symKey, ivParams);
+            // API 12: IvParamsSpec 需要 algName 属性
+            const ivParamsSpec: cryptoFramework.IvParamsSpec = {
+                algName: 'AES256',
+                iv: { data: ivBytes }
+            };
+            cipher.initSync(cryptoFramework.CryptoMode.ENCRYPT_MODE, symKey, ivParamsSpec);
 
             const encrypted = cipher.doFinalSync(encryptoData);
             return this.bytesToBase64(encrypted.data);
@@ -44,13 +52,16 @@ export class OHOSCrypto {
             const ivBytes = this.deriveIv(key, iv);
 
             const generator = cryptoFramework.createSymKeyGenerator('AES256');
-            const symKey = generator.convertSync({ data: keyBytes });
+            const symKey = generator.convertKeySync({ data: keyBytes });
 
             const cipher = cryptoFramework.createCipher('AES256|CBC|PKCS5');
             const decryptoData: cryptoFramework.DataBlob = { data: this.base64ToBytes(ciphertext) };
 
-            const ivParams: cryptoFramework.IvParamsSpec = { data: ivBytes };
-            cipher.initSync(cryptoFramework.CryptoMode.DECRYPT_MODE, symKey, ivParams);
+            const ivParamsSpec: cryptoFramework.IvParamsSpec = {
+                algName: 'AES256',
+                iv: { data: ivBytes }
+            };
+            cipher.initSync(cryptoFramework.CryptoMode.DECRYPT_MODE, symKey, ivParamsSpec);
 
             const decrypted = cipher.doFinalSync(decryptoData);
             return this.bytesToString(decrypted.data);
@@ -65,7 +76,9 @@ export class OHOSCrypto {
         try {
             const md = cryptoFramework.createMd('MD5');
             const inputBlob: cryptoFramework.DataBlob = { data: this.stringToBytes(input) };
-            const digest = md.digestSync(inputBlob);
+            // API 12: digestSync() 不再接受参数，改用 updateSync + digestSync
+            md.updateSync(inputBlob);
+            const digest = md.digestSync();
             return this.bytesToHex(digest.data);
         } catch (e) {
             console.error(`[OHOSCrypto] md5 failed: ${e}`);
@@ -78,7 +91,8 @@ export class OHOSCrypto {
         try {
             const md = cryptoFramework.createMd('SHA256');
             const inputBlob: cryptoFramework.DataBlob = { data: this.stringToBytes(input) };
-            const digest = md.digestSync(inputBlob);
+            md.updateSync(inputBlob);
+            const digest = md.digestSync();
             return this.bytesToHex(digest.data);
         } catch (e) {
             console.error(`[OHOSCrypto] sha256 failed: ${e}`);
@@ -91,13 +105,14 @@ export class OHOSCrypto {
         try {
             const keyBytes = this.stringToBytes(key);
             const generator = cryptoFramework.createSymKeyGenerator('HMAC');
-            const symKey = generator.convertSync({ data: keyBytes });
+            const symKey = generator.convertKeySync({ data: keyBytes });
 
             const mac = cryptoFramework.createMac('SHA256');
             mac.initSync(symKey);
 
             const inputBlob: cryptoFramework.DataBlob = { data: this.stringToBytes(data) };
-            const result = mac.doFinalSync(inputBlob);
+            mac.updateSync(inputBlob);
+            const result = mac.doFinalSync();
             return this.bytesToBase64(result.data);
         } catch (e) {
             console.error(`[OHOSCrypto] hmacSha256 failed: ${e}`);
@@ -141,7 +156,8 @@ export class OHOSCrypto {
         // Use SHA-256 to derive a 32-byte key
         const md = cryptoFramework.createMd('SHA256');
         const inputBlob: cryptoFramework.DataBlob = { data: keyBytes };
-        const digest = md.digestSync(inputBlob);
+        md.updateSync(inputBlob);
+        const digest = md.digestSync();
         return digest.data;
     }
 
@@ -160,7 +176,8 @@ export class OHOSCrypto {
         // Derive IV from key MD5
         const md = cryptoFramework.createMd('MD5');
         const inputBlob: cryptoFramework.DataBlob = { data: this.stringToBytes(key) };
-        const digest = md.digestSync(inputBlob);
+        md.updateSync(inputBlob);
+        const digest = md.digestSync();
         return digest.data;
     }
 

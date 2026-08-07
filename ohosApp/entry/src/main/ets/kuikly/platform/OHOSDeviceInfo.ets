@@ -50,7 +50,11 @@ export class OHOSDeviceInfo {
   isDaylightSaving(): boolean {
     try {
       const tz = i18n.getTimeZone();
-      return tz.isDaylightTime(new Date());
+      // API 12 中 TimeZone 没有 isDaylightTime 方法
+      // 通过比较 rawOffset 和当前实际偏移来判断是否处于夏令时
+      const rawOffset = tz.getRawOffset();
+      const currentOffset = tz.getOffset(Date.now());
+      return currentOffset !== rawOffset;
     } catch (e) {
       console.error(`[OHOSDeviceInfo] isDaylightSaving failed: ${e}`);
       return false;
@@ -61,8 +65,8 @@ export class OHOSDeviceInfo {
   getTimezoneAbbreviation(): string {
     try {
       const tz = i18n.getTimeZone();
-      // 参数：locale, 是否夏令时, 是否长格式
-      return tz.getDisplayName(false, false) || 'CST';
+      // API 12: getDisplayName(locale?: string, isDST?: boolean)
+      return tz.getDisplayName(undefined, false) || 'CST';
     } catch (e) {
       console.error(`[OHOSDeviceInfo] getTimezoneAbbreviation failed: ${e}`);
       return 'CST';

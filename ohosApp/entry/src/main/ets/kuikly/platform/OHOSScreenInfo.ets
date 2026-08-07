@@ -43,7 +43,7 @@ export class OHOSScreenInfo {
   getScreenDensity(): number {
     try {
       const d = display.getDefaultDisplaySync();
-      return d.density;
+      return d.densityPixels;
     } catch (e) {
       console.error(`[OHOSScreenInfo] getScreenDensity failed: ${e}`);
       return 1.0;

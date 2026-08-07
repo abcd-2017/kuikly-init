@@ -11,7 +11,6 @@ import { setup, init, registerServiceProvider } from '@kuiklybase/knoi';
 import BuildProfile from '@kuiklybase/knoi/BuildProfile';
 import { OHOSPlatformServiceImpl } from '../kuikly/platform/OHOSPlatformServiceImpl';
 import { OHOSContextProvider } from '../kuikly/platform/OHOSContextProvider';
-import BuildProfile from 'entry/BuildProfile';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
