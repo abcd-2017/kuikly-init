@@ -47,8 +47,14 @@ kotlin {
             // 注意：ld.lld 不使用 -Wl, 前缀，直接传递参数
             // 1. --export-dynamic: 将所有符号导出到动态符号表，使其可被 dlsym 查找
             // 2. --undefined: 强制链接器解析该符号，防止被 DCE 裁剪
+            // 3. 直接链接 bridge.c 编译出的对象文件，确保符号在动态符号表中
             linkerOpts += "--export-dynamic"
             linkerOpts += "--undefined=com_tencent_tmm_knoi_initBridge"
+            // 添加 C 源文件编译出的对象文件，确保符号导出
+            val bridgeSrc = "${project.projectDir}/src/ohosArm64Main/cinterop/bridge.c"
+            val bridgeObj = "${project.buildDir}/cinterop/bridge.o"
+            // 编译 C 源文件并链接
+            linkerOpts += bridgeObj
         }
     }
 
@@ -159,3 +165,29 @@ fun getLinkerArgs(): List<String> {
 // OHOS 构建任务已统一注册在根 build.gradle.kts 的 "harmony" 分组下
 // (:harmonySyncDebug / :harmonySyncRelease / :harmonyClean)
 // 此处不再重复注册
+
+// 编译 C 桥接源文件，确保 com_tencent_tmm_knoi_initBridge 符号导出到动态符号表
+val compileBridgeC by tasks.registering(Exec::class) {
+    val bridgeSrc = "${project.projectDir}/src/ohosArm64Main/cinterop/bridge.c"
+    val bridgeObj = "${project.buildDir}/cinterop/bridge.o"
+    outputs.file(bridgeObj)
+    doFirst {
+        file("${project.buildDir}/cinterop").mkdirs()
+    }
+    // 使用 Kotlin/Native 的 clang 工具链编译，指定 aarch64-linux-ohos 目标
+    val konanClang = System.getProperty("user.home") +
+        "/.konan/dependencies/llvm-12.0.1-windows-x86_64-20250713/bin/clang.exe"
+    commandLine(
+        konanClang,
+        "--target=aarch64-linux-ohos",
+        "--sysroot=E:/IDE/DevEco Studio/sdk/default/openharmony/native/sysroot",
+        "-c",
+        "-o", bridgeObj,
+        bridgeSrc
+    )
+}
+
+// 确保 Kotlin/Native 编译前 C 文件已编译
+tasks.named("compileKotlinOhosArm64") {
+    dependsOn(compileBridgeC)
+}
