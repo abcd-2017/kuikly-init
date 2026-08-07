@@ -17,8 +17,8 @@ interface IOHOSPlatformService {
     /** 获取文件存储目录路径 */
     fun getFilesDirPath(): String
 
-    /** 读取 assets/rawfile 资源 */
-    fun readAsset(path: String): ArrayBuffer
+    /** 读取 assets/rawfile 资源（Base64 编码） */
+    fun readAssetBase64(path: String): String
 
     /** 设备唯一标识 */
     fun getDeviceId(): String
@@ -40,6 +40,12 @@ interface IOHOSPlatformService {
 
     /** 删除文件 */
     fun fileDelete(path: String): Boolean
+
+    /** 读取文件内容（Base64 编码） */
+    fun readFileBase64(path: String): String
+
+    /** 写入文件内容（Base64 编码） */
+    fun writeFileBase64(path: String, base64: String)
 
     /** 当前是否联网 */
     fun isNetworkConnected(): Boolean
@@ -187,11 +193,10 @@ interface IOHOSPlatformService {
     /**
      * 异步申请权限
      *
-     * @param context Ability 上下文（null 表示不使用）
      * @param permissions 权限列表
      * @param callback 回调返回 "GRANTED" / "DENIED"
      */
-    fun requestPermissions(context: Any?, permissions: List<String>, callback: (String) -> Unit)
+    fun requestPermissions(permissions: List<String>, callback: (String) -> Unit)
 
     // ==================== 屏幕信息 ====================
 
@@ -205,7 +210,7 @@ interface IOHOSPlatformService {
     fun getScreenDensityDpi(): Int
 
     /** 屏幕密度比例 */
-    fun getScreenDensity(): Float
+    fun getScreenDensity(): Double
 
     /** 屏幕旋转方向（0/90/180/270） */
     fun getScreenRotation(): Int
@@ -309,4 +314,28 @@ interface IOHOSPlatformService {
 
     /** 打开当前应用的设置详情页 */
     fun openAppSettings()
+
+    // ==================== 相机 ====================
+
+    /**
+     * 拍照
+     * @param callback 回调返回 JSON 字符串：{"path":"...","name":"...","size":123,"mimeType":"image/jpeg"}
+     */
+    fun capturePhoto(callback: (String) -> Unit)
+
+    /**
+     * 录视频
+     * @param callback 回调返回 JSON 字符串
+     */
+    fun recordVideo(callback: (String) -> Unit)
+
+    // ==================== 媒体选择器 ====================
+
+    /**
+     * 选择媒体文件
+     * @param mediaType 0=图片, 1=视频, 2=全部
+     * @param allowMultiple 是否允许多选
+     * @param callback 回调返回 JSON 字符串：{"files":[...]}
+     */
+    fun pickMedia(mediaType: Int, allowMultiple: Boolean, callback: (String) -> Unit)
 }

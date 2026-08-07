@@ -14,7 +14,7 @@ actual class Camera {
 
     actual suspend fun capturePhoto(callback: (CapturedMedia?) -> Unit) {
         try {
-            service?.capturePhoto { json ->
+            service?.capturePhoto { json: String ->
                 callback(parseCapturedMedia(json))
             }
         } catch (e: Exception) {
@@ -24,7 +24,7 @@ actual class Camera {
 
     actual suspend fun recordVideo(callback: (CapturedMedia?) -> Unit) {
         try {
-            service?.recordVideo { json ->
+            service?.recordVideo { json: String ->
                 callback(parseCapturedMedia(json))
             }
         } catch (e: Exception) {

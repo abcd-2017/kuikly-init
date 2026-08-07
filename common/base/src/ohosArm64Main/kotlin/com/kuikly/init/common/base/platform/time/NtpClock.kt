@@ -16,8 +16,8 @@ actual class NtpClock {
 
     actual suspend fun getServerTime(ntpServer: String): Long? = mutex.withLock {
         try {
-            val serverTime = service?.getServerTime(ntpServer) ?: return null
-            if (serverTime > 0) {
+            val serverTime = service?.getServerTime(ntpServer)
+            if (serverTime != null && serverTime > 0) {
                 val offset = serverTime - kotlin.system.getTimeMillis()
                 cachedOffset = offset
                 serverTime

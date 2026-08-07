@@ -27,7 +27,7 @@ actual class Permission {
 
     actual fun requestPermission(permission: String, callback: (String) -> Unit) {
         try {
-            service?.requestPermissions(null, listOf(permission)) { result ->
+            service?.requestPermissions(listOf(permission)) { result ->
                 callback(result)
             }
         } catch (e: Exception) {

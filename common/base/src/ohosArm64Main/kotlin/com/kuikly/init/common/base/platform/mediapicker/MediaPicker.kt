@@ -23,7 +23,7 @@ actual class MediaPicker {
                 MediaMediaType.VIDEO -> 1
                 MediaMediaType.ALL -> 2
             }
-            service?.pickMedia(mediaTypeValue, allowMultiple) { json ->
+            service?.pickMedia(mediaTypeValue, allowMultiple) { json: String ->
                 callback(parseResult(json))
             }
         } catch (e: Exception) {

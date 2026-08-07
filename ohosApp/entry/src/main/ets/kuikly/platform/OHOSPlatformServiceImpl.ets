@@ -438,10 +438,10 @@ export class OHOSPlatformServiceImpl {
         }
     }
 
-    requestPermissions(context: Object | null, permissions: string[], callback: (result: string) => void): void {
+    requestPermissions(permissions: string[], callback: (result: string) => void): void {
         try {
             const atManager = abilityAccessCtrl.createAtManager()
-            const ctx = context as common.UIAbilityContext | null
+            const ctx = this.contextProvider?.getContext() ?? null
             if (ctx === null) {
                 console.warn(`[OHOSPlatformService] requestPermissions: context is null`)
                 callback("DENIED")

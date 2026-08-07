@@ -6,7 +6,7 @@ plugins {
     id("maven-publish")
     id("org.jetbrains.compose")
     kotlin("plugin.compose")
-    id("com.tencent.kuiklybase.knoi.plugin")
+    id("com.tencent.kuiklybase.knoi.plugin") version("0.0.4")
 }
 
 val KEY_PAGE_NAME = "pageName"

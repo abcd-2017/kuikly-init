@@ -2,9 +2,6 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("com.google.devtools.ksp")
-    id("com.tencent.kuikly-open.kuikly")
-    id("org.jetbrains.compose")
-    kotlin("plugin.compose")
 }
 
 kotlin {
@@ -46,14 +43,5 @@ android {
     compileSdk = 34
     defaultConfig {
         minSdk = 21
-    }
-}
-
-dependencies {
-    compileOnly("com.tencent.kuikly-open:core-ksp:${Version.getKuiklyVersion()}") {
-        add("kspAndroid", this)
-        add("kspIosArm64", this)
-        add("kspIosX64", this)
-        add("kspIosSimulatorArm64", this)
     }
 }

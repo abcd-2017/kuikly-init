@@ -14,8 +14,8 @@ actual fun provideScreenInfo(): ScreenInfo {
             widthPx = service?.getScreenWidth() ?: 0,
             heightPx = service?.getScreenHeight() ?: 0,
             densityDpi = service?.getScreenDensityDpi() ?: 160,
-            density = service?.getScreenDensity() ?: 1.0f,
-            scaledDensity = service?.getScreenDensity() ?: 1.0f,
+            density = (service?.getScreenDensity() ?: 1.0).toFloat(),
+            scaledDensity = (service?.getScreenDensity() ?: 1.0).toFloat(),
             rotation = service?.getScreenRotation() ?: 0
         )
     } catch (e: Exception) {
