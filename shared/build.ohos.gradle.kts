@@ -41,6 +41,14 @@ kotlin {
 
     ohosArm64 {
         binaries.sharedLib {
+            // 强制导出 KNOI 初始化符号，防止 DCE 消除
+            // KNOI 通过 dlsym 动态查找 com_tencent_tmm_knoi_initBridge
+            // 该符号必须存在于 libshared.so 的动态符号表中
+            // 注意：ld.lld 不使用 -Wl, 前缀，直接传递参数
+            // 1. --export-dynamic: 将所有符号导出到动态符号表，使其可被 dlsym 查找
+            // 2. --undefined: 强制链接器解析该符号，防止被 DCE 裁剪
+            linkerOpts += "--export-dynamic"
+            linkerOpts += "--undefined=com_tencent_tmm_knoi_initBridge"
         }
     }
 
