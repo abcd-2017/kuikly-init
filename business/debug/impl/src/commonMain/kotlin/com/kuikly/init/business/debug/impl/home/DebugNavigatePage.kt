@@ -1,4 +1,4 @@
-package com.kuikly.init.business.debug.home
+package com.kuikly.init.business.debug.impl.home
 
 import com.tencent.kuikly.compose.foundation.background
 import com.tencent.kuikly.compose.foundation.clickable
@@ -13,10 +13,10 @@ import com.tencent.kuikly.compose.foundation.layout.padding
 import com.tencent.kuikly.compose.foundation.shape.RoundedCornerShape
 import com.tencent.kuikly.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.tencent.kuikly.compose.runtime.getValue
-import com.tencent.kuikly.compose.runtime.mutableStateOf
-import com.tencent.kuikly.compose.runtime.remember
-import com.tencent.kuikly.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.tencent.kuikly.compose.ui.Alignment
 import com.tencent.kuikly.compose.ui.Modifier
 import com.tencent.kuikly.compose.ui.graphics.Color
@@ -25,14 +25,30 @@ import com.tencent.kuikly.compose.ui.text.font.FontWeight
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.base.BasePager
-import com.kuikly.init.business.debug.ui.widgets.DebugResultArea
-import com.kuikly.init.business.debug.ui.widgets.DebugTestButton
-import com.kuikly.init.business.debug.ui.widgets.DebugTextField
-import com.kuikly.init.business.debug.ui.widgets.DebugVSpacer
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugResultArea
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugTestButton
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
+
+private const val PAGE_TITLE = "🧭 页面跳转测试"
+private const val SECTION_OPEN_PAGE = "1. 跳转到指定 Page"
+private const val SECTION_OPEN_WITH_PARAMS = "2. 带参数跳转"
+private const val SECTION_CLOSE_PAGE = "3. 关闭当前页"
+private const val SECTION_MULTI_LEVEL = "4. 多级跳转测试"
+private const val SECTION_LOG = "5. 跳转结果日志"
+private const val PLACEHOLDER_PAGE_NAME = "输入 pageName"
+private const val PLACEHOLDER_PARAM_PAGE = "pageName"
+private const val PLACEHOLDER_KEY = "key"
+private const val PLACEHOLDER_VALUE = "value"
+private const val BTN_OPEN = "跳转"
+private const val BTN_OPEN_WITH_PARAMS = "带参数跳转"
+private const val BTN_CLOSE_PAGE = "关闭当前页"
+private const val BTN_GOTO_DEBUG_TEXT = "跳转到 debug_text"
+private const val LABEL_NO_LOG = "（暂无日志）"
 
 @Page("debug_navigate")
 internal class DebugNavigatePage : BasePager() {
@@ -114,7 +130,7 @@ private fun DebugNavigateContent() {
 @Composable
 private fun NavigateHeader() {
     Text(
-        text = "🧭 页面跳转测试",
+        text = PAGE_TITLE,
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
         color = Color(0xFF333333)
@@ -128,17 +144,17 @@ private fun NavigateOpenPageSection(
     onOpenPage: () -> Unit
 ) {
     Text(
-        "1. 跳转到指定 Page",
+        SECTION_OPEN_PAGE,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
     )
     DebugTextField(
         value = pageName,
-        placeholder = "输入 pageName",
+        placeholder = PLACEHOLDER_PAGE_NAME,
         onValueChange = onPageNameChange
     )
-    DebugTestButton(text = "跳转", onClick = onOpenPage)
+    DebugTestButton(text = BTN_OPEN, onClick = onOpenPage)
 }
 
 @Composable
@@ -152,53 +168,53 @@ private fun NavigateOpenWithParamsSection(
     onOpenWithParams: () -> Unit
 ) {
     Text(
-        "2. 带参数跳转",
+        SECTION_OPEN_WITH_PARAMS,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
     )
     DebugTextField(
         value = pageName,
-        placeholder = "pageName",
+        placeholder = PLACEHOLDER_PARAM_PAGE,
         onValueChange = onPageNameChange
     )
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         DebugTextField(
             value = paramKey,
-            placeholder = "key",
+            placeholder = PLACEHOLDER_KEY,
             onValueChange = onParamKeyChange,
             modifier = Modifier.weight(1f)
         )
         DebugTextField(
             value = paramValue,
-            placeholder = "value",
+            placeholder = PLACEHOLDER_VALUE,
             onValueChange = onParamValueChange,
             modifier = Modifier.weight(1f)
         )
     }
-    DebugTestButton(text = "带参数跳转", onClick = onOpenWithParams)
+    DebugTestButton(text = BTN_OPEN_WITH_PARAMS, onClick = onOpenWithParams)
 }
 
 @Composable
 private fun NavigateClosePageSection(onClose: () -> Unit) {
     Text(
-        "3. 关闭当前页",
+        SECTION_CLOSE_PAGE,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
     )
-    NavigateActionButton(text = "关闭当前页", color = Color(0xFFFF6B6B), onClick = onClose)
+    NavigateActionButton(text = BTN_CLOSE_PAGE, color = Color(0xFFFF6B6B), onClick = onClose)
 }
 
 @Composable
 private fun NavigateMultiLevelSection(onNavigate: () -> Unit) {
     Text(
-        "4. 多级跳转测试",
+        SECTION_MULTI_LEVEL,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
     )
-    NavigateActionButton(text = "跳转到 debug_text", color = Color(0xFFA65CF9), onClick = onNavigate)
+    NavigateActionButton(text = BTN_GOTO_DEBUG_TEXT, color = Color(0xFFA65CF9), onClick = onNavigate)
 }
 
 @Composable
@@ -218,7 +234,7 @@ private fun NavigateActionButton(text: String, color: Color, onClick: () -> Unit
 @Composable
 private fun NavigateLogSection(logText: String) {
     Text(
-        "5. 跳转结果日志",
+        SECTION_LOG,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
@@ -231,7 +247,7 @@ private fun NavigateLogSection(logText: String) {
             .padding(12.dp)
     ) {
         Text(
-            text = if (logText.isEmpty()) "（暂无日志）" else logText,
+            text = if (logText.isEmpty()) LABEL_NO_LOG else logText,
             style = TextStyle(
                 fontSize = 12.sp,
                 color = if (logText.isEmpty()) Color(0xFFCCCCCC) else Color(0xFF333333)

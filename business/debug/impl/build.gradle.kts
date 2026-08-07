@@ -2,7 +2,12 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("com.google.devtools.ksp")
+    id("com.tencent.kuikly-open.kuikly")
+    id("org.jetbrains.compose")
+    kotlin("plugin.compose")
 }
+
+val KEY_PAGE_NAME = "pageName"
 
 kotlin {
     androidTarget {
@@ -38,10 +43,27 @@ kotlin {
     }
 }
 
+ksp {
+    arg(KEY_PAGE_NAME, getPageName())
+}
+
+dependencies {
+    compileOnly("com.tencent.kuikly-open:core-ksp:${Version.getKuiklyVersion()}") {
+        add("kspAndroid", this)
+        add("kspIosArm64", this)
+        add("kspIosX64", this)
+        add("kspIosSimulatorArm64", this)
+    }
+}
+
 android {
     namespace = "com.kuikly.init.business.debug.impl"
     compileSdk = 34
     defaultConfig {
         minSdk = 21
     }
+}
+
+fun getPageName(): String {
+    return (project.properties[KEY_PAGE_NAME] as? String) ?: ""
 }

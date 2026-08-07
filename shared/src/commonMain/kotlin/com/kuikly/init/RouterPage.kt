@@ -36,7 +36,9 @@ import com.tencent.kuikly.core.pager.Pager
 import com.tencent.kuikly.core.utils.urlParams
 import com.kuikly.init.base.BasePager
 import com.kuikly.init.base.Utils
+import com.kuikly.init.common.base.platform.share.ShareContent
 import com.kuikly.init.common.base.platform.toast.Toast
+import com.kuikly.init.common.base.platform.toast.provideToast
 import com.tencent.kuikly.compose.foundation.layout.fillMaxWidth
 
 @Page("router", supportInLocal = true)
@@ -114,7 +116,7 @@ internal fun ComposeRouteImpl() {
                 ).padding(12.dp),
                 onClick = {
                     if (textFieldValue.isEmpty()) {
-                        Toast().show("请输入PageName")
+                        provideToast().show("请输入PageName")
                     } else {
                         localPager.acquireModule<SharedPreferencesModule>(
                             SharedPreferencesModule.MODULE_NAME
@@ -137,6 +139,12 @@ internal fun ComposeRouteImpl() {
             jumpPage(localPager, "image_adapter")
         }) {
             Text("ImageAdapter基准测试")
+        }
+
+        Button({
+            jumpPage(localPager, "debug_home")
+        }) {
+            Text("Debug 测试中心")
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.kuikly.init.business.debug.render
+package com.kuikly.init.business.debug.impl.render
 
 import com.tencent.kuikly.compose.foundation.background
 import com.tencent.kuikly.compose.foundation.clickable
@@ -28,11 +28,40 @@ import com.tencent.kuikly.compose.ui.text.style.TextOverflow
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.base.BasePager
-import com.kuikly.init.business.debug.ui.widgets.DebugSectionTitle
-import com.kuikly.init.business.debug.ui.widgets.DebugVSpacer
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
+
+private const val PAGE_TITLE = "📝 文本渲染测试"
+private const val SECTION_FONT_SIZE = "字体大小"
+private const val SECTION_COLOR = "颜色"
+private const val SECTION_ALIGN = "对齐"
+private const val SECTION_FONT_WEIGHT = "字重"
+private const val SECTION_MULTI_LINE = "多行截断"
+private const val SECTION_EMOJI = "Emoji"
+private const val SECTION_LINE_HEIGHT = "行高"
+private const val SECTION_TEXT_BACKGROUND = "文本背景"
+private const val SAMPLE_TEXT = "Kuikly 跨端脚手架"
+private const val TEXT_ALIGN_LEFT = "左对齐文本 — Kuikly 跨端脚手架"
+private const val TEXT_ALIGN_CENTER = "居中文本 — Kuikly 跨端脚手架"
+private const val TEXT_ALIGN_RIGHT = "右对齐文本 — Kuikly 跨端脚手架"
+private const val TEXT_WEIGHT_NORMAL = "Normal 字重"
+private const val TEXT_WEIGHT_BOLD = "Bold 字重"
+private const val TEXT_WEIGHT_LIGHT = "Light 字重"
+private const val TEXT_LONG_SAMPLE = "这是一段很长的文本，用于测试 maxLines 和 overflow 的截断效果。" +
+        "Kuikly 是腾讯推出的跨端开发框架，支持 Android、iOS、鸿蒙三端。" +
+        "它基于 Kotlin Multiplatform 技术，提供了统一的 DSL 和组件能力。"
+private const val TEXT_EMOJI = "🎉🔥💯👍🚀❤️✨"
+private const val TEXT_LINE_HEIGHT_SAMPLE = "这是一段用于测试不同行高效果的文本。行高影响段落的可读性和视觉密度。"
+private const val LABEL_LINE_HEIGHT_1_2X = "1.2x"
+private const val LABEL_LINE_HEIGHT_1_5X = "1.5x"
+private const val LABEL_LINE_HEIGHT_2_0X = "2.0x"
+private const val PREFIX_LINE_HEIGHT = "↑ lineHeight "
+private const val TEXT_BG_SAMPLE_1 = "带背景色的文字"
+private const val TEXT_BG_SAMPLE_2 = "另一种背景色"
+private const val BTN_CLOSE = "关闭页面"
 
 @Page("debug_text")
 internal class DebugTextPage : BasePager() {
@@ -40,12 +69,11 @@ internal class DebugTextPage : BasePager() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
-        val ctx = this
         setContent {
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("📝 文本渲染测试") },
+                        title = { Text(PAGE_TITLE) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -57,7 +85,7 @@ internal class DebugTextPage : BasePager() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
-                    onClose = { ctx.acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
+                    onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
             }
         }
@@ -86,47 +114,46 @@ private fun DebugTextContent(
 
 @Composable
 private fun FontSizeSection() {
-    DebugSectionTitle("字体大小")
-    val sampleText = "Kuikly 跨端脚手架"
+    DebugSectionTitle(SECTION_FONT_SIZE)
     listOf(12.sp, 14.sp, 16.sp, 20.sp, 24.sp).forEach { size ->
-        Text(text = sampleText, fontSize = size)
+        Text(text = SAMPLE_TEXT, fontSize = size)
     }
 }
 
 @Composable
 private fun ColorSection() {
-    DebugSectionTitle("颜色")
+    DebugSectionTitle(SECTION_COLOR)
     val colors = listOf(
-        Color.Red to "红色",
-        Color.Green to "绿色",
-        Color.Blue to "蓝色",
-        Color.Gray to "灰色",
-        Color.Black to "黑色"
+        Color.Red,
+        Color.Green,
+        Color.Blue,
+        Color.Gray,
+        Color.Black
     )
-    colors.forEach { (color, _) ->
-        Text(text = "Kuikly 跨端脚手架", color = color, fontSize = 16.sp)
+    colors.forEach { color ->
+        Text(text = SAMPLE_TEXT, color = color, fontSize = 16.sp)
     }
 }
 
 @Composable
 private fun AlignSection() {
-    DebugSectionTitle("对齐")
+    DebugSectionTitle(SECTION_ALIGN)
     Text(
-        text = "左对齐文本 — Kuikly 跨端脚手架",
+        text = TEXT_ALIGN_LEFT,
         textAlign = TextAlign.Start,
         modifier = Modifier.fillMaxWidth(),
         fontSize = 16.sp
     )
     Spacer(modifier = Modifier.height(4.dp))
     Text(
-        text = "居中文本 — Kuikly 跨端脚手架",
+        text = TEXT_ALIGN_CENTER,
         textAlign = TextAlign.Center,
         modifier = Modifier.fillMaxWidth(),
         fontSize = 16.sp
     )
     Spacer(modifier = Modifier.height(4.dp))
     Text(
-        text = "右对齐文本 — Kuikly 跨端脚手架",
+        text = TEXT_ALIGN_RIGHT,
         textAlign = TextAlign.End,
         modifier = Modifier.fillMaxWidth(),
         fontSize = 16.sp
@@ -135,19 +162,17 @@ private fun AlignSection() {
 
 @Composable
 private fun FontWeightSection() {
-    DebugSectionTitle("字重")
-    Text(text = "Normal 字重", fontWeight = FontWeight.Normal, fontSize = 16.sp)
-    Text(text = "Bold 字重", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-    Text(text = "Light 字重", fontWeight = FontWeight.Light, fontSize = 16.sp)
+    DebugSectionTitle(SECTION_FONT_WEIGHT)
+    Text(text = TEXT_WEIGHT_NORMAL, fontWeight = FontWeight.Normal, fontSize = 16.sp)
+    Text(text = TEXT_WEIGHT_BOLD, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+    Text(text = TEXT_WEIGHT_LIGHT, fontWeight = FontWeight.Light, fontSize = 16.sp)
 }
 
 @Composable
 private fun MultiLineTruncateSection() {
-    DebugSectionTitle("多行截断")
+    DebugSectionTitle(SECTION_MULTI_LINE)
     Text(
-        text = "这是一段很长的文本，用于测试 maxLines 和 overflow 的截断效果。" +
-                "Kuikly 是腾讯推出的跨端开发框架，支持 Android、iOS、鸿蒙三端。" +
-                "它基于 Kotlin Multiplatform 技术，提供了统一的 DSL 和组件能力。",
+        text = TEXT_LONG_SAMPLE,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,
         fontSize = 16.sp
@@ -156,19 +181,18 @@ private fun MultiLineTruncateSection() {
 
 @Composable
 private fun EmojiSection() {
-    DebugSectionTitle("Emoji")
-    Text(text = "🎉🔥💯👍🚀❤️✨", fontSize = 24.sp)
+    DebugSectionTitle(SECTION_EMOJI)
+    Text(text = TEXT_EMOJI, fontSize = 24.sp)
 }
 
 @Composable
 private fun LineHeightSection() {
-    DebugSectionTitle("行高")
-    val sampleText = "这是一段用于测试不同行高效果的文本。行高影响段落的可读性和视觉密度。"
-    val lineHeights = listOf(1.2f to "1.2x", 1.5f to "1.5x", 2.0f to "2.0x")
+    DebugSectionTitle(SECTION_LINE_HEIGHT)
+    val lineHeights = listOf(1.2f to LABEL_LINE_HEIGHT_1_2X, 1.5f to LABEL_LINE_HEIGHT_1_5X, 2.0f to LABEL_LINE_HEIGHT_2_0X)
     val baseSize = 16.sp
     lineHeights.forEach { (multiplier, label) ->
         Text(
-            text = sampleText,
+            text = TEXT_LINE_HEIGHT_SAMPLE,
             fontSize = baseSize,
             lineHeight = baseSize * multiplier,
             modifier = Modifier
@@ -177,7 +201,7 @@ private fun LineHeightSection() {
                 .padding(4.dp)
         )
         Text(
-            text = "↑ lineHeight $label",
+            text = "$PREFIX_LINE_HEIGHT$label",
             fontSize = 10.sp,
             color = Color.Gray
         )
@@ -187,9 +211,9 @@ private fun LineHeightSection() {
 
 @Composable
 private fun TextBackgroundSection() {
-    DebugSectionTitle("文本背景")
+    DebugSectionTitle(SECTION_TEXT_BACKGROUND)
     Text(
-        text = "带背景色的文字",
+        text = TEXT_BG_SAMPLE_1,
         fontSize = 16.sp,
         modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
@@ -198,7 +222,7 @@ private fun TextBackgroundSection() {
     )
     Spacer(modifier = Modifier.height(4.dp))
     Text(
-        text = "另一种背景色",
+        text = TEXT_BG_SAMPLE_2,
         fontSize = 16.sp,
         color = Color.White,
         modifier = Modifier
@@ -221,7 +245,7 @@ private fun CloseButtonSection(onClose: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "关闭页面",
+            text = BTN_CLOSE,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 16.sp
         )

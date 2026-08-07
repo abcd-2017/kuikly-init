@@ -1,4 +1,4 @@
-package com.kuikly.init.business.debug.platform
+package com.kuikly.init.business.debug.impl.platform
 
 import com.tencent.kuikly.compose.foundation.clickable
 import com.tencent.kuikly.compose.foundation.layout.fillMaxSize
@@ -11,21 +11,22 @@ import com.tencent.kuikly.compose.material3.Scaffold
 import com.tencent.kuikly.compose.material3.Text
 import com.tencent.kuikly.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import com.tencent.kuikly.compose.runtime.getValue
-import com.tencent.kuikly.compose.runtime.mutableStateOf
-import com.tencent.kuikly.compose.runtime.remember
-import com.tencent.kuikly.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.tencent.kuikly.compose.ui.Modifier
 import com.tencent.kuikly.compose.ui.graphics.Color
 import com.tencent.kuikly.compose.ui.text.TextStyle
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.base.BasePager
-import com.kuikly.init.business.debug.ui.widgets.DebugResultArea
-import com.kuikly.init.business.debug.ui.widgets.DebugTestButton
-import com.kuikly.init.business.debug.ui.widgets.DebugTextField
-import com.kuikly.init.business.debug.ui.widgets.DebugVSpacer
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugResultArea
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugTestButton
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.FileSystem
+import com.kuikly.init.common.base.platform.provideFileSystem
 import com.tencent.kuikly.compose.setContent
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
@@ -51,7 +52,7 @@ private fun DebugFileContent(onClose: () -> Unit) {
     var result by remember { mutableStateOf("操作结果将在此显示") }
     var fileName by remember { mutableStateOf("test.txt") }
     var fileContent by remember { mutableStateOf("Hello Kuikly FileSystem") }
-    val fileSystem = remember { FileSystem() }
+    val fileSystem = remember { provideFileSystem() }
 
     Scaffold(
         topBar = {
@@ -169,12 +170,8 @@ private fun FileBasicOpsSection(
             onResultChange("删除失败：${e.message}")
         }
     }
-    DebugTestButton("列出已创建的文件（当前目录）") {
-        val files = listFilesInDirectory(".")
-        onResultChange(
-            if (files.isEmpty()) "当前目录无文件（或该平台不支持枚举）"
-            else "文件列表：\n${files.joinToString("\n")}"
-        )
+    DebugTestButton("获取文件绝对路径") {
+        onResultChange("当前测试文件路径：$fileName\n（FileSystem 抽象层不提供目录枚举能力）")
     }
 }
 

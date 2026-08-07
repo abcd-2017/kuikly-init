@@ -44,9 +44,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.tencent.kuikly-open:core:${Version.getKuiklyVersion()}")
-                implementation("com.tencent.kuikly-open:core-annotations:${Version.getKuiklyVersion()}")
-                implementation("com.tencent.kuikly-open:compose:${Version.getKuiklyVersion()}")
+                api("com.tencent.kuikly-open:core:${Version.getKuiklyVersion()}")
+                api("com.tencent.kuikly-open:core-annotations:${Version.getKuiklyVersion()}")
+                api("com.tencent.kuikly-open:compose:${Version.getKuiklyVersion()}")
                 implementation(project(":common:base"))
                 implementation(project(":business:initTask"))
                 implementation(libs.koin.core)

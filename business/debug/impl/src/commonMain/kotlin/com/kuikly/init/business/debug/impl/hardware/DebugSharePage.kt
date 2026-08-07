@@ -1,4 +1,4 @@
-package com.kuikly.init.business.debug.hardware
+package com.kuikly.init.business.debug.impl.hardware
 
 import com.tencent.kuikly.compose.foundation.background
 import com.tencent.kuikly.compose.foundation.clickable
@@ -17,40 +17,36 @@ import com.tencent.kuikly.compose.material3.Scaffold
 import com.tencent.kuikly.compose.material3.Text
 import com.tencent.kuikly.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import com.tencent.kuikly.compose.runtime.getValue
-import com.tencent.kuikly.compose.runtime.mutableStateOf
-import com.tencent.kuikly.compose.runtime.remember
-import com.tencent.kuikly.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.tencent.kuikly.compose.ui.Alignment
 import com.tencent.kuikly.compose.ui.Modifier
 import com.tencent.kuikly.compose.ui.draw.clip
 import com.tencent.kuikly.compose.ui.graphics.Color
-import com.tencent.kuikly.compose.ui.platform.LocalActivity
 import com.tencent.kuikly.compose.ui.text.font.FontFamily
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.base.BasePager
 import com.kuikly.init.base.bridgeModule
-import com.kuikly.init.business.debug.ui.widgets.DebugVSpacer
-import com.kuikly.init.common.base.platform.keyboard.provideKeyboard
-import com.kuikly.init.common.base.platform.phone.providePhone
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
+import com.kuikly.init.common.base.platform.share.provideShare
 import com.tencent.kuikly.compose.setContent
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
-@Page("debug_phone")
-internal class DebugPhoneKeyboardPage : BasePager() {
+@Page("debug_share")
+internal class DebugSharePage : BasePager() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
-        val ctx = this
         setContent {
-            val pager = LocalActivity.current.getPager()
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("电话/键盘测试") },
+                        title = { Text("分享测试") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -58,10 +54,10 @@ internal class DebugPhoneKeyboardPage : BasePager() {
                     )
                 }
             ) { padding ->
-                PhoneKeyboardTestContent(
+                ShareTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
-                    bridgeModule = pager.bridgeModule,
-                    onClose = { ctx.acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
+                    bridgeModule = bridgeModule,
+                    onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
             }
         }
@@ -69,14 +65,13 @@ internal class DebugPhoneKeyboardPage : BasePager() {
 }
 
 @Composable
-private fun PhoneKeyboardTestContent(
+private fun ShareTestContent(
     modifier: Modifier = Modifier,
     bridgeModule: com.kuikly.init.base.BridgeModule,
     onClose: () -> Unit
 ) {
-    var log by remember { mutableStateOf("操作日志：\n") }
-    val phone = remember { providePhone() }
-    val keyboard = remember { provideKeyboard() }
+    var log by remember { mutableStateOf("分享日志：\n") }
+    val share = remember { provideShare() }
 
     fun appendLog(msg: String) {
         log = "[${bridgeModule.currentTimeStamp()}] $msg\n$log"
@@ -84,64 +79,79 @@ private fun PhoneKeyboardTestContent(
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
-            PhoneActionsSection(
-                phone = phone,
-                keyboard = keyboard,
+            ShareActionsSection(
+                share = share,
                 onLogChange = { appendLog(it) }
             )
         }
         item {
-            PhoneLogSection(log = log)
+            ShareLogSection(log = log)
         }
         item {
-            PhoneCloseButton(onClose)
+            ShareCloseButton(onClose)
         }
     }
 }
 
 @Composable
-private fun PhoneActionsSection(
-    phone: com.kuikly.init.common.base.platform.phone.Phone,
-    keyboard: com.kuikly.init.common.base.platform.keyboard.Keyboard,
+private fun ShareActionsSection(
+    share: com.kuikly.init.common.base.platform.share.Share,
     onLogChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary("拨打电话 10086") {
+    HardwareActionButtonPrimary("分享文本") {
         try {
-            phone.call("10086")
-            onLogChange("[拨打电话] 10086 (跳转拨号界面)")
+            val text = "Hello Kuikly! 这是一条测试分享文本。"
+            share.shareText(text)
+            onLogChange("[分享文本] 内容: $text")
         } catch (e: Exception) {
-            onLogChange("[拨打电话] 异常: ${e.message}")
+            onLogChange("[分享文本] 异常: ${e.message}")
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary("隐藏键盘") {
+    HardwareActionButtonPrimary("分享链接") {
         try {
-            keyboard.hide()
-            onLogChange("[隐藏键盘] 已调用 hide()")
+            val url = "https://github.com/kuikly"
+            share.shareLink(
+                url = url,
+                title = "Kuikly 跨端框架",
+                description = "Kuikly 是腾讯推出的跨端开发框架"
+            )
+            onLogChange("[分享链接] url: $url")
         } catch (e: Exception) {
-            onLogChange("[隐藏键盘] 异常: ${e.message}")
+            onLogChange("[分享链接] 异常: ${e.message}")
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary("显示键盘") {
+    HardwareActionButtonPrimary("分享图片") {
         try {
-            keyboard.show()
-            onLogChange("[显示键盘] 已调用 show() (iOS 可能为空操作)")
+            val localPath = "/data/local/tmp/test.png"
+            share.shareImage(localPath)
+            onLogChange("[分享图片] 路径: $localPath (文件可能不存在)")
         } catch (e: Exception) {
-            onLogChange("[显示键盘] 异常: ${e.message}")
+            onLogChange("[分享图片] 异常: ${e.message}")
+        }
+    }
+    Spacer(Modifier.height(8.dp))
+    HardwareActionButtonPrimary("分享文件") {
+        try {
+            val localPath = "/data/local/tmp/test.pdf"
+            share.shareFile(localPath, "application/pdf")
+            onLogChange("[分享文件] 路径: $localPath, mime=application/pdf (文件可能不存在)")
+        } catch (e: Exception) {
+            onLogChange("[分享文件] 异常: ${e.message}")
         }
     }
 }
 
 @Composable
-private fun PhoneLogSection(log: String) {
+private fun ShareLogSection(log: String) {
     Spacer(Modifier.height(16.dp))
-    Text("操作日志", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text("分享日志", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp)
+            .height(260.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(Color(0xFFF5F5F5))
             .padding(8.dp)
@@ -156,7 +166,7 @@ private fun PhoneLogSection(log: String) {
 }
 
 @Composable
-private fun PhoneCloseButton(onClose: () -> Unit) {
+private fun ShareCloseButton(onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
     HardwareActionButtonSecondary("关闭页面", onClick = onClose)
     Spacer(Modifier.height(32.dp))

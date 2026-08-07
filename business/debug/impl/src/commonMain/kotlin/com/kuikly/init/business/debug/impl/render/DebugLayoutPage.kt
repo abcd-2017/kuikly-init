@@ -1,4 +1,4 @@
-package com.kuikly.init.business.debug.render
+package com.kuikly.init.business.debug.impl.render
 
 import com.tencent.kuikly.compose.foundation.background
 import com.tencent.kuikly.compose.foundation.clickable
@@ -30,11 +30,33 @@ import com.tencent.kuikly.compose.ui.graphics.Color
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.base.BasePager
-import com.kuikly.init.business.debug.ui.widgets.DebugSectionTitle
-import com.kuikly.init.business.debug.ui.widgets.DebugVSpacer
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
+
+private const val PAGE_TITLE = "📐 布局测试"
+private const val SECTION_COLUMN_NEST = "Column 嵌套"
+private const val SECTION_ROW_ARRANGE = "Row 排列"
+private const val SECTION_BOX_OVERLAP = "Box 层叠"
+private const val SECTION_WEIGHT = "权重布局 (1:2)"
+private const val SECTION_SCROLL = "滚动测试 (20 卡片)"
+private const val SECTION_PADDING = "边距对比 (8dp / 16dp / 24dp)"
+private const val SECTION_CENTER_ALIGN = "居中对齐"
+private const val TEXT_OUTER_COLUMN = "外层 Column"
+private const val TEXT_INNER_COLUMN = "内层 Column"
+private const val LABEL_RED = "红"
+private const val LABEL_BLUE = "蓝"
+private const val LABEL_GREEN = "绿"
+private const val TEXT_WEIGHT_1 = "1"
+private const val TEXT_WEIGHT_2 = "2"
+private const val PREFIX_CARD = "卡片 #"
+private const val LABEL_8DP = "8dp"
+private const val LABEL_16DP = "16dp"
+private const val LABEL_24DP = "24dp"
+private const val TEXT_CENTER = "中"
+private const val BTN_CLOSE = "关闭页面"
 
 @Page("debug_layout")
 internal class DebugLayoutPage : BasePager() {
@@ -42,12 +64,11 @@ internal class DebugLayoutPage : BasePager() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
-        val ctx = this
         setContent {
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("📐 布局测试") },
+                        title = { Text(PAGE_TITLE) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -59,7 +80,7 @@ internal class DebugLayoutPage : BasePager() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
-                    onClose = { ctx.acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
+                    onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
             }
         }
@@ -87,7 +108,7 @@ private fun DebugLayoutContent(
 
 @Composable
 private fun ColumnNestSection() {
-    DebugSectionTitle("Column 嵌套")
+    DebugSectionTitle(SECTION_COLUMN_NEST)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -95,7 +116,7 @@ private fun ColumnNestSection() {
             .background(Color(0xFFE3F2FD))
             .padding(12.dp)
     ) {
-        Text("外层 Column", fontSize = 14.sp, color = Color(0xFF1565C0))
+        Text(TEXT_OUTER_COLUMN, fontSize = 14.sp, color = Color(0xFF1565C0))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,22 +125,22 @@ private fun ColumnNestSection() {
                 .background(Color(0xFFFFE0B2))
                 .padding(12.dp)
         ) {
-            Text("内层 Column", fontSize = 14.sp, color = Color(0xFFE65100))
+            Text(TEXT_INNER_COLUMN, fontSize = 14.sp, color = Color(0xFFE65100))
         }
     }
 }
 
 @Composable
 private fun RowArrangeSection() {
-    DebugSectionTitle("Row 排列")
+    DebugSectionTitle(SECTION_ROW_ARRANGE)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         listOf(
-            Color(0xFFEF5350) to "红",
-            Color(0xFF42A5F5) to "蓝",
-            Color(0xFF66BB6A) to "绿"
+            Color(0xFFEF5350) to LABEL_RED,
+            Color(0xFF42A5F5) to LABEL_BLUE,
+            Color(0xFF66BB6A) to LABEL_GREEN
         ).forEach { (color, label) ->
             Box(
                 modifier = Modifier
@@ -137,7 +158,7 @@ private fun RowArrangeSection() {
 
 @Composable
 private fun BoxOverlapSection() {
-    DebugSectionTitle("Box 层叠")
+    DebugSectionTitle(SECTION_BOX_OVERLAP)
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -164,7 +185,7 @@ private fun BoxOverlapSection() {
 
 @Composable
 private fun WeightLayoutSection() {
-    DebugSectionTitle("权重布局 (1:2)")
+    DebugSectionTitle(SECTION_WEIGHT)
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -176,7 +197,7 @@ private fun WeightLayoutSection() {
                 .background(Color(0xFF7E57C2)),
             contentAlignment = Alignment.Center
         ) {
-            Text("1", color = Color.White, fontSize = 14.sp)
+            Text(TEXT_WEIGHT_1, color = Color.White, fontSize = 14.sp)
         }
         Box(
             modifier = Modifier
@@ -186,14 +207,14 @@ private fun WeightLayoutSection() {
                 .background(Color(0xFF26A69A)),
             contentAlignment = Alignment.Center
         ) {
-            Text("2", color = Color.White, fontSize = 14.sp)
+            Text(TEXT_WEIGHT_2, color = Color.White, fontSize = 14.sp)
         }
     }
 }
 
 @Composable
 private fun ScrollSection() {
-    DebugSectionTitle("滚动测试 (20 卡片)")
+    DebugSectionTitle(SECTION_SCROLL)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -217,7 +238,7 @@ private fun ScrollSection() {
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
                     Text(
-                        text = "卡片 #${index + 1}",
+                        text = "$PREFIX_CARD${index + 1}",
                         modifier = Modifier.padding(12.dp),
                         fontSize = 14.sp
                     )
@@ -229,15 +250,15 @@ private fun ScrollSection() {
 
 @Composable
 private fun PaddingCompareSection() {
-    DebugSectionTitle("边距对比 (8dp / 16dp / 24dp)")
+    DebugSectionTitle(SECTION_PADDING)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         listOf(
-            8.dp to "8dp",
-            16.dp to "16dp",
-            24.dp to "24dp"
+            8.dp to LABEL_8DP,
+            16.dp to LABEL_16DP,
+            24.dp to LABEL_24DP
         ).forEach { (padValue, label) ->
             Box(
                 modifier = Modifier
@@ -256,7 +277,7 @@ private fun PaddingCompareSection() {
 
 @Composable
 private fun CenterAlignSection() {
-    DebugSectionTitle("居中对齐")
+    DebugSectionTitle(SECTION_CENTER_ALIGN)
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -272,7 +293,7 @@ private fun CenterAlignSection() {
                 .background(Color(0xFF4CAF50)),
             contentAlignment = Alignment.Center
         ) {
-            Text("中", color = Color.White, fontSize = 16.sp)
+            Text(TEXT_CENTER, color = Color.White, fontSize = 16.sp)
         }
     }
 }
@@ -290,7 +311,7 @@ private fun CloseButtonSection(onClose: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "关闭页面",
+            text = BTN_CLOSE,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 16.sp
         )

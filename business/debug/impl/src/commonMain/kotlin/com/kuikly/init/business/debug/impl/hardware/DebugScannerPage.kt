@@ -1,4 +1,4 @@
-package com.kuikly.init.business.debug.hardware
+package com.kuikly.init.business.debug.impl.hardware
 
 import com.tencent.kuikly.compose.foundation.background
 import com.tencent.kuikly.compose.foundation.clickable
@@ -17,10 +17,10 @@ import com.tencent.kuikly.compose.material3.Scaffold
 import com.tencent.kuikly.compose.material3.Text
 import com.tencent.kuikly.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import com.tencent.kuikly.compose.runtime.getValue
-import com.tencent.kuikly.compose.runtime.mutableStateOf
-import com.tencent.kuikly.compose.runtime.remember
-import com.tencent.kuikly.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.tencent.kuikly.compose.ui.Alignment
 import com.tencent.kuikly.compose.ui.Modifier
 import com.tencent.kuikly.compose.ui.draw.clip
@@ -29,7 +29,7 @@ import com.tencent.kuikly.compose.ui.text.font.FontFamily
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.base.BasePager
-import com.kuikly.init.business.debug.ui.widgets.DebugVSpacer
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.scan.ScanResult
 import com.kuikly.init.common.base.platform.scan.provideScanner
 import com.tencent.kuikly.compose.setContent
@@ -42,7 +42,6 @@ internal class DebugScannerPage : BasePager() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
-        val ctx = this
         setContent {
             Scaffold(
                 topBar = {
@@ -57,7 +56,7 @@ internal class DebugScannerPage : BasePager() {
             ) { padding ->
                 ScannerTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
-                    onClose = { ctx.acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
+                    onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
             }
         }

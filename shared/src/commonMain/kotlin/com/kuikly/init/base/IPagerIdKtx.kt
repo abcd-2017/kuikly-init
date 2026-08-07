@@ -14,7 +14,7 @@ import com.tencent.kuikly.core.base.pagerId
  * bridgeModule.reportPageCostTimeForError()
  * ```
  */
-internal val IPagerId.bridgeModule: BridgeModule by pagerId {
+val IPagerId.bridgeModule: BridgeModule by pagerId {
     Utils.bridgeModule(it)
 }
 

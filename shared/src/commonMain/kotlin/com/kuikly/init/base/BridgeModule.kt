@@ -1,10 +1,13 @@
 package com.kuikly.init.base
 
 import com.kuikly.init.common.base.platform.clipboard.Clipboard
+import com.kuikly.init.common.base.platform.clipboard.provideClipboard
 import com.kuikly.init.common.base.platform.keyboard.Keyboard
+import com.kuikly.init.common.base.platform.keyboard.provideKeyboard
 import com.kuikly.init.common.base.platform.phone.Phone
 import com.kuikly.init.common.base.platform.toast.Toast
 import com.kuikly.init.common.base.platform.toast.ToastDuration
+import com.kuikly.init.common.base.platform.toast.provideToast
 import com.tencent.kuikly.core.base.toInt
 import com.tencent.kuikly.core.module.CallbackFn
 import com.tencent.kuikly.core.module.Module
@@ -13,7 +16,7 @@ import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-internal class BridgeModule : Module() {
+class BridgeModule : Module() {
 
     override fun moduleName(): String {
         return MODULE_NAME
@@ -31,7 +34,7 @@ internal class BridgeModule : Module() {
 
     @Deprecated("Use Clipboard.copyText instead")
     fun copyToPasteboard(content: String) {
-        Clipboard().copyText(content)
+        provideClipboard().copyText(content)
     }
 
     @Deprecated("Use Dialog instead")
@@ -71,7 +74,7 @@ internal class BridgeModule : Module() {
 
     @Deprecated("Use Toast.show instead")
     fun toast(content: String) {
-        Toast().show(content, ToastDuration.SHORT)
+        provideToast().show(content, ToastDuration.SHORT)
     }
 
     fun openPage(
@@ -290,7 +293,7 @@ internal class BridgeModule : Module() {
 
     @Deprecated("Use Keyboard.hide instead")
     fun closeKeyboard(data: JSONObject? = null, callbackFn: CallbackFn? = null): String {
-        Keyboard().hide()
+        provideKeyboard().hide()
         return ""
     }
 

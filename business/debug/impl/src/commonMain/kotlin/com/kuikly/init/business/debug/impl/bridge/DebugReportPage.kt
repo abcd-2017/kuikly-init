@@ -1,4 +1,4 @@
-package com.kuikly.init.business.debug.bridge
+package com.kuikly.init.business.debug.impl.bridge
 
 import com.tencent.kuikly.compose.foundation.background
 import com.tencent.kuikly.compose.foundation.clickable
@@ -17,22 +17,21 @@ import com.tencent.kuikly.compose.material3.Scaffold
 import com.tencent.kuikly.compose.material3.Text
 import com.tencent.kuikly.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import com.tencent.kuikly.compose.runtime.getValue
-import com.tencent.kuikly.compose.runtime.mutableStateOf
-import com.tencent.kuikly.compose.runtime.remember
-import com.tencent.kuikly.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.tencent.kuikly.compose.ui.Alignment
 import com.tencent.kuikly.compose.ui.Modifier
 import com.tencent.kuikly.compose.ui.draw.clip
 import com.tencent.kuikly.compose.ui.graphics.Color
-import com.tencent.kuikly.compose.ui.platform.LocalActivity
 import com.tencent.kuikly.compose.ui.text.font.FontFamily
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.base.BasePager
 import com.kuikly.init.base.bridgeModule
-import com.kuikly.init.business.debug.ui.widgets.DebugTextField
-import com.kuikly.init.business.debug.ui.widgets.DebugVSpacer
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
+import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
@@ -44,9 +43,7 @@ internal class DebugReportPage : BasePager() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
-        val ctx = this
         setContent {
-            val pager = LocalActivity.current.getPager()
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -60,8 +57,8 @@ internal class DebugReportPage : BasePager() {
             ) { padding ->
                 ReportTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
-                    bridgeModule = pager.bridgeModule,
-                    onClose = { ctx.acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
+                    bridgeModule = bridgeModule,
+                    onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
             }
         }

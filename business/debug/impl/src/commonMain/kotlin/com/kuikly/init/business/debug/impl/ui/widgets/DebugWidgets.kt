@@ -1,4 +1,4 @@
-package com.kuikly.init.business.debug.ui.widgets
+package com.kuikly.init.business.debug.impl.ui.widgets
 
 import com.tencent.kuikly.compose.foundation.background
 import com.tencent.kuikly.compose.foundation.clickable
@@ -12,6 +12,7 @@ import com.tencent.kuikly.compose.foundation.layout.height
 import com.tencent.kuikly.compose.foundation.layout.padding
 import com.tencent.kuikly.compose.foundation.shape.RoundedCornerShape
 import com.tencent.kuikly.compose.material3.CenterAlignedTopAppBar
+import com.tencent.kuikly.compose.material3.ExperimentalMaterial3Api
 import com.tencent.kuikly.compose.material3.MaterialTheme
 import com.tencent.kuikly.compose.material3.Scaffold
 import com.tencent.kuikly.compose.material3.Text
@@ -164,7 +165,7 @@ internal fun DebugTextField(
         modifier = modifier.fillMaxWidth(),
         value = value,
         textStyle = TextStyle(color = Color.Black),
-        placeholder = placeholder,
+        placeholder = { Text(placeholder) },
         onValueChange = onValueChange
     )
 }
@@ -172,6 +173,7 @@ internal fun DebugTextField(
 /**
  * Debug 页面脚手架（带顶部栏 + 关闭按钮）
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DebugScaffold(
     title: String,
