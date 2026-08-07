@@ -19,8 +19,7 @@ kotlin {
     iosSimulatorArm64()
 
     ohosArm64 {
-        binaries.sharedLib {
-        }
+        // 不是 binaries 模块，不配置 sharedLib
     }
 
     sourceSets {
