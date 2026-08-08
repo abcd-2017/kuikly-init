@@ -48,6 +48,10 @@ kotlin {
 android {
     namespace = "com.kuikly.init.common.base"
     compileSdk = 34
+    buildToolsVersion = "34.0.0"
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         minSdk = 21
     }

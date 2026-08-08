@@ -6,6 +6,7 @@ plugins {
 android {
     namespace = "com.kuikly.init"
     compileSdk = 34
+    buildToolsVersion = "36.0.0"
     buildFeatures {
         buildConfig = true
     }
@@ -38,6 +39,9 @@ android {
                 signingConfig = signingConfigs.getByName("ci")
             }
         }
+        getByName("debug") {
+            isMinifyEnabled = false
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -45,6 +49,29 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        // 强制使用兼容版本，避免 R8/D8 Kotlin 元数据处理失败
+        force("androidx.fragment:fragment:1.6.2")
+        force("androidx.fragment:fragment-ktx:1.6.2")
+        force("androidx.activity:activity:1.8.2")
+        force("androidx.activity:activity-ktx:1.8.2")
+        force("androidx.appcompat:appcompat:1.6.1")
+        force("androidx.appcompat:appcompat-resources:1.6.1")
+        force("androidx.core:core:1.12.0")
+        force("androidx.core:core-ktx:1.12.0")
+        force("androidx.lifecycle:lifecycle-runtime:2.6.2")
+        force("androidx.lifecycle:lifecycle-common:2.6.2")
+        force("androidx.lifecycle:lifecycle-livedata:2.6.2")
+        force("androidx.lifecycle:lifecycle-livedata-core:2.6.2")
+        force("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
+        force("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2")
+        force("androidx.lifecycle:lifecycle-process:2.6.2")
+        force("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+        force("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     }
 }
 
