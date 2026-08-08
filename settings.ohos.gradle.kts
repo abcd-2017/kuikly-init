@@ -8,6 +8,13 @@ pluginManagement {
             url = uri("https://mirrors.tencent.com/nexus/repository/maven-tencent/")
         }
     }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "com.tencent.kuiklybase.resource.generator") {
+                useVersion("0.0.1")
+            }
+        }
+    }
 }
 
 dependencyResolutionManagement {
