@@ -34,6 +34,8 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.keyboard.provideKeyboard
 import com.kuikly.init.common.base.platform.phone.providePhone
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -44,10 +46,11 @@ internal class DebugPhoneKeyboardPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
+            val pageTitle = stringResource(DebugImplMR.strings.debug_phone_title)
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("电话/键盘测试") },
+                        title = { Text(pageTitle) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -71,9 +74,22 @@ private fun PhoneKeyboardTestContent(
     bridgeModule: com.kuikly.init.base.BridgeModule,
     onClose: () -> Unit
 ) {
-    var log by remember { mutableStateOf("操作日志：\n") }
+    val logPrefix = stringResource(DebugImplMR.strings.debug_phone_log_prefix)
+    var log by remember { mutableStateOf(logPrefix) }
     val phone = remember { providePhone() }
     val keyboard = remember { provideKeyboard() }
+
+    val btnCall = stringResource(DebugImplMR.strings.debug_phone_btn_call)
+    val btnHideKeyboard = stringResource(DebugImplMR.strings.debug_phone_btn_hide_keyboard)
+    val btnShowKeyboard = stringResource(DebugImplMR.strings.debug_phone_btn_show_keyboard)
+    val logTitle = stringResource(DebugImplMR.strings.debug_phone_log_title)
+    val logCall = stringResource(DebugImplMR.strings.debug_phone_log_call)
+    val logCallException = stringResource(DebugImplMR.strings.debug_phone_log_call_exception)
+    val logHideKeyboard = stringResource(DebugImplMR.strings.debug_phone_log_hide_keyboard)
+    val logHideKeyboardException = stringResource(DebugImplMR.strings.debug_phone_log_hide_keyboard_exception)
+    val logShowKeyboard = stringResource(DebugImplMR.strings.debug_phone_log_show_keyboard)
+    val logShowKeyboardException = stringResource(DebugImplMR.strings.debug_phone_log_show_keyboard_exception)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
 
     fun appendLog(msg: String) {
         log = "[${bridgeModule.currentTimeStamp()}] $msg\n$log"
@@ -84,14 +100,23 @@ private fun PhoneKeyboardTestContent(
             PhoneActionsSection(
                 phone = phone,
                 keyboard = keyboard,
+                btnCall = btnCall,
+                btnHideKeyboard = btnHideKeyboard,
+                btnShowKeyboard = btnShowKeyboard,
+                logCall = logCall,
+                logCallException = logCallException,
+                logHideKeyboard = logHideKeyboard,
+                logHideKeyboardException = logHideKeyboardException,
+                logShowKeyboard = logShowKeyboard,
+                logShowKeyboardException = logShowKeyboardException,
                 onLogChange = { appendLog(it) }
             )
         }
         item {
-            PhoneLogSection(log = log)
+            PhoneLogSection(log = log, logTitle = logTitle)
         }
         item {
-            PhoneCloseButton(onClose)
+            PhoneCloseButton(btnText = btnClose, onClose = onClose)
         }
     }
 }
@@ -100,40 +125,49 @@ private fun PhoneKeyboardTestContent(
 private fun PhoneActionsSection(
     phone: com.kuikly.init.common.base.platform.phone.Phone,
     keyboard: com.kuikly.init.common.base.platform.keyboard.Keyboard,
+    btnCall: String,
+    btnHideKeyboard: String,
+    btnShowKeyboard: String,
+    logCall: String,
+    logCallException: String,
+    logHideKeyboard: String,
+    logHideKeyboardException: String,
+    logShowKeyboard: String,
+    logShowKeyboardException: String,
     onLogChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary("拨打电话 10086") {
+    HardwareActionButtonPrimary(btnCall) {
         try {
             phone.call("10086")
-            onLogChange("[拨打电话] 10086 (跳转拨号界面)")
+            onLogChange(logCall)
         } catch (e: Exception) {
-            onLogChange("[拨打电话] 异常: ${e.message}")
+            onLogChange(String.format(logCallException, e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary("隐藏键盘") {
+    HardwareActionButtonPrimary(btnHideKeyboard) {
         try {
             keyboard.hide()
-            onLogChange("[隐藏键盘] 已调用 hide()")
+            onLogChange(logHideKeyboard)
         } catch (e: Exception) {
-            onLogChange("[隐藏键盘] 异常: ${e.message}")
+            onLogChange(String.format(logHideKeyboardException, e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary("显示键盘") {
+    HardwareActionButtonPrimary(btnShowKeyboard) {
         try {
             keyboard.show()
-            onLogChange("[显示键盘] 已调用 show() (iOS 可能为空操作)")
+            onLogChange(logShowKeyboard)
         } catch (e: Exception) {
-            onLogChange("[显示键盘] 异常: ${e.message}")
+            onLogChange(String.format(logShowKeyboardException, e.message))
         }
     }
 }
 
 @Composable
-private fun PhoneLogSection(log: String) {
+private fun PhoneLogSection(log: String, logTitle: String) {
     Spacer(Modifier.height(16.dp))
-    Text("操作日志", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text(logTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -153,9 +187,9 @@ private fun PhoneLogSection(log: String) {
 }
 
 @Composable
-private fun PhoneCloseButton(onClose: () -> Unit) {
+private fun PhoneCloseButton(btnText: String, onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
+    HardwareActionButtonSecondary(btnText, onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 

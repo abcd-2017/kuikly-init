@@ -27,6 +27,8 @@ import com.kuikly.init.common.base.platform.NetworkMonitor
 import com.kuikly.init.common.base.platform.NetworkType
 import com.kuikly.init.common.base.platform.provideNetworkMonitor
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -48,16 +50,28 @@ internal class DebugNetworkPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugNetworkContent(onClose: () -> Unit) {
-    var result by remember { mutableStateOf("点击刷新按钮检测网络状态") }
+    val placeholderText = stringResource(DebugImplMR.strings.debug_network_result_placeholder)
+    var result by remember { mutableStateOf(placeholderText) }
     val monitor = remember { provideNetworkMonitor() }
+
+    val pageTitle = stringResource(DebugImplMR.strings.debug_network_title)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close)
+    val labelNetworkStatus = stringResource(DebugImplMR.strings.debug_network_label_network_status)
+    val btnRefresh = stringResource(DebugImplMR.strings.debug_network_btn_refresh)
+    val resultFormat = stringResource(DebugImplMR.strings.debug_network_result_format)
+    val statusConnected = stringResource(DebugImplMR.strings.debug_network_status_connected)
+    val statusDisconnected = stringResource(DebugImplMR.strings.debug_network_status_disconnected)
+    val typeWifi = stringResource(DebugImplMR.strings.debug_network_type_wifi)
+    val typeCellular = stringResource(DebugImplMR.strings.debug_network_type_cellular)
+    val typeNone = stringResource(DebugImplMR.strings.debug_network_type_none)
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Network 测试") },
+                title = { Text(pageTitle) },
                 actions = {
                     Text(
-                        text = "关闭",
+                        text = btnClose,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -77,6 +91,14 @@ private fun DebugNetworkContent(onClose: () -> Unit) {
             item {
                 NetworkStatusSection(
                     monitor = monitor,
+                    labelNetworkStatus = labelNetworkStatus,
+                    btnRefresh = btnRefresh,
+                    resultFormat = resultFormat,
+                    statusConnected = statusConnected,
+                    statusDisconnected = statusDisconnected,
+                    typeWifi = typeWifi,
+                    typeCellular = typeCellular,
+                    typeNone = typeNone,
                     onResultChange = { result = it }
                 )
             }
@@ -91,25 +113,32 @@ private fun DebugNetworkContent(onClose: () -> Unit) {
 @Composable
 private fun NetworkStatusSection(
     monitor: NetworkMonitor,
+    labelNetworkStatus: String,
+    btnRefresh: String,
+    resultFormat: String,
+    statusConnected: String,
+    statusDisconnected: String,
+    typeWifi: String,
+    typeCellular: String,
+    typeNone: String,
     onResultChange: (String) -> Unit
 ) {
-    Text("网络状态检测", fontSize = 16.sp, color = Color(0xFF333333))
+    Text(labelNetworkStatus, fontSize = 16.sp, color = Color(0xFF333333))
     DebugVSpacer(8.dp)
-    DebugTestButton("刷新网络状态") {
+    DebugTestButton(btnRefresh) {
         val connected = monitor.isConnected()
         val type = monitor.getNetworkType()
         val typeLabel = when (type) {
-            NetworkType.WIFI -> "WIFI"
-            NetworkType.CELLULAR -> "CELLULAR"
-            NetworkType.NONE -> "NONE"
+            NetworkType.WIFI -> typeWifi
+            NetworkType.CELLULAR -> typeCellular
+            NetworkType.NONE -> typeNone
         }
         val ts = System.currentTimeMillis()
-        onResultChange(
-            buildString {
-                appendLine("检测时间：$ts")
-                appendLine("网络连接状态：${if (connected) "已连接" else "未连接"}")
-                appendLine("网络类型：$typeLabel")
-            }
-        )
+        onResultChange(String.format(
+            resultFormat,
+            ts,
+            if (connected) statusConnected else statusDisconnected,
+            typeLabel
+        ))
     }
 }

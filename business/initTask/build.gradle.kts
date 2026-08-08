@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.tencent.kuiklybase.resource.generator")
 }
 
 kotlin {
@@ -21,6 +22,8 @@ kotlin {
             dependencies {
                 implementation(project(":common:base"))
                 implementation(libs.koin.core)
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
         }
         val iosX64Main by getting
@@ -41,4 +44,10 @@ android {
     defaultConfig {
         minSdk = 21
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.kuikly.init.business.initTask"
+    multiplatformResourcesClassName = "InitTaskMR"
+    multiplatformResourcesPrefix = "init_task_"
 }

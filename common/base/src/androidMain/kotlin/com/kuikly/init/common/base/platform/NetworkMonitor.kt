@@ -22,3 +22,8 @@ actual class NetworkMonitor(private val app: Application) {
         }
     }
 }
+
+actual fun provideNetworkMonitor(): NetworkMonitor = NetworkMonitor(
+    AppContext.androidContext as? Application
+        ?: throw IllegalStateException("AppContext not initialized")
+)

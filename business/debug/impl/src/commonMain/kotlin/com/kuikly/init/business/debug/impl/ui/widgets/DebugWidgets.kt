@@ -28,6 +28,8 @@ import com.tencent.kuikly.compose.ui.text.font.FontWeight
 import com.tencent.kuikly.compose.ui.unit.Dp
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 
 /**
  * Debug 页面通用按钮样式（渐变紫色）
@@ -180,13 +182,14 @@ internal fun DebugScaffold(
     onClose: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
+    val closeText = stringResource(DebugImplMR.strings.debug_close)
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(title) },
                 actions = {
                     Text(
-                        text = "关闭",
+                        text = closeText,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .clickable { onClose() }

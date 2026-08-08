@@ -30,25 +30,11 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugTestButton
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
-
-private const val PAGE_TITLE = "🧭 页面跳转测试"
-private const val SECTION_OPEN_PAGE = "1. 跳转到指定 Page"
-private const val SECTION_OPEN_WITH_PARAMS = "2. 带参数跳转"
-private const val SECTION_CLOSE_PAGE = "3. 关闭当前页"
-private const val SECTION_MULTI_LEVEL = "4. 多级跳转测试"
-private const val SECTION_LOG = "5. 跳转结果日志"
-private const val PLACEHOLDER_PAGE_NAME = "输入 pageName"
-private const val PLACEHOLDER_PARAM_PAGE = "pageName"
-private const val PLACEHOLDER_KEY = "key"
-private const val PLACEHOLDER_VALUE = "value"
-private const val BTN_OPEN = "跳转"
-private const val BTN_OPEN_WITH_PARAMS = "带参数跳转"
-private const val BTN_CLOSE_PAGE = "关闭当前页"
-private const val BTN_GOTO_DEBUG_TEXT = "跳转到 debug_text"
-private const val LABEL_NO_LOG = "（暂无日志）"
 
 @Page("debug_navigate")
 internal class DebugNavigatePage : BasePager() {
@@ -71,6 +57,27 @@ private fun DebugNavigateContent() {
     val localPager = com.tencent.kuikly.compose.ui.platform.LocalActivity.current.getPager()
     val routerModule = localPager.acquireModule<RouterModule>(RouterModule.MODULE_NAME)
 
+    val pageTitle = stringResource(DebugImplMR.strings.debug_navigate_title)
+    val sectionOpenPage = stringResource(DebugImplMR.strings.debug_navigate_section_open_page)
+    val sectionOpenWithParams = stringResource(DebugImplMR.strings.debug_navigate_section_open_with_params)
+    val sectionClosePage = stringResource(DebugImplMR.strings.debug_navigate_section_close_page)
+    val sectionMultiLevel = stringResource(DebugImplMR.strings.debug_navigate_section_multi_level)
+    val sectionLog = stringResource(DebugImplMR.strings.debug_navigate_section_log)
+    val placeholderPageName = stringResource(DebugImplMR.strings.debug_navigate_placeholder_page_name)
+    val placeholderParamPage = stringResource(DebugImplMR.strings.debug_navigate_placeholder_param_page)
+    val placeholderKey = stringResource(DebugImplMR.strings.debug_navigate_placeholder_key)
+    val placeholderValue = stringResource(DebugImplMR.strings.debug_navigate_placeholder_value)
+    val btnOpen = stringResource(DebugImplMR.strings.debug_navigate_btn_open)
+    val btnOpenWithParams = stringResource(DebugImplMR.strings.debug_navigate_btn_open_with_params)
+    val btnClosePage = stringResource(DebugImplMR.strings.debug_navigate_btn_close_page)
+    val btnGotoDebugText = stringResource(DebugImplMR.strings.debug_navigate_btn_goto_debug_text)
+    val labelNoLog = stringResource(DebugImplMR.strings.debug_navigate_label_no_log)
+    val logOpenSuccess = stringResource(DebugImplMR.strings.debug_navigate_log_open_success)
+    val logOpenWithParamsSuccess = stringResource(DebugImplMR.strings.debug_navigate_log_open_with_params_success)
+    val logCloseSuccess = stringResource(DebugImplMR.strings.debug_navigate_log_close_success)
+    val logPageNameEmpty = stringResource(DebugImplMR.strings.debug_navigate_log_page_name_empty)
+    val logMultiLevel = stringResource(DebugImplMR.strings.debug_navigate_log_multi_level)
+
     fun appendLog(message: String) {
         logText = if (logText.isEmpty()) message else "$logText\n$message"
     }
@@ -82,26 +89,33 @@ private fun DebugNavigateContent() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        NavigateHeader()
+        NavigateHeader(pageTitle)
         NavigateOpenPageSection(
+            sectionTitle = sectionOpenPage,
             pageName = pageName,
             onPageNameChange = { pageName = it },
+            btnText = btnOpen,
             onOpenPage = {
                 if (pageName.isNotBlank()) {
                     routerModule.openPage(pageName)
-                    appendLog("✅ openPage(\"$pageName\")")
+                    appendLog(String.format(logOpenSuccess, pageName))
                 } else {
-                    appendLog("❌ pageName 为空")
+                    appendLog(logPageNameEmpty)
                 }
             }
         )
         NavigateOpenWithParamsSection(
+            sectionTitle = sectionOpenWithParams,
             pageName = pageName,
             paramKey = paramKey,
             paramValue = paramValue,
+            placeholderPage = placeholderParamPage,
+            placeholderKey = placeholderKey,
+            placeholderValue = placeholderValue,
             onPageNameChange = { pageName = it },
             onParamKeyChange = { paramKey = it },
             onParamValueChange = { paramValue = it },
+            btnText = btnOpenWithParams,
             onOpenWithParams = {
                 if (pageName.isNotBlank()) {
                     val params = JSONObject()
@@ -109,28 +123,36 @@ private fun DebugNavigateContent() {
                         params.put(paramKey, paramValue)
                     }
                     routerModule.openPage(pageName, params)
-                    appendLog("✅ openPage(\"$pageName\", $params)")
+                    appendLog(String.format(logOpenWithParamsSuccess, pageName, params))
                 } else {
-                    appendLog("❌ pageName 为空")
+                    appendLog(logPageNameEmpty)
                 }
             }
         )
-        NavigateClosePageSection(onClose = {
-            routerModule.closePage()
-            appendLog("✅ closePage()")
-        })
-        NavigateMultiLevelSection(onNavigate = {
-            routerModule.openPage("debug_text")
-            appendLog("✅ 跳转到 debug_text → 请在 debug_text 跳转到 debug_image")
-        })
-        NavigateLogSection(logText = logText)
+        NavigateClosePageSection(
+            sectionTitle = sectionClosePage,
+            btnText = btnClosePage,
+            onClose = {
+                routerModule.closePage()
+                appendLog(logCloseSuccess)
+            }
+        )
+        NavigateMultiLevelSection(
+            sectionTitle = sectionMultiLevel,
+            btnText = btnGotoDebugText,
+            onNavigate = {
+                routerModule.openPage("debug_text")
+                appendLog(logMultiLevel)
+            }
+        )
+        NavigateLogSection(sectionTitle = sectionLog, labelNoLog = labelNoLog, logText = logText)
     }
 }
 
 @Composable
-private fun NavigateHeader() {
+private fun NavigateHeader(pageTitle: String) {
     Text(
-        text = PAGE_TITLE,
+        text = pageTitle,
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
         color = Color(0xFF333333)
@@ -139,82 +161,97 @@ private fun NavigateHeader() {
 
 @Composable
 private fun NavigateOpenPageSection(
+    sectionTitle: String,
     pageName: String,
     onPageNameChange: (String) -> Unit,
-    onOpenPage: () -> Unit
+    onOpenPage: () -> Unit,
+    btnText: String
 ) {
     Text(
-        SECTION_OPEN_PAGE,
+        sectionTitle,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
     )
     DebugTextField(
         value = pageName,
-        placeholder = PLACEHOLDER_PAGE_NAME,
+        placeholder = stringResource(DebugImplMR.strings.debug_navigate_placeholder_page_name),
         onValueChange = onPageNameChange
     )
-    DebugTestButton(text = BTN_OPEN, onClick = onOpenPage)
+    DebugTestButton(text = btnText, onClick = onOpenPage)
 }
 
 @Composable
 private fun NavigateOpenWithParamsSection(
+    sectionTitle: String,
     pageName: String,
     paramKey: String,
     paramValue: String,
+    placeholderPage: String,
+    placeholderKey: String,
+    placeholderValue: String,
     onPageNameChange: (String) -> Unit,
     onParamKeyChange: (String) -> Unit,
     onParamValueChange: (String) -> Unit,
-    onOpenWithParams: () -> Unit
+    onOpenWithParams: () -> Unit,
+    btnText: String
 ) {
     Text(
-        SECTION_OPEN_WITH_PARAMS,
+        sectionTitle,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
     )
     DebugTextField(
         value = pageName,
-        placeholder = PLACEHOLDER_PARAM_PAGE,
+        placeholder = placeholderPage,
         onValueChange = onPageNameChange
     )
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         DebugTextField(
             value = paramKey,
-            placeholder = PLACEHOLDER_KEY,
+            placeholder = placeholderKey,
             onValueChange = onParamKeyChange,
             modifier = Modifier.weight(1f)
         )
         DebugTextField(
             value = paramValue,
-            placeholder = PLACEHOLDER_VALUE,
+            placeholder = placeholderValue,
             onValueChange = onParamValueChange,
             modifier = Modifier.weight(1f)
         )
     }
-    DebugTestButton(text = BTN_OPEN_WITH_PARAMS, onClick = onOpenWithParams)
+    DebugTestButton(text = btnText, onClick = onOpenWithParams)
 }
 
 @Composable
-private fun NavigateClosePageSection(onClose: () -> Unit) {
+private fun NavigateClosePageSection(
+    sectionTitle: String,
+    btnText: String,
+    onClose: () -> Unit
+) {
     Text(
-        SECTION_CLOSE_PAGE,
+        sectionTitle,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
     )
-    NavigateActionButton(text = BTN_CLOSE_PAGE, color = Color(0xFFFF6B6B), onClick = onClose)
+    NavigateActionButton(text = btnText, color = Color(0xFFFF6B6B), onClick = onClose)
 }
 
 @Composable
-private fun NavigateMultiLevelSection(onNavigate: () -> Unit) {
+private fun NavigateMultiLevelSection(
+    sectionTitle: String,
+    btnText: String,
+    onNavigate: () -> Unit
+) {
     Text(
-        SECTION_MULTI_LEVEL,
+        sectionTitle,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
     )
-    NavigateActionButton(text = BTN_GOTO_DEBUG_TEXT, color = Color(0xFFA65CF9), onClick = onNavigate)
+    NavigateActionButton(text = btnText, color = Color(0xFFA65CF9), onClick = onNavigate)
 }
 
 @Composable
@@ -232,9 +269,13 @@ private fun NavigateActionButton(text: String, color: Color, onClick: () -> Unit
 }
 
 @Composable
-private fun NavigateLogSection(logText: String) {
+private fun NavigateLogSection(
+    sectionTitle: String,
+    labelNoLog: String,
+    logText: String
+) {
     Text(
-        SECTION_LOG,
+        sectionTitle,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color(0xFF7B7FE4)
@@ -247,7 +288,7 @@ private fun NavigateLogSection(logText: String) {
             .padding(12.dp)
     ) {
         Text(
-            text = if (logText.isEmpty()) LABEL_NO_LOG else logText,
+            text = if (logText.isEmpty()) labelNoLog else logText,
             style = TextStyle(
                 fontSize = 12.sp,
                 color = if (logText.isEmpty()) Color(0xFFCCCCCC) else Color(0xFF333333)

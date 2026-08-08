@@ -40,6 +40,8 @@ include(":business:initTask")
 project(":business:initTask").buildFileName = buildFileName
 include(":business:login:api")
 include(":business:login:impl")
+project(":business:login:impl").buildFileName = buildFileName
 
 include(":business:debug:api")
 include(":business:debug:impl")
+project(":business:debug:impl").buildFileName = buildFileName

@@ -11,6 +11,9 @@ expect class NetworkMonitor {
     fun getNetworkType(): NetworkType
 }
 
+/** 全局访问入口 */
+expect fun provideNetworkMonitor(): NetworkMonitor
+
 enum class NetworkType {
     WIFI,
     CELLULAR,

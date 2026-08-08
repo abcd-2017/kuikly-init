@@ -33,6 +33,8 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.biometric.BiometricType
 import com.kuikly.init.common.base.platform.biometric.provideBiometric
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -43,10 +45,11 @@ internal class DebugBiometricPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
+            val pageTitle = stringResource(DebugImplMR.strings.debug_biometric_title)
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("生物识别测试") },
+                        title = { Text(pageTitle) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -68,21 +71,57 @@ private fun BiometricTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    var result by remember { mutableStateOf("认证结果将在此显示…\n提示：生物识别依赖硬件，当前平台可能不支持。") }
+    val resultPlaceholder = stringResource(DebugImplMR.strings.debug_biometric_result_placeholder)
+    var result by remember { mutableStateOf(resultPlaceholder) }
     val biometric = remember { provideBiometric() }
+
+    val btnDetectSupport = stringResource(DebugImplMR.strings.debug_biometric_btn_detect_support)
+    val btnGetTypes = stringResource(DebugImplMR.strings.debug_biometric_btn_get_types)
+    val btnAuthenticate = stringResource(DebugImplMR.strings.debug_biometric_btn_authenticate)
+    val resultTitle = stringResource(DebugImplMR.strings.debug_biometric_result_title)
+    val resultDetectSupport = stringResource(DebugImplMR.strings.debug_biometric_result_detect_support)
+    val resultDetectSupportException = stringResource(DebugImplMR.strings.debug_biometric_result_detect_support_exception)
+    val resultNoTypes = stringResource(DebugImplMR.strings.debug_biometric_result_no_types)
+    val resultGetTypesSuccess = stringResource(DebugImplMR.strings.debug_biometric_result_get_types_success)
+    val resultGetTypesException = stringResource(DebugImplMR.strings.debug_biometric_result_get_types_exception)
+    val resultAuthenticateCalling = stringResource(DebugImplMR.strings.debug_biometric_result_authenticate_calling)
+    val resultAuthenticateResult = stringResource(DebugImplMR.strings.debug_biometric_result_authenticate_result)
+    val resultAuthenticateException = stringResource(DebugImplMR.strings.debug_biometric_result_authenticate_exception)
+    val authenticateTitle = stringResource(DebugImplMR.strings.debug_biometric_authenticate_title)
+    val authenticateCancel = stringResource(DebugImplMR.strings.debug_biometric_authenticate_cancel)
+    val typeFace = stringResource(DebugImplMR.strings.debug_biometric_type_face)
+    val typeFingerprint = stringResource(DebugImplMR.strings.debug_biometric_type_fingerprint)
+    val typePin = stringResource(DebugImplMR.strings.debug_biometric_type_pin)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
             BiometricDetectSection(
                 biometric = biometric,
+                btnDetectSupport = btnDetectSupport,
+                btnGetTypes = btnGetTypes,
+                btnAuthenticate = btnAuthenticate,
+                resultDetectSupport = resultDetectSupport,
+                resultDetectSupportException = resultDetectSupportException,
+                resultNoTypes = resultNoTypes,
+                resultGetTypesSuccess = resultGetTypesSuccess,
+                resultGetTypesException = resultGetTypesException,
+                resultAuthenticateCalling = resultAuthenticateCalling,
+                resultAuthenticateResult = resultAuthenticateResult,
+                resultAuthenticateException = resultAuthenticateException,
+                authenticateTitle = authenticateTitle,
+                authenticateCancel = authenticateCancel,
+                typeFace = typeFace,
+                typeFingerprint = typeFingerprint,
+                typePin = typePin,
                 onResultChange = { result = it }
             )
         }
         item {
-            BiometricResultSection(result = result)
+            BiometricResultSection(result = result, resultTitle = resultTitle)
         }
         item {
-            BiometricCloseButton(onClose)
+            BiometricCloseButton(btnText = btnClose, onClose = onClose)
         }
     }
 }
@@ -90,51 +129,68 @@ private fun BiometricTestContent(
 @Composable
 private fun BiometricDetectSection(
     biometric: com.kuikly.init.common.base.platform.biometric.Biometric,
+    btnDetectSupport: String,
+    btnGetTypes: String,
+    btnAuthenticate: String,
+    resultDetectSupport: String,
+    resultDetectSupportException: String,
+    resultNoTypes: String,
+    resultGetTypesSuccess: String,
+    resultGetTypesException: String,
+    resultAuthenticateCalling: String,
+    resultAuthenticateResult: String,
+    resultAuthenticateException: String,
+    authenticateTitle: String,
+    authenticateCancel: String,
+    typeFace: String,
+    typeFingerprint: String,
+    typePin: String,
     onResultChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary("检测设备是否支持") {
+    HardwareActionButtonPrimary(btnDetectSupport) {
         try {
             val supported = biometric.isSupported()
-            onResultChange("设备支持生物识别: $supported")
+            onResultChange(String.format(resultDetectSupport, supported))
         } catch (e: Exception) {
-            onResultChange("检测支持异常: ${e.message}")
+            onResultChange(String.format(resultDetectSupportException, e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary("获取支持的类型") {
+    HardwareActionButtonPrimary(btnGetTypes) {
         try {
             val types = biometric.getSupportedTypes()
             onResultChange(
                 if (types.isEmpty()) {
-                    "无支持的生物识别类型"
+                    resultNoTypes
                 } else {
-                    "支持的类型:\n${types.joinToString("\n") { "• ${typeLabel(it)}" }}"
+                    val labelList = types.joinToString("\n") { "• ${typeLabel(it, typeFace, typeFingerprint, typePin)}" }
+                    String.format(resultGetTypesSuccess, labelList)
                 }
             )
         } catch (e: Exception) {
-            onResultChange("获取类型异常: ${e.message}")
+            onResultChange(String.format(resultGetTypesException, e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonSecondary("发起生物识别认证") {
-        onResultChange("发起认证…")
+    HardwareActionButtonSecondary(btnAuthenticate) {
+        onResultChange(resultAuthenticateCalling)
         try {
             biometric.authenticate(
-                title = "身份验证",
-                cancelText = "取消"
+                title = authenticateTitle,
+                cancelText = authenticateCancel
             ) { authResult ->
-                onResultChange("认证结果: $authResult")
+                onResultChange(String.format(resultAuthenticateResult, authResult))
             }
         } catch (e: Exception) {
-            onResultChange("认证异常: ${e.message}")
+            onResultChange(String.format(resultAuthenticateException, e.message))
         }
     }
 }
 
 @Composable
-private fun BiometricResultSection(result: String) {
+private fun BiometricResultSection(result: String, resultTitle: String) {
     Spacer(Modifier.height(16.dp))
-    Text("认证结果", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text(resultTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -154,9 +210,9 @@ private fun BiometricResultSection(result: String) {
 }
 
 @Composable
-private fun BiometricCloseButton(onClose: () -> Unit) {
+private fun BiometricCloseButton(btnText: String, onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
+    HardwareActionButtonSecondary(btnText, onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 
@@ -190,8 +246,8 @@ private fun HardwareActionButtonSecondary(text: String, onClick: () -> Unit) {
     }
 }
 
-private fun typeLabel(type: BiometricType): String = when (type) {
-    BiometricType.FACE -> "人脸"
-    BiometricType.FINGERPRINT -> "指纹"
-    BiometricType.PIN -> "PIN/密码"
+private fun typeLabel(type: BiometricType, typeFace: String, typeFingerprint: String, typePin: String): String = when (type) {
+    BiometricType.FACE -> typeFace
+    BiometricType.FINGERPRINT -> typeFingerprint
+    BiometricType.PIN -> typePin
 }

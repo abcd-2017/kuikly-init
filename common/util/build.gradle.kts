@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.tencent.kuiklybase.resource.generator")
 }
 
 kotlin {
@@ -19,6 +20,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
         }
         val iosX64Main by getting
@@ -31,6 +34,12 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
         }
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.kuikly.init.common.util"
+    multiplatformResourcesClassName = "UtilMR"
+    multiplatformResourcesPrefix = "util_"
 }
 
 android {

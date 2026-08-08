@@ -28,6 +28,8 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.FileSystem
 import com.kuikly.init.common.base.platform.provideFileSystem
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -49,18 +51,47 @@ internal class DebugFilePage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugFileContent(onClose: () -> Unit) {
-    var result by remember { mutableStateOf("操作结果将在此显示") }
-    var fileName by remember { mutableStateOf("test.txt") }
-    var fileContent by remember { mutableStateOf("Hello Kuikly FileSystem") }
+    val placeholderText = stringResource(DebugImplMR.strings.debug_file_result_placeholder)
+    var result by remember { mutableStateOf(placeholderText) }
+    val defaultFileName = stringResource(DebugImplMR.strings.debug_file_default_file_name)
+    val defaultFileContent = stringResource(DebugImplMR.strings.debug_file_default_file_content)
+    var fileName by remember { mutableStateOf(defaultFileName) }
+    var fileContent by remember { mutableStateOf(defaultFileContent) }
     val fileSystem = remember { provideFileSystem() }
+
+    val pageTitle = stringResource(DebugImplMR.strings.debug_file_title)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close)
+    val labelFileName = stringResource(DebugImplMR.strings.debug_file_label_file_name)
+    val labelFileContent = stringResource(DebugImplMR.strings.debug_file_label_file_content)
+    val labelLargeFile = stringResource(DebugImplMR.strings.debug_file_label_large_file)
+    val placeholderFileName = stringResource(DebugImplMR.strings.debug_file_placeholder_file_name)
+    val placeholderFileContent = stringResource(DebugImplMR.strings.debug_file_placeholder_file_content)
+    val btnWriteFile = stringResource(DebugImplMR.strings.debug_file_btn_write_file)
+    val btnReadFile = stringResource(DebugImplMR.strings.debug_file_btn_read_file)
+    val btnCheckExists = stringResource(DebugImplMR.strings.debug_file_btn_check_exists)
+    val btnDeleteFile = stringResource(DebugImplMR.strings.debug_file_btn_delete_file)
+    val btnGetPath = stringResource(DebugImplMR.strings.debug_file_btn_get_path)
+    val btnWrite1kb = stringResource(DebugImplMR.strings.debug_file_btn_write_1kb)
+    val btnWrite10kb = stringResource(DebugImplMR.strings.debug_file_btn_write_10kb)
+    val btnWrite100kb = stringResource(DebugImplMR.strings.debug_file_btn_write_100kb)
+    val resultWriteSuccess = stringResource(DebugImplMR.strings.debug_file_result_write_success)
+    val resultWriteFail = stringResource(DebugImplMR.strings.debug_file_result_write_fail)
+    val resultFileNotExist = stringResource(DebugImplMR.strings.debug_file_result_file_not_exist)
+    val resultReadSuccess = stringResource(DebugImplMR.strings.debug_file_result_read_success)
+    val resultReadFail = stringResource(DebugImplMR.strings.debug_file_result_read_fail)
+    val resultExists = stringResource(DebugImplMR.strings.debug_file_result_exists)
+    val resultDelete = stringResource(DebugImplMR.strings.debug_file_result_delete)
+    val resultDeleteFail = stringResource(DebugImplMR.strings.debug_file_result_delete_fail)
+    val resultGetPath = stringResource(DebugImplMR.strings.debug_file_result_get_path)
+    val resultWriteSize = stringResource(DebugImplMR.strings.debug_file_result_write_size)
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("FileSystem 测试") },
+                title = { Text(pageTitle) },
                 actions = {
                     Text(
-                        text = "关闭",
+                        text = btnClose,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -82,7 +113,11 @@ private fun DebugFileContent(onClose: () -> Unit) {
                     fileName = fileName,
                     fileContent = fileContent,
                     onFileNameChange = { fileName = it },
-                    onFileContentChange = { fileContent = it }
+                    onFileContentChange = { fileContent = it },
+                    labelFileName = labelFileName,
+                    labelFileContent = labelFileContent,
+                    placeholderFileName = placeholderFileName,
+                    placeholderFileContent = placeholderFileContent
                 )
             }
             item {
@@ -90,12 +125,32 @@ private fun DebugFileContent(onClose: () -> Unit) {
                     fileSystem = fileSystem,
                     fileName = fileName,
                     fileContent = fileContent,
+                    btnWriteFile = btnWriteFile,
+                    btnReadFile = btnReadFile,
+                    btnCheckExists = btnCheckExists,
+                    btnDeleteFile = btnDeleteFile,
+                    btnGetPath = btnGetPath,
+                    resultWriteSuccess = resultWriteSuccess,
+                    resultWriteFail = resultWriteFail,
+                    resultFileNotExist = resultFileNotExist,
+                    resultReadSuccess = resultReadSuccess,
+                    resultReadFail = resultReadFail,
+                    resultExists = resultExists,
+                    resultDelete = resultDelete,
+                    resultDeleteFail = resultDeleteFail,
+                    resultGetPath = resultGetPath,
                     onResultChange = { result = it }
                 )
             }
             item {
                 FileLargeFileSection(
                     fileSystem = fileSystem,
+                    labelLargeFile = labelLargeFile,
+                    btnWrite1kb = btnWrite1kb,
+                    btnWrite10kb = btnWrite10kb,
+                    btnWrite100kb = btnWrite100kb,
+                    resultWriteSize = resultWriteSize,
+                    resultWriteFail = resultWriteFail,
                     onResultChange = { result = it }
                 )
             }
@@ -112,19 +167,23 @@ private fun FileInputSection(
     fileName: String,
     fileContent: String,
     onFileNameChange: (String) -> Unit,
-    onFileContentChange: (String) -> Unit
+    onFileContentChange: (String) -> Unit,
+    labelFileName: String,
+    labelFileContent: String,
+    placeholderFileName: String,
+    placeholderFileContent: String
 ) {
-    Text("文件名：", fontSize = 14.sp, color = Color(0xFF666666))
+    Text(labelFileName, fontSize = 14.sp, color = Color(0xFF666666))
     DebugTextField(
         value = fileName,
-        placeholder = "输入文件名",
+        placeholder = placeholderFileName,
         onValueChange = onFileNameChange
     )
     DebugVSpacer(4.dp)
-    Text("文件内容：", fontSize = 14.sp, color = Color(0xFF666666))
+    Text(labelFileContent, fontSize = 14.sp, color = Color(0xFF666666))
     DebugTextField(
         value = fileContent,
-        placeholder = "输入文件内容",
+        placeholder = placeholderFileContent,
         onValueChange = onFileContentChange
     )
 }
@@ -134,82 +193,102 @@ private fun FileBasicOpsSection(
     fileSystem: FileSystem,
     fileName: String,
     fileContent: String,
+    btnWriteFile: String,
+    btnReadFile: String,
+    btnCheckExists: String,
+    btnDeleteFile: String,
+    btnGetPath: String,
+    resultWriteSuccess: String,
+    resultWriteFail: String,
+    resultFileNotExist: String,
+    resultReadSuccess: String,
+    resultReadFail: String,
+    resultExists: String,
+    resultDelete: String,
+    resultDeleteFail: String,
+    resultGetPath: String,
     onResultChange: (String) -> Unit
 ) {
     DebugVSpacer(8.dp)
-    DebugTestButton("写入文件") {
+    DebugTestButton(btnWriteFile) {
         try {
             fileSystem.writeFile(fileName, fileContent.encodeToByteArray())
-            onResultChange("写入成功：$fileName\n内容：$fileContent")
+            onResultChange(String.format(resultWriteSuccess, fileName, fileContent))
         } catch (e: Exception) {
-            onResultChange("写入失败：${e.message}")
+            onResultChange(String.format(resultWriteFail, e.message))
         }
     }
-    DebugTestButton("读取文件") {
+    DebugTestButton(btnReadFile) {
         try {
             if (!fileSystem.exists(fileName)) {
-                onResultChange("文件不存在：$fileName")
+                onResultChange(String.format(resultFileNotExist, fileName))
             } else {
                 val data = fileSystem.readFile(fileName)
                 val content = data.decodeToString()
-                onResultChange("读取成功：$fileName\n内容：$content")
+                onResultChange(String.format(resultReadSuccess, fileName, content))
             }
         } catch (e: Exception) {
-            onResultChange("读取失败：${e.message}")
+            onResultChange(String.format(resultReadFail, e.message))
         }
     }
-    DebugTestButton("检查文件是否存在") {
+    DebugTestButton(btnCheckExists) {
         val exists = fileSystem.exists(fileName)
-        onResultChange("文件 $fileName 存在：$exists")
+        onResultChange(String.format(resultExists, fileName, exists))
     }
-    DebugTestButton("删除文件") {
+    DebugTestButton(btnDeleteFile) {
         try {
             val deleted = fileSystem.delete(fileName)
-            onResultChange("删除 $fileName：$deleted")
+            onResultChange(String.format(resultDelete, fileName, deleted))
         } catch (e: Exception) {
-            onResultChange("删除失败：${e.message}")
+            onResultChange(String.format(resultDeleteFail, e.message))
         }
     }
-    DebugTestButton("获取文件绝对路径") {
-        onResultChange("当前测试文件路径：$fileName\n（FileSystem 抽象层不提供目录枚举能力）")
+    DebugTestButton(btnGetPath) {
+        onResultChange(String.format(resultGetPath, fileName))
     }
 }
 
 @Composable
 private fun FileLargeFileSection(
     fileSystem: FileSystem,
+    labelLargeFile: String,
+    btnWrite1kb: String,
+    btnWrite10kb: String,
+    btnWrite100kb: String,
+    resultWriteSize: String,
+    resultWriteFail: String,
     onResultChange: (String) -> Unit
 ) {
     DebugVSpacer(12.dp)
-    Text("大文件写入测试：", fontSize = 14.sp, color = Color(0xFF666666))
-    DebugTestButton("写入 1KB 文件") {
+    Text(labelLargeFile, fontSize = 14.sp, color = Color(0xFF666666))
+    DebugTestButton(btnWrite1kb) {
         val data = "A".repeat(1024).encodeToByteArray()
         val name = "test_1kb.bin"
         try {
             fileSystem.writeFile(name, data)
-            onResultChange("写入 $name（${data.size} 字节）成功")
+            onResultChange(String.format(resultWriteSize, name, data.size))
         } catch (e: Exception) {
-            onResultChange("写入失败：${e.message}")
+            onResultChange(String.format(resultWriteFail, e.message))
         }
     }
-    DebugTestButton("写入 10KB 文件") {
+    DebugTestButton(btnWrite10kb) {
         val data = "B".repeat(10240).encodeToByteArray()
         val name = "test_10kb.bin"
         try {
             fileSystem.writeFile(name, data)
-            onResultChange("写入 $name（${data.size} 字节）成功")
+            onResultChange(String.format(resultWriteSize, name, data.size))
         } catch (e: Exception) {
-            onResultChange("写入失败：${e.message}")
+            onResultChange(String.format(resultWriteFail, e.message))
         }
     }
-    DebugTestButton("写入 100KB 文件") {
+    DebugTestButton(btnWrite100kb) {
         val data = "C".repeat(102400).encodeToByteArray()
         val name = "test_100kb.bin"
         try {
             fileSystem.writeFile(name, data)
-            onResultChange("写入 $name（${data.size} 字节）成功")
+            onResultChange(String.format(resultWriteSize, name, data.size))
         } catch (e: Exception) {
-            onResultChange("写入失败：${e.message}")
+            onResultChange(String.format(resultWriteFail, e.message))
         }
     }
 }

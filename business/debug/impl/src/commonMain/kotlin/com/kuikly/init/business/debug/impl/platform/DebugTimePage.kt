@@ -27,6 +27,8 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.time.provideNtpClock
 import com.kuikly.init.common.base.platform.time.provideTimezone
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import kotlinx.coroutines.launch
@@ -49,18 +51,27 @@ internal class DebugTimePage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugTimeContent(onClose: () -> Unit) {
-    var result by remember { mutableStateOf("点击刷新按钮获取时间信息") }
+    val placeholderText = stringResource(DebugImplMR.strings.debug_time_result_placeholder)
+    var result by remember { mutableStateOf(placeholderText) }
     val ntpClock = remember { provideNtpClock() }
     val timezone = remember { provideTimezone() }
     val scope = rememberCoroutineScope()
 
+    val pageTitle = stringResource(DebugImplMR.strings.debug_time_title)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close)
+    val labelTimeInfo = stringResource(DebugImplMR.strings.debug_time_label_time_info)
+    val btnRefresh = stringResource(DebugImplMR.strings.debug_time_btn_refresh)
+    val resultFormat = stringResource(DebugImplMR.strings.debug_time_result_format)
+    val fetchFail = stringResource(DebugImplMR.strings.debug_time_fetch_fail)
+    val detecting = stringResource(DebugImplMR.strings.debug_time_detecting)
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Time 测试") },
+                title = { Text(pageTitle) },
                 actions = {
                     Text(
-                        text = "关闭",
+                        text = btnClose,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -82,6 +93,11 @@ private fun DebugTimeContent(onClose: () -> Unit) {
                     ntpClock = ntpClock,
                     timezone = timezone,
                     scope = scope,
+                    labelTimeInfo = labelTimeInfo,
+                    btnRefresh = btnRefresh,
+                    resultFormat = resultFormat,
+                    fetchFail = fetchFail,
+                    detecting = detecting,
                     onResultChange = { result = it }
                 )
             }
@@ -98,13 +114,18 @@ private fun TimeInfoSection(
     ntpClock: com.kuikly.init.common.base.platform.time.NtpClock,
     timezone: com.kuikly.init.common.base.platform.time.Timezone,
     scope: kotlinx.coroutines.CoroutineScope,
+    labelTimeInfo: String,
+    btnRefresh: String,
+    resultFormat: String,
+    fetchFail: String,
+    detecting: String,
     onResultChange: (String) -> Unit
 ) {
-    Text("时间同步 / 时区信息", fontSize = 16.sp, color = Color(0xFF333333))
+    Text(labelTimeInfo, fontSize = 16.sp, color = Color(0xFF333333))
     DebugVSpacer(8.dp)
-    DebugTestButton("刷新时间信息") {
+    DebugTestButton(btnRefresh) {
         scope.launch {
-            onResultChange("检测中……")
+            onResultChange(detecting)
             val serverTime = ntpClock.getServerTime()
             val offset = ntpClock.getClockOffset()
             val tzId = timezone.getTimezoneId()
@@ -112,16 +133,16 @@ private fun TimeInfoSection(
             val tzOffsetHour = timezone.getOffsetHours()
             val isDst = timezone.isDaylightSaving()
             val abbrev = timezone.getAbbreviation()
-            onResultChange(
-                buildString {
-                    appendLine("NTP 服务器时间：${serverTime ?: "获取失败"}")
-                    appendLine("NTP 时间偏差（毫秒）：${offset ?: "获取失败"}")
-                    appendLine("本地时区 ID：$tzId")
-                    appendLine("时区偏移量：$tzOffsetMin 分钟（$tzOffsetHour 小时）")
-                    appendLine("是否夏令时：$isDst")
-                    appendLine("时区缩写：$abbrev")
-                }
-            )
+            onResultChange(String.format(
+                resultFormat,
+                serverTime ?: fetchFail,
+                offset ?: fetchFail,
+                tzId,
+                tzOffsetMin,
+                tzOffsetHour,
+                isDst,
+                abbrev
+            ))
         }
     }
 }

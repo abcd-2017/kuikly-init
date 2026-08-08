@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.tencent.kuiklybase.resource.generator")
 }
 
 kotlin {
@@ -21,6 +22,8 @@ kotlin {
             dependencies {
                 implementation(libs.koin.core)
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
         }
         val androidMain by getting {
@@ -48,4 +51,10 @@ android {
     defaultConfig {
         minSdk = 21
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.kuikly.init.common.base"
+    multiplatformResourcesClassName = "BaseMR"
+    multiplatformResourcesPrefix = "base_"
 }

@@ -37,33 +37,10 @@ import com.kuikly.init.common.base.platform.toast.provideToast
 import com.tencent.kuikly.compose.coil3.rememberAsyncImagePainter
 import com.tencent.kuikly.compose.foundation.Image
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
-
-private const val PAGE_TITLE = "🖼️ 图片渲染测试"
-private const val SECTION_NETWORK_IMAGE = "网络图片"
-private const val SECTION_ROUNDED = "圆角图片"
-private const val SECTION_CONTENT_SCALE = "缩放模式"
-private const val SECTION_BORDERED = "带边框图片"
-private const val SECTION_FIXED_SIZE = "固定尺寸"
-private const val SECTION_CLICKABLE = "图片点击"
-private const val LABEL_IMAGE_1 = "图1"
-private const val LABEL_IMAGE_2 = "图2"
-private const val LABEL_IMAGE_3 = "图3"
-private const val LABEL_0DP = "0dp"
-private const val LABEL_8DP = "8dp"
-private const val LABEL_16DP = "16dp"
-private const val LABEL_CIRCLE = "圆形"
-private const val LABEL_FIT = "Fit"
-private const val LABEL_CROP = "Crop"
-private const val LABEL_FILL_BOUNDS = "FillBounds"
-private const val LABEL_BORDERED = "带边框"
-private const val LABEL_50X50 = "50x50"
-private const val LABEL_100X100 = "100x100"
-private const val LABEL_150X150 = "150x150"
-private const val LABEL_CLICK_TEST = "点击测试"
-private const val MSG_IMAGE_CLICKED = "图片被点击"
-private const val BTN_CLOSE = "关闭页面"
 
 @Page("debug_image")
 internal class DebugImagePage : BasePager() {
@@ -72,10 +49,11 @@ internal class DebugImagePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
+            val pageTitle = stringResource(DebugImplMR.strings.debug_image_title)
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(PAGE_TITLE) },
+                        title = { Text(pageTitle) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -99,27 +77,56 @@ private fun DebugImageContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
+    val sectionNetworkImage = stringResource(DebugImplMR.strings.debug_image_section_network_image)
+    val sectionRounded = stringResource(DebugImplMR.strings.debug_image_section_rounded)
+    val sectionContentScale = stringResource(DebugImplMR.strings.debug_image_section_content_scale)
+    val sectionBordered = stringResource(DebugImplMR.strings.debug_image_section_bordered)
+    val sectionFixedSize = stringResource(DebugImplMR.strings.debug_image_section_fixed_size)
+    val sectionClickable = stringResource(DebugImplMR.strings.debug_image_section_clickable)
+    val labelImage1 = stringResource(DebugImplMR.strings.debug_image_label_image_1)
+    val labelImage2 = stringResource(DebugImplMR.strings.debug_image_label_image_2)
+    val labelImage3 = stringResource(DebugImplMR.strings.debug_image_label_image_3)
+    val label0dp = stringResource(DebugImplMR.strings.debug_image_label_0dp)
+    val label8dp = stringResource(DebugImplMR.strings.debug_image_label_8dp)
+    val label16dp = stringResource(DebugImplMR.strings.debug_image_label_16dp)
+    val labelCircle = stringResource(DebugImplMR.strings.debug_image_label_circle)
+    val labelFit = stringResource(DebugImplMR.strings.debug_image_label_fit)
+    val labelCrop = stringResource(DebugImplMR.strings.debug_image_label_crop)
+    val labelFillBounds = stringResource(DebugImplMR.strings.debug_image_label_fill_bounds)
+    val labelBordered = stringResource(DebugImplMR.strings.debug_image_label_bordered)
+    val label50x50 = stringResource(DebugImplMR.strings.debug_image_label_50x50)
+    val label100x100 = stringResource(DebugImplMR.strings.debug_image_label_100x100)
+    val label150x150 = stringResource(DebugImplMR.strings.debug_image_label_150x150)
+    val labelClickTest = stringResource(DebugImplMR.strings.debug_image_label_click_test)
+    val msgImageClicked = stringResource(DebugImplMR.strings.debug_image_msg_image_clicked)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+
     LazyColumn(
         modifier = modifier.padding(16.dp)
     ) {
-        item { NetworkImageSection() }
-        item { RoundedCornerSection() }
-        item { ContentScaleSection() }
-        item { BorderedImageSection() }
-        item { FixedSizeSection() }
-        item { ClickableImageSection() }
-        item { CloseButtonSection(onClose) }
+        item { NetworkImageSection(sectionNetworkImage, labelImage1, labelImage2, labelImage3) }
+        item { RoundedCornerSection(sectionRounded, label0dp, label8dp, label16dp, labelCircle) }
+        item { ContentScaleSection(sectionContentScale, labelFit, labelCrop, labelFillBounds) }
+        item { BorderedImageSection(sectionBordered, labelBordered) }
+        item { FixedSizeSection(sectionFixedSize, label50x50, label100x100, label150x150) }
+        item { ClickableImageSection(sectionClickable, labelClickTest, msgImageClicked) }
+        item { CloseButtonSection(btnClose, onClose) }
     }
 }
 
 @Composable
-private fun NetworkImageSection() {
-    DebugSectionTitle(SECTION_NETWORK_IMAGE)
+private fun NetworkImageSection(
+    title: String,
+    labelImage1: String,
+    labelImage2: String,
+    labelImage3: String
+) {
+    DebugSectionTitle(title)
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         listOf(
-            "https://picsum.photos/200/200?random=1" to LABEL_IMAGE_1,
-            "https://picsum.photos/200/200?random=2" to LABEL_IMAGE_2,
-            "https://picsum.photos/200/200?random=3" to LABEL_IMAGE_3
+            "https://picsum.photos/200/200?random=1" to labelImage1,
+            "https://picsum.photos/200/200?random=2" to labelImage2,
+            "https://picsum.photos/200/200?random=3" to labelImage3
         ).forEach { (url, label) ->
             Column {
                 Image(
@@ -135,14 +142,20 @@ private fun NetworkImageSection() {
 }
 
 @Composable
-private fun RoundedCornerSection() {
-    DebugSectionTitle(SECTION_ROUNDED)
+private fun RoundedCornerSection(
+    title: String,
+    label0dp: String,
+    label8dp: String,
+    label16dp: String,
+    labelCircle: String
+) {
+    DebugSectionTitle(title)
     val url = "https://picsum.photos/200/200?random=4"
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         listOf(
-            0.dp to LABEL_0DP,
-            8.dp to LABEL_8DP,
-            16.dp to LABEL_16DP
+            0.dp to label0dp,
+            8.dp to label8dp,
+            16.dp to label16dp
         ).forEach { (radius, label) ->
             Column {
                 Image(
@@ -159,26 +172,31 @@ private fun RoundedCornerSection() {
         Column {
             Image(
                 painter = rememberAsyncImagePainter(url),
-                contentDescription = LABEL_CIRCLE,
+                contentDescription = labelCircle,
                 modifier = Modifier
                     .size(80.dp)
                     .clip(RoundedCornerShape(40.dp)),
                 contentScale = ContentScale.Crop
             )
-            Text(text = LABEL_CIRCLE, fontSize = 12.sp, color = Color.Gray)
+            Text(text = labelCircle, fontSize = 12.sp, color = Color.Gray)
         }
     }
 }
 
 @Composable
-private fun ContentScaleSection() {
-    DebugSectionTitle(SECTION_CONTENT_SCALE)
+private fun ContentScaleSection(
+    title: String,
+    labelFit: String,
+    labelCrop: String,
+    labelFillBounds: String
+) {
+    DebugSectionTitle(title)
     val url = "https://picsum.photos/300/200?random=5"
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         listOf(
-            ContentScale.Fit to LABEL_FIT,
-            ContentScale.Crop to LABEL_CROP,
-            ContentScale.FillBounds to LABEL_FILL_BOUNDS
+            ContentScale.Fit to labelFit,
+            ContentScale.Crop to labelCrop,
+            ContentScale.FillBounds to labelFillBounds
         ).forEach { (scale, label) ->
             Column {
                 Image(
@@ -195,12 +213,12 @@ private fun ContentScaleSection() {
 }
 
 @Composable
-private fun BorderedImageSection() {
-    DebugSectionTitle(SECTION_BORDERED)
+private fun BorderedImageSection(title: String, labelBordered: String) {
+    DebugSectionTitle(title)
     val url = "https://picsum.photos/200/200?random=6"
     Image(
         painter = rememberAsyncImagePainter(url),
-        contentDescription = LABEL_BORDERED,
+        contentDescription = labelBordered,
         modifier = Modifier
             .size(120.dp)
             .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
@@ -210,11 +228,16 @@ private fun BorderedImageSection() {
 }
 
 @Composable
-private fun FixedSizeSection() {
-    DebugSectionTitle(SECTION_FIXED_SIZE)
+private fun FixedSizeSection(
+    title: String,
+    label50x50: String,
+    label100x100: String,
+    label150x150: String
+) {
+    DebugSectionTitle(title)
     val url = "https://picsum.photos/200/200?random=7"
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        listOf(50.dp to LABEL_50X50, 100.dp to LABEL_100X100, 150.dp to LABEL_150X150).forEach { (size, label) ->
+        listOf(50.dp to label50x50, 100.dp to label100x100, 150.dp to label150x150).forEach { (size, label) ->
             Column {
                 Image(
                     painter = rememberAsyncImagePainter(url),
@@ -229,24 +252,28 @@ private fun FixedSizeSection() {
 }
 
 @Composable
-private fun ClickableImageSection() {
-    DebugSectionTitle(SECTION_CLICKABLE)
+private fun ClickableImageSection(
+    title: String,
+    labelClickTest: String,
+    msgImageClicked: String
+) {
+    DebugSectionTitle(title)
     val url = "https://picsum.photos/200/200?random=8"
     Image(
         painter = rememberAsyncImagePainter(url),
-        contentDescription = LABEL_CLICK_TEST,
+        contentDescription = labelClickTest,
         modifier = Modifier
             .size(120.dp)
             .clip(RoundedCornerShape(8.dp))
             .clickable {
-                provideToast().show(MSG_IMAGE_CLICKED)
+                provideToast().show(msgImageClicked)
             },
         contentScale = ContentScale.Crop
     )
 }
 
 @Composable
-private fun CloseButtonSection(onClose: () -> Unit) {
+private fun CloseButtonSection(btnText: String, onClose: () -> Unit) {
     DebugVSpacer(24.dp)
     Box(
         modifier = Modifier
@@ -258,7 +285,7 @@ private fun CloseButtonSection(onClose: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = BTN_CLOSE,
+            text = btnText,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 16.sp
         )

@@ -62,3 +62,5 @@ actual class FileSystem {
         return output.toByteArray()
     }
 }
+
+actual fun provideFileSystem(): FileSystem = FileSystem()

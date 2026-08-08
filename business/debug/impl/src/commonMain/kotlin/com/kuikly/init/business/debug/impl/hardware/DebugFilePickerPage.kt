@@ -34,6 +34,8 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.picker.PickedFile
 import com.kuikly.init.common.base.platform.picker.provideFilePicker
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import kotlinx.coroutines.launch
@@ -45,10 +47,11 @@ internal class DebugFilePickerPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
+            val pageTitle = stringResource(DebugImplMR.strings.debug_file_picker_title)
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("文件选择测试") },
+                        title = { Text(pageTitle) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -70,23 +73,49 @@ private fun FilePickerTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    var result by remember { mutableStateOf("选择的文件信息将在此显示…") }
+    val resultPlaceholder = stringResource(DebugImplMR.strings.debug_file_picker_result_placeholder)
+    var result by remember { mutableStateOf(resultPlaceholder) }
     val scope = rememberCoroutineScope()
     val filePicker = remember { provideFilePicker() }
+
+    val btnPickFile = stringResource(DebugImplMR.strings.debug_file_picker_btn_pick_file)
+    val btnPickImage = stringResource(DebugImplMR.strings.debug_file_picker_btn_pick_image)
+    val btnPickDocument = stringResource(DebugImplMR.strings.debug_file_picker_btn_pick_document)
+    val resultTitle = stringResource(DebugImplMR.strings.debug_file_picker_result_title)
+    val resultPickFileSuccess = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_file_success)
+    val resultPickImageSuccess = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_image_success)
+    val resultPickDocumentSuccess = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_document_success)
+    val resultCancel = stringResource(DebugImplMR.strings.debug_file_picker_result_cancel)
+    val resultPickFileException = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_file_exception)
+    val resultPickImageException = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_image_exception)
+    val resultPickDocumentException = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_document_exception)
+    val resultFormat = stringResource(DebugImplMR.strings.debug_file_picker_result_format)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
             FilePickerActionSection(
                 scope = scope,
                 filePicker = filePicker,
+                btnPickFile = btnPickFile,
+                btnPickImage = btnPickImage,
+                btnPickDocument = btnPickDocument,
+                resultPickFileSuccess = resultPickFileSuccess,
+                resultPickImageSuccess = resultPickImageSuccess,
+                resultPickDocumentSuccess = resultPickDocumentSuccess,
+                resultCancel = resultCancel,
+                resultPickFileException = resultPickFileException,
+                resultPickImageException = resultPickImageException,
+                resultPickDocumentException = resultPickDocumentException,
+                resultFormat = resultFormat,
                 onResultChange = { result = it }
             )
         }
         item {
-            FilePickerResultSection(result = result)
+            FilePickerResultSection(result = result, resultTitle = resultTitle)
         }
         item {
-            FilePickerCloseButton(onClose)
+            FilePickerCloseButton(btnText = btnClose, onClose = onClose)
         }
     }
 }
@@ -95,64 +124,75 @@ private fun FilePickerTestContent(
 private fun FilePickerActionSection(
     scope: kotlinx.coroutines.CoroutineScope,
     filePicker: com.kuikly.init.common.base.platform.picker.FilePicker,
+    btnPickFile: String,
+    btnPickImage: String,
+    btnPickDocument: String,
+    resultPickFileSuccess: String,
+    resultPickImageSuccess: String,
+    resultPickDocumentSuccess: String,
+    resultCancel: String,
+    resultPickFileException: String,
+    resultPickImageException: String,
+    resultPickDocumentException: String,
+    resultFormat: String,
     onResultChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary("pickFile 选择任意文件") {
+    HardwareActionButtonPrimary(btnPickFile) {
         scope.launch {
             try {
                 val files = filePicker.pickFile()
                 onResultChange(
                     if (files.isNotEmpty()) {
-                        "选择文件成功:\n${fileInfo(files.first())}"
+                        String.format(resultPickFileSuccess, fileInfo(files.first(), resultFormat))
                     } else {
-                        "取消选择"
+                        resultCancel
                     }
                 )
             } catch (e: Exception) {
-                onResultChange("选择文件异常: ${e.message}")
+                onResultChange(String.format(resultPickFileException, e.message))
             }
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary("pickImage 选择图片") {
+    HardwareActionButtonPrimary(btnPickImage) {
         scope.launch {
             try {
                 val files = filePicker.pickImage()
                 onResultChange(
                     if (files.isNotEmpty()) {
-                        "选择图片成功:\n${fileInfo(files.first())}"
+                        String.format(resultPickImageSuccess, fileInfo(files.first(), resultFormat))
                     } else {
-                        "取消选择"
+                        resultCancel
                     }
                 )
             } catch (e: Exception) {
-                onResultChange("选择图片异常: ${e.message}")
+                onResultChange(String.format(resultPickImageException, e.message))
             }
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary("pickDocument 选择文档") {
+    HardwareActionButtonPrimary(btnPickDocument) {
         scope.launch {
             try {
                 val files = filePicker.pickDocument()
                 onResultChange(
                     if (files.isNotEmpty()) {
-                        "选择文档成功:\n${fileInfo(files.first())}"
+                        String.format(resultPickDocumentSuccess, fileInfo(files.first(), resultFormat))
                     } else {
-                        "取消选择"
+                        resultCancel
                     }
                 )
             } catch (e: Exception) {
-                onResultChange("选择文档异常: ${e.message}")
+                onResultChange(String.format(resultPickDocumentException, e.message))
             }
         }
     }
 }
 
 @Composable
-private fun FilePickerResultSection(result: String) {
+private fun FilePickerResultSection(result: String, resultTitle: String) {
     Spacer(Modifier.height(16.dp))
-    Text("文件信息", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text(resultTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -172,9 +212,9 @@ private fun FilePickerResultSection(result: String) {
 }
 
 @Composable
-private fun FilePickerCloseButton(onClose: () -> Unit) {
+private fun FilePickerCloseButton(btnText: String, onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
+    HardwareActionButtonSecondary(btnText, onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 
@@ -208,6 +248,6 @@ private fun HardwareActionButtonSecondary(text: String, onClick: () -> Unit) {
     }
 }
 
-private fun fileInfo(f: PickedFile): String {
-    return "name=${f.name}\npath=${f.path}\nsize=${f.size}B\nmime=${f.mimeType ?: "(未知)"}"
+private fun fileInfo(f: PickedFile, format: String): String {
+    return String.format(format, f.name, f.path, f.size, f.mimeType ?: "(未知)")
 }

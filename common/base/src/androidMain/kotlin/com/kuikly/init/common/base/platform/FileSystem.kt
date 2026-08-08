@@ -8,3 +8,5 @@ actual class FileSystem {
     actual fun exists(path: String): Boolean = File(path).exists()
     actual fun delete(path: String): Boolean = File(path).delete()
 }
+
+actual fun provideFileSystem(): FileSystem = FileSystem()

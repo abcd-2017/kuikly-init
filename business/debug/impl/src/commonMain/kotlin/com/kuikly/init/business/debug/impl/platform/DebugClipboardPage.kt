@@ -31,26 +31,10 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.clipboard.provideClipboard
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
-
-private const val PAGE_TITLE = "Clipboard 测试"
-private const val BTN_CLOSE = "关闭"
-private const val RESULT_PLACEHOLDER = "操作结果将在此显示"
-private const val INPUT_DEFAULT = "自定义测试文本"
-private const val BTN_COPY_PRESET = "复制预设文本到剪贴板"
-private const val BTN_COPY_TIMESTAMP = "复制当前时间戳到剪贴板"
-private const val BTN_PASTE = "读取剪贴板内容"
-private const val BTN_CLEAR = "清空剪贴板"
-private const val BTN_CHECK = "检查剪贴板是否有内容"
-private const val PRESET_TEXT = "Kuikly Clipboard Test"
-private const val RESULT_PRESET_COPIED = "已复制预设文本：Kuikly Clipboard Test"
-private const val RESULT_CLIPBOARD_EMPTY = "剪贴板为空"
-private const val RESULT_CLIPBOARD_CLEARED = "剪贴板已清空"
-private const val LABEL_CUSTOM_INPUT = "自定义文本输入："
-private const val PLACEHOLDER_CUSTOM_INPUT = "输入要复制到剪贴板的文本"
-private const val BTN_COPY = "复制"
-private const val BTN_VERIFY = "读取验证"
 
 @Page("debug_clipboard")
 internal class DebugClipboardPage : BasePager() {
@@ -70,17 +54,40 @@ internal class DebugClipboardPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugClipboardContent(onClose: () -> Unit) {
-    var result by remember { mutableStateOf(RESULT_PLACEHOLDER) }
-    var inputText by remember { mutableStateOf(INPUT_DEFAULT) }
+    val placeholderText = stringResource(DebugImplMR.strings.debug_clipboard_result_placeholder)
+    var result by remember { mutableStateOf(placeholderText) }
+    val defaultInput = stringResource(DebugImplMR.strings.debug_clipboard_input_default)
+    var inputText by remember { mutableStateOf(defaultInput) }
     val clipboard = remember { provideClipboard() }
+
+    val pageTitle = stringResource(DebugImplMR.strings.debug_clipboard_title)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close)
+    val btnCopyPreset = stringResource(DebugImplMR.strings.debug_clipboard_btn_copy_preset)
+    val btnCopyTimestamp = stringResource(DebugImplMR.strings.debug_clipboard_btn_copy_timestamp)
+    val btnPaste = stringResource(DebugImplMR.strings.debug_clipboard_btn_paste)
+    val btnClear = stringResource(DebugImplMR.strings.debug_clipboard_btn_clear)
+    val btnCheck = stringResource(DebugImplMR.strings.debug_clipboard_btn_check)
+    val presetText = stringResource(DebugImplMR.strings.debug_clipboard_preset_text)
+    val resultPresetCopied = stringResource(DebugImplMR.strings.debug_clipboard_result_preset_copied)
+    val resultClipboardEmpty = stringResource(DebugImplMR.strings.debug_clipboard_result_clipboard_empty)
+    val resultClipboardCleared = stringResource(DebugImplMR.strings.debug_clipboard_result_clipboard_cleared)
+    val labelCustomInput = stringResource(DebugImplMR.strings.debug_clipboard_label_custom_input)
+    val placeholderCustomInput = stringResource(DebugImplMR.strings.debug_clipboard_placeholder_custom_input)
+    val btnCopy = stringResource(DebugImplMR.strings.debug_clipboard_btn_copy)
+    val btnVerify = stringResource(DebugImplMR.strings.debug_clipboard_btn_verify)
+    val resultCopyTimestamp = stringResource(DebugImplMR.strings.debug_clipboard_result_copy_timestamp)
+    val resultPasteContent = stringResource(DebugImplMR.strings.debug_clipboard_result_paste_content)
+    val resultHasText = stringResource(DebugImplMR.strings.debug_clipboard_result_has_text)
+    val resultCopyCustom = stringResource(DebugImplMR.strings.debug_clipboard_result_copy_custom)
+    val resultVerify = stringResource(DebugImplMR.strings.debug_clipboard_result_verify)
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(PAGE_TITLE) },
+                title = { Text(pageTitle) },
                 actions = {
                     Text(
-                        text = BTN_CLOSE,
+                        text = btnClose,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -98,13 +105,35 @@ private fun DebugClipboardContent(onClose: () -> Unit) {
             Modifier.fillMaxSize().padding(padding).padding(12.dp)
         ) {
             item {
-                ClipboardPresetSection(clipboard) { result = it }
+                ClipboardPresetSection(
+                    clipboard = clipboard,
+                    btnCopyPreset = btnCopyPreset,
+                    btnCopyTimestamp = btnCopyTimestamp,
+                    btnPaste = btnPaste,
+                    btnClear = btnClear,
+                    btnCheck = btnCheck,
+                    presetText = presetText,
+                    resultPresetCopied = resultPresetCopied,
+                    resultClipboardEmpty = resultClipboardEmpty,
+                    resultClipboardCleared = resultClipboardCleared,
+                    resultCopyTimestamp = resultCopyTimestamp,
+                    resultPasteContent = resultPasteContent,
+                    resultHasText = resultHasText,
+                    onResultChange = { result = it }
+                )
             }
             item {
                 ClipboardCustomInputSection(
                     inputText = inputText,
                     onInputChange = { inputText = it },
                     clipboard = clipboard,
+                    labelCustomInput = labelCustomInput,
+                    placeholderCustomInput = placeholderCustomInput,
+                    btnCopy = btnCopy,
+                    btnVerify = btnVerify,
+                    resultCopyCustom = resultCopyCustom,
+                    resultVerify = resultVerify,
+                    resultClipboardEmpty = resultClipboardEmpty,
                     onResultChange = { result = it }
                 )
             }
@@ -119,28 +148,40 @@ private fun DebugClipboardContent(onClose: () -> Unit) {
 @Composable
 private fun ClipboardPresetSection(
     clipboard: com.kuikly.init.common.base.platform.clipboard.Clipboard,
+    btnCopyPreset: String,
+    btnCopyTimestamp: String,
+    btnPaste: String,
+    btnClear: String,
+    btnCheck: String,
+    presetText: String,
+    resultPresetCopied: String,
+    resultClipboardEmpty: String,
+    resultClipboardCleared: String,
+    resultCopyTimestamp: String,
+    resultPasteContent: String,
+    resultHasText: String,
     onResultChange: (String) -> Unit
 ) {
-    DebugTestButton(BTN_COPY_PRESET) {
-        clipboard.copyText(PRESET_TEXT)
-        onResultChange(RESULT_PRESET_COPIED)
+    DebugTestButton(btnCopyPreset) {
+        clipboard.copyText(presetText)
+        onResultChange(resultPresetCopied)
     }
-    DebugTestButton(BTN_COPY_TIMESTAMP) {
+    DebugTestButton(btnCopyTimestamp) {
         val ts = System.currentTimeMillis().toString()
         clipboard.copyText(ts)
-        onResultChange("已复制时间戳：$ts")
+        onResultChange(String.format(resultCopyTimestamp, ts))
     }
-    DebugTestButton(BTN_PASTE) {
+    DebugTestButton(btnPaste) {
         val content = clipboard.pasteText()
-        onResultChange(if (content.isEmpty()) RESULT_CLIPBOARD_EMPTY else "剪贴板内容：$content")
+        onResultChange(if (content.isEmpty()) resultClipboardEmpty else String.format(resultPasteContent, content))
     }
-    DebugTestButton(BTN_CLEAR) {
+    DebugTestButton(btnClear) {
         clipboard.clear()
-        onResultChange(RESULT_CLIPBOARD_CLEARED)
+        onResultChange(resultClipboardCleared)
     }
-    DebugTestButton(BTN_CHECK) {
+    DebugTestButton(btnCheck) {
         val has = clipboard.hasText()
-        onResultChange("剪贴板是否有内容：$has")
+        onResultChange(String.format(resultHasText, has))
     }
 }
 
@@ -149,27 +190,34 @@ private fun ClipboardCustomInputSection(
     inputText: String,
     onInputChange: (String) -> Unit,
     clipboard: com.kuikly.init.common.base.platform.clipboard.Clipboard,
+    labelCustomInput: String,
+    placeholderCustomInput: String,
+    btnCopy: String,
+    btnVerify: String,
+    resultCopyCustom: String,
+    resultVerify: String,
+    resultClipboardEmpty: String,
     onResultChange: (String) -> Unit
 ) {
     DebugVSpacer(8.dp)
-    Text(LABEL_CUSTOM_INPUT, fontSize = 14.sp, color = Color(0xFF666666))
+    Text(labelCustomInput, fontSize = 14.sp, color = Color(0xFF666666))
     DebugVSpacer(4.dp)
     DebugTextField(
         value = inputText,
-        placeholder = PLACEHOLDER_CUSTOM_INPUT,
+        placeholder = placeholderCustomInput,
         onValueChange = onInputChange
     )
     DebugVSpacer(8.dp)
     Row {
-        DebugTestButton(BTN_COPY) {
+        DebugTestButton(btnCopy) {
             clipboard.copyText(inputText)
-            onResultChange("已复制自定义文本：$inputText")
+            onResultChange(String.format(resultCopyCustom, inputText))
         }
         Spacer(modifier = Modifier.width(8.dp))
-        DebugTestButton(BTN_VERIFY) {
+        DebugTestButton(btnVerify) {
             val content = clipboard.pasteText()
             val match = content == inputText
-            onResultChange("读取结果：$content\n与输入一致：$match")
+            onResultChange(String.format(resultVerify, content, match))
         }
     }
 }

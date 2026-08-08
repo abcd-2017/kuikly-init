@@ -16,3 +16,6 @@ expect class FileSystem {
     /** 删除文件 */
     fun delete(path: String): Boolean
 }
+
+/** 全局访问入口 */
+expect fun provideFileSystem(): FileSystem

@@ -33,30 +33,10 @@ import com.kuikly.init.base.BasePager
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
-
-private const val PAGE_TITLE = "📐 布局测试"
-private const val SECTION_COLUMN_NEST = "Column 嵌套"
-private const val SECTION_ROW_ARRANGE = "Row 排列"
-private const val SECTION_BOX_OVERLAP = "Box 层叠"
-private const val SECTION_WEIGHT = "权重布局 (1:2)"
-private const val SECTION_SCROLL = "滚动测试 (20 卡片)"
-private const val SECTION_PADDING = "边距对比 (8dp / 16dp / 24dp)"
-private const val SECTION_CENTER_ALIGN = "居中对齐"
-private const val TEXT_OUTER_COLUMN = "外层 Column"
-private const val TEXT_INNER_COLUMN = "内层 Column"
-private const val LABEL_RED = "红"
-private const val LABEL_BLUE = "蓝"
-private const val LABEL_GREEN = "绿"
-private const val TEXT_WEIGHT_1 = "1"
-private const val TEXT_WEIGHT_2 = "2"
-private const val PREFIX_CARD = "卡片 #"
-private const val LABEL_8DP = "8dp"
-private const val LABEL_16DP = "16dp"
-private const val LABEL_24DP = "24dp"
-private const val TEXT_CENTER = "中"
-private const val BTN_CLOSE = "关闭页面"
 
 @Page("debug_layout")
 internal class DebugLayoutPage : BasePager() {
@@ -65,10 +45,11 @@ internal class DebugLayoutPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
+            val pageTitle = stringResource(DebugImplMR.strings.debug_layout_title)
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(PAGE_TITLE) },
+                        title = { Text(pageTitle) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -92,23 +73,48 @@ private fun DebugLayoutContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
+    val sectionColumnNest = stringResource(DebugImplMR.strings.debug_layout_section_column_nest)
+    val sectionRowArrange = stringResource(DebugImplMR.strings.debug_layout_section_row_arrange)
+    val sectionBoxOverlap = stringResource(DebugImplMR.strings.debug_layout_section_box_overlap)
+    val sectionWeight = stringResource(DebugImplMR.strings.debug_layout_section_weight)
+    val sectionScroll = stringResource(DebugImplMR.strings.debug_layout_section_scroll)
+    val sectionPadding = stringResource(DebugImplMR.strings.debug_layout_section_padding)
+    val sectionCenterAlign = stringResource(DebugImplMR.strings.debug_layout_section_center_align)
+    val textOuterColumn = stringResource(DebugImplMR.strings.debug_layout_text_outer_column)
+    val textInnerColumn = stringResource(DebugImplMR.strings.debug_layout_text_inner_column)
+    val labelRed = stringResource(DebugImplMR.strings.debug_layout_label_red)
+    val labelBlue = stringResource(DebugImplMR.strings.debug_layout_label_blue)
+    val labelGreen = stringResource(DebugImplMR.strings.debug_layout_label_green)
+    val textWeight1 = stringResource(DebugImplMR.strings.debug_layout_text_weight_1)
+    val textWeight2 = stringResource(DebugImplMR.strings.debug_layout_text_weight_2)
+    val prefixCard = stringResource(DebugImplMR.strings.debug_layout_prefix_card)
+    val label8dp = stringResource(DebugImplMR.strings.debug_layout_label_8dp)
+    val label16dp = stringResource(DebugImplMR.strings.debug_layout_label_16dp)
+    val label24dp = stringResource(DebugImplMR.strings.debug_layout_label_24dp)
+    val textCenter = stringResource(DebugImplMR.strings.debug_layout_text_center)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+
     LazyColumn(
         modifier = modifier.padding(16.dp)
     ) {
-        item { ColumnNestSection() }
-        item { RowArrangeSection() }
-        item { BoxOverlapSection() }
-        item { WeightLayoutSection() }
-        item { ScrollSection() }
-        item { PaddingCompareSection() }
-        item { CenterAlignSection() }
-        item { CloseButtonSection(onClose) }
+        item { ColumnNestSection(sectionColumnNest, textOuterColumn, textInnerColumn) }
+        item { RowArrangeSection(sectionRowArrange, labelRed, labelBlue, labelGreen) }
+        item { BoxOverlapSection(sectionBoxOverlap) }
+        item { WeightLayoutSection(sectionWeight, textWeight1, textWeight2) }
+        item { ScrollSection(sectionScroll, prefixCard) }
+        item { PaddingCompareSection(sectionPadding, label8dp, label16dp, label24dp) }
+        item { CenterAlignSection(sectionCenterAlign, textCenter) }
+        item { CloseButtonSection(btnClose, onClose) }
     }
 }
 
 @Composable
-private fun ColumnNestSection() {
-    DebugSectionTitle(SECTION_COLUMN_NEST)
+private fun ColumnNestSection(
+    title: String,
+    textOuterColumn: String,
+    textInnerColumn: String
+) {
+    DebugSectionTitle(title)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,7 +122,7 @@ private fun ColumnNestSection() {
             .background(Color(0xFFE3F2FD))
             .padding(12.dp)
     ) {
-        Text(TEXT_OUTER_COLUMN, fontSize = 14.sp, color = Color(0xFF1565C0))
+        Text(textOuterColumn, fontSize = 14.sp, color = Color(0xFF1565C0))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -125,22 +131,27 @@ private fun ColumnNestSection() {
                 .background(Color(0xFFFFE0B2))
                 .padding(12.dp)
         ) {
-            Text(TEXT_INNER_COLUMN, fontSize = 14.sp, color = Color(0xFFE65100))
+            Text(textInnerColumn, fontSize = 14.sp, color = Color(0xFFE65100))
         }
     }
 }
 
 @Composable
-private fun RowArrangeSection() {
-    DebugSectionTitle(SECTION_ROW_ARRANGE)
+private fun RowArrangeSection(
+    title: String,
+    labelRed: String,
+    labelBlue: String,
+    labelGreen: String
+) {
+    DebugSectionTitle(title)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         listOf(
-            Color(0xFFEF5350) to LABEL_RED,
-            Color(0xFF42A5F5) to LABEL_BLUE,
-            Color(0xFF66BB6A) to LABEL_GREEN
+            Color(0xFFEF5350) to labelRed,
+            Color(0xFF42A5F5) to labelBlue,
+            Color(0xFF66BB6A) to labelGreen
         ).forEach { (color, label) ->
             Box(
                 modifier = Modifier
@@ -157,8 +168,8 @@ private fun RowArrangeSection() {
 }
 
 @Composable
-private fun BoxOverlapSection() {
-    DebugSectionTitle(SECTION_BOX_OVERLAP)
+private fun BoxOverlapSection(title: String) {
+    DebugSectionTitle(title)
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -184,8 +195,12 @@ private fun BoxOverlapSection() {
 }
 
 @Composable
-private fun WeightLayoutSection() {
-    DebugSectionTitle(SECTION_WEIGHT)
+private fun WeightLayoutSection(
+    title: String,
+    textWeight1: String,
+    textWeight2: String
+) {
+    DebugSectionTitle(title)
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -197,7 +212,7 @@ private fun WeightLayoutSection() {
                 .background(Color(0xFF7E57C2)),
             contentAlignment = Alignment.Center
         ) {
-            Text(TEXT_WEIGHT_1, color = Color.White, fontSize = 14.sp)
+            Text(textWeight1, color = Color.White, fontSize = 14.sp)
         }
         Box(
             modifier = Modifier
@@ -207,14 +222,14 @@ private fun WeightLayoutSection() {
                 .background(Color(0xFF26A69A)),
             contentAlignment = Alignment.Center
         ) {
-            Text(TEXT_WEIGHT_2, color = Color.White, fontSize = 14.sp)
+            Text(textWeight2, color = Color.White, fontSize = 14.sp)
         }
     }
 }
 
 @Composable
-private fun ScrollSection() {
-    DebugSectionTitle(SECTION_SCROLL)
+private fun ScrollSection(title: String, prefixCard: String) {
+    DebugSectionTitle(title)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -238,7 +253,7 @@ private fun ScrollSection() {
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
                     Text(
-                        text = "$PREFIX_CARD${index + 1}",
+                        text = "$prefixCard${index + 1}",
                         modifier = Modifier.padding(12.dp),
                         fontSize = 14.sp
                     )
@@ -249,16 +264,21 @@ private fun ScrollSection() {
 }
 
 @Composable
-private fun PaddingCompareSection() {
-    DebugSectionTitle(SECTION_PADDING)
+private fun PaddingCompareSection(
+    title: String,
+    label8dp: String,
+    label16dp: String,
+    label24dp: String
+) {
+    DebugSectionTitle(title)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         listOf(
-            8.dp to LABEL_8DP,
-            16.dp to LABEL_16DP,
-            24.dp to LABEL_24DP
+            8.dp to label8dp,
+            16.dp to label16dp,
+            24.dp to label24dp
         ).forEach { (padValue, label) ->
             Box(
                 modifier = Modifier
@@ -276,8 +296,8 @@ private fun PaddingCompareSection() {
 }
 
 @Composable
-private fun CenterAlignSection() {
-    DebugSectionTitle(SECTION_CENTER_ALIGN)
+private fun CenterAlignSection(title: String, textCenter: String) {
+    DebugSectionTitle(title)
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -293,13 +313,13 @@ private fun CenterAlignSection() {
                 .background(Color(0xFF4CAF50)),
             contentAlignment = Alignment.Center
         ) {
-            Text(TEXT_CENTER, color = Color.White, fontSize = 16.sp)
+            Text(textCenter, color = Color.White, fontSize = 16.sp)
         }
     }
 }
 
 @Composable
-private fun CloseButtonSection(onClose: () -> Unit) {
+private fun CloseButtonSection(btnText: String, onClose: () -> Unit) {
     DebugVSpacer(24.dp)
     Box(
         modifier = Modifier
@@ -311,7 +331,7 @@ private fun CloseButtonSection(onClose: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = BTN_CLOSE,
+            text = btnText,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 16.sp
         )

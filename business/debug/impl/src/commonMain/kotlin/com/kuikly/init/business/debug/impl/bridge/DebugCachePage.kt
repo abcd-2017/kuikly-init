@@ -33,6 +33,8 @@ import com.kuikly.init.base.bridgeModule
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.pager.Pager
@@ -44,10 +46,11 @@ internal class DebugCachePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
+            val pageTitle = stringResource(DebugImplMR.strings.debug_cache_title)
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("缓存测试") },
+                        title = { Text(pageTitle) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -73,7 +76,36 @@ private fun CacheTestContent(
 ) {
     var keyInput by remember { mutableStateOf("") }
     var valueInput by remember { mutableStateOf("") }
-    var log by remember { mutableStateOf("操作日志：\n") }
+    val logPrefix = stringResource(DebugImplMR.strings.debug_cache_log_prefix)
+    var log by remember { mutableStateOf(logPrefix) }
+
+    val labelKey = stringResource(DebugImplMR.strings.debug_cache_label_key)
+    val labelValue = stringResource(DebugImplMR.strings.debug_cache_label_value)
+    val placeholderKey = stringResource(DebugImplMR.strings.debug_cache_placeholder_key)
+    val placeholderValue = stringResource(DebugImplMR.strings.debug_cache_placeholder_value)
+    val btnSetCache = stringResource(DebugImplMR.strings.debug_cache_btn_set_cache)
+    val btnGetCacheSync = stringResource(DebugImplMR.strings.debug_cache_btn_get_cache_sync)
+    val btnGetCacheAsync = stringResource(DebugImplMR.strings.debug_cache_btn_get_cache_async)
+    val btnBatchWrite = stringResource(DebugImplMR.strings.debug_cache_btn_batch_write)
+    val logSetCacheFail = stringResource(DebugImplMR.strings.debug_cache_log_set_cache_fail)
+    val logSetCacheSuccess = stringResource(DebugImplMR.strings.debug_cache_log_set_cache_success)
+    val logGetCacheFail = stringResource(DebugImplMR.strings.debug_cache_log_get_cache_fail)
+    val logGetCacheSuccess = stringResource(DebugImplMR.strings.debug_cache_log_get_cache_success)
+    val logFetchCacheFail = stringResource(DebugImplMR.strings.debug_cache_log_fetch_cache_fail)
+    val logFetchCacheSuccess = stringResource(DebugImplMR.strings.debug_cache_log_fetch_cache_success)
+    val logBatchWrite = stringResource(DebugImplMR.strings.debug_cache_log_batch_write)
+    val valueEmpty = stringResource(DebugImplMR.strings.debug_cache_value_empty)
+    val valueNull = stringResource(DebugImplMR.strings.debug_cache_value_null)
+    val operationLog = stringResource(DebugImplMR.strings.debug_operation_log)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+
+    fun onLogChange(newLog: String) {
+        log = newLog
+    }
+
+    fun appendLog(msg: String) {
+        onLogChange("$msg\n$log")
+    }
 
     LazyColumn(
         modifier = modifier.padding(16.dp)
@@ -83,7 +115,11 @@ private fun CacheTestContent(
                 keyInput = keyInput,
                 valueInput = valueInput,
                 onKeyChange = { keyInput = it },
-                onValueChange = { valueInput = it }
+                onValueChange = { valueInput = it },
+                labelKey = labelKey,
+                labelValue = labelValue,
+                placeholderKey = placeholderKey,
+                placeholderValue = placeholderValue
             )
         }
         item {
@@ -91,15 +127,27 @@ private fun CacheTestContent(
                 bridgeModule = bridgeModule,
                 keyInput = keyInput,
                 valueInput = valueInput,
-                log = log,
-                onLogChange = { log = it }
+                btnSetCache = btnSetCache,
+                btnGetCacheSync = btnGetCacheSync,
+                btnGetCacheAsync = btnGetCacheAsync,
+                btnBatchWrite = btnBatchWrite,
+                logSetCacheFail = logSetCacheFail,
+                logSetCacheSuccess = logSetCacheSuccess,
+                logGetCacheFail = logGetCacheFail,
+                logGetCacheSuccess = logGetCacheSuccess,
+                logFetchCacheFail = logFetchCacheFail,
+                logFetchCacheSuccess = logFetchCacheSuccess,
+                logBatchWrite = logBatchWrite,
+                valueEmpty = valueEmpty,
+                valueNull = valueNull,
+                onAppendLog = { appendLog(it) }
             )
         }
         item {
-            CacheLogSection(log = log)
+            CacheLogSection(log = log, operationLog = operationLog)
         }
         item {
-            CacheCloseButton(onClose)
+            CacheCloseButton(btnText = btnClose, onClose = onClose)
         }
     }
 }
@@ -109,21 +157,25 @@ private fun CacheInputSection(
     keyInput: String,
     valueInput: String,
     onKeyChange: (String) -> Unit,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    labelKey: String,
+    labelValue: String,
+    placeholderKey: String,
+    placeholderValue: String
 ) {
-    Text("Key:", fontSize = 14.sp, color = Color.Gray)
+    Text(labelKey, fontSize = 14.sp, color = Color.Gray)
     Spacer(Modifier.height(4.dp))
     DebugTextField(
         value = keyInput,
-        placeholder = "输入 key",
+        placeholder = placeholderKey,
         onValueChange = onKeyChange
     )
     Spacer(Modifier.height(8.dp))
-    Text("Value:", fontSize = 14.sp, color = Color.Gray)
+    Text(labelValue, fontSize = 14.sp, color = Color.Gray)
     Spacer(Modifier.height(4.dp))
     DebugTextField(
         value = valueInput,
-        placeholder = "输入 value",
+        placeholder = placeholderValue,
         onValueChange = onValueChange
     )
 }
@@ -133,57 +185,65 @@ private fun CacheOpsSection(
     bridgeModule: com.kuikly.init.base.BridgeModule,
     keyInput: String,
     valueInput: String,
-    log: String,
-    onLogChange: (String) -> Unit
+    btnSetCache: String,
+    btnGetCacheSync: String,
+    btnGetCacheAsync: String,
+    btnBatchWrite: String,
+    logSetCacheFail: String,
+    logSetCacheSuccess: String,
+    logGetCacheFail: String,
+    logGetCacheSuccess: String,
+    logFetchCacheFail: String,
+    logFetchCacheSuccess: String,
+    logBatchWrite: String,
+    valueEmpty: String,
+    valueNull: String,
+    onAppendLog: (String) -> Unit
 ) {
-    fun appendLog(msg: String) {
-        onLogChange("$msg\n$log")
-    }
-
     Spacer(Modifier.height(12.dp))
-    CacheActionButton("setCache 写入缓存") {
+    CacheActionButton(btnSetCache) {
         if (keyInput.isEmpty()) {
-            appendLog("[setCache] 失败：key 为空")
+            onAppendLog(logSetCacheFail)
         } else {
             bridgeModule.setCachedToNative(keyInput, valueInput) {
-                appendLog("[setCache] key=$keyInput, value=$valueInput → 写入完成")
+                onAppendLog(String.format(logSetCacheSuccess, keyInput, valueInput))
             }
         }
     }
     Spacer(Modifier.height(8.dp))
-    CacheActionButton("getCache 同步读取") {
+    CacheActionButton(btnGetCacheSync) {
         if (keyInput.isEmpty()) {
-            appendLog("[getCache] 失败：key 为空")
+            onAppendLog(logGetCacheFail)
         } else {
             val result = bridgeModule.getCachedFromNative(keyInput)
-            appendLog("[getCache] key=$keyInput → ${if (result.isEmpty()) "(空)" else result}")
+            onAppendLog(String.format(logGetCacheSuccess, keyInput, if (result.isEmpty()) valueEmpty else result))
         }
     }
     Spacer(Modifier.height(8.dp))
-    CacheActionButton("fetchCache 异步读取") {
+    CacheActionButton(btnGetCacheAsync) {
         if (keyInput.isEmpty()) {
-            appendLog("[fetchCache] 失败：key 为空")
+            onAppendLog(logFetchCacheFail)
         } else {
             bridgeModule.fetchCachedFromNative(keyInput) {
-                appendLog("[fetchCache] key=$keyInput → ${it ?: "(null)"}")
+                onAppendLog(String.format(logFetchCacheSuccess, keyInput, it ?: valueNull))
             }
         }
     }
     Spacer(Modifier.height(8.dp))
-    CacheActionButton("批量写入 3 条测试数据") {
+    CacheActionButton(btnBatchWrite) {
         listOf("test_key_a" to "value_1", "test_key_b" to "value_2", "test_key_c" to "value_3")
             .forEach { (k, v) ->
                 bridgeModule.setCachedToNative(k, v) {
-                    appendLog("[批量写入] key=$k, value=$v")
+                    onAppendLog(String.format(logBatchWrite, k, v))
                 }
             }
     }
 }
 
 @Composable
-private fun CacheLogSection(log: String) {
+private fun CacheLogSection(log: String, operationLog: String) {
     Spacer(Modifier.height(16.dp))
-    Text("操作日志", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text(operationLog, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -203,9 +263,9 @@ private fun CacheLogSection(log: String) {
 }
 
 @Composable
-private fun CacheCloseButton(onClose: () -> Unit) {
+private fun CacheCloseButton(btnText: String, onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    CacheActionButton(text = "关闭页面", isPrimary = false, onClick = onClose)
+    CacheActionButton(text = btnText, isPrimary = false, onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 

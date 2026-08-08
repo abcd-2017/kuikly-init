@@ -25,46 +25,11 @@ import com.kuikly.init.common.base.platform.dialog.provideDialog
 import com.kuikly.init.common.base.platform.toast.ToastDuration
 import com.kuikly.init.common.base.platform.toast.provideToast
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
-
-private const val PAGE_TITLE = "Toast / Dialog 测试"
-private const val BTN_CLOSE = "关闭"
-private const val RESULT_PLACEHOLDER = "操作结果将在此显示"
-private const val BTN_TOAST_SHORT = "Toast SHORT"
-private const val BTN_TOAST_LONG = "Toast LONG"
-private const val MSG_TOAST_SHORT = "这是一条 SHORT Toast"
-private const val RESULT_TOAST_SHORT = "Toast SHORT 已触发"
-private const val MSG_TOAST_LONG = "这是一条 LONG Toast"
-private const val RESULT_TOAST_LONG = "Toast LONG 已触发"
-private const val BTN_ALERT = "Alert 提示框（单按钮）"
-private const val TITLE_ALERT = "提示"
-private const val MSG_ALERT = "这是一个 Alert 提示框"
-private const val BTN_TEXT_ALERT = "我知道了"
-private const val RESULT_ALERT = "Alert 已弹出"
-private const val BTN_CONFIRM = "Confirm 确认框（双按钮）"
-private const val TITLE_CONFIRM = "确认"
-private const val MSG_CONFIRM = "确定要执行此操作吗？"
-private const val BTN_TEXT_CONFIRM_OK = "确定"
-private const val BTN_TEXT_CONFIRM_CANCEL = "取消"
-private const val RESULT_CONFIRM_CONFIRMED = "确认"
-private const val RESULT_CONFIRM_CANCELLED = "取消"
-private const val BTN_ACTION_SHEET = "Action Sheet（多选项）"
-private const val TITLE_ACTION_SHEET = "请选择"
-private const val MSG_ACTION_SHEET = "请从下列选项中选择一个"
-private const val OPTION_A = "选项 A"
-private const val OPTION_B = "选项 B"
-private const val OPTION_C = "选项 C"
-private const val OPTION_D = "选项 D"
-private const val RESULT_ACTION_SHEET_CANCEL = "Action Sheet 已取消"
-private const val BTN_QUEUE_ALERT = "连续弹两个 Alert（测试队列）"
-private const val TITLE_FIRST = "第一个"
-private const val MSG_FIRST = "这是第一个 Alert"
-private const val TITLE_SECOND = "第二个"
-private const val MSG_SECOND = "这是第二个 Alert"
-private const val BTN_TEXT_OK = "确定"
-private const val RESULT_QUEUE_ALERT = "已触发两个 Alert（队列模式）"
 
 @Page("debug_toast_dialog")
 internal class DebugToastDialogPage : BasePager() {
@@ -84,17 +49,56 @@ internal class DebugToastDialogPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugToastDialogContent(onClose: () -> Unit) {
-    var result by remember { mutableStateOf(RESULT_PLACEHOLDER) }
+    val placeholderText = stringResource(DebugImplMR.strings.debug_toast_dialog_result_placeholder)
+    var result by remember { mutableStateOf(placeholderText) }
     val toast = remember { provideToast() }
     val dialog = remember { provideDialog() }
+
+    val pageTitle = stringResource(DebugImplMR.strings.debug_toast_dialog_title)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close)
+    val btnToastShort = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_toast_short)
+    val btnToastLong = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_toast_long)
+    val msgToastShort = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_toast_short)
+    val resultToastShort = stringResource(DebugImplMR.strings.debug_toast_dialog_result_toast_short)
+    val msgToastLong = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_toast_long)
+    val resultToastLong = stringResource(DebugImplMR.strings.debug_toast_dialog_result_toast_long)
+    val btnAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_alert)
+    val titleAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_title_alert)
+    val msgAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_alert)
+    val btnTextAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_text_alert)
+    val resultAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_result_alert)
+    val btnConfirm = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_confirm)
+    val titleConfirm = stringResource(DebugImplMR.strings.debug_toast_dialog_title_confirm)
+    val msgConfirm = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_confirm)
+    val btnTextConfirmOk = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_text_confirm_ok)
+    val btnTextConfirmCancel = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_text_confirm_cancel)
+    val resultConfirmConfirmed = stringResource(DebugImplMR.strings.debug_toast_dialog_result_confirm_confirmed)
+    val resultConfirmCancelled = stringResource(DebugImplMR.strings.debug_toast_dialog_result_confirm_cancelled)
+    val btnActionSheet = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_action_sheet)
+    val titleActionSheet = stringResource(DebugImplMR.strings.debug_toast_dialog_title_action_sheet)
+    val msgActionSheet = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_action_sheet)
+    val optionA = stringResource(DebugImplMR.strings.debug_toast_dialog_option_a)
+    val optionB = stringResource(DebugImplMR.strings.debug_toast_dialog_option_b)
+    val optionC = stringResource(DebugImplMR.strings.debug_toast_dialog_option_c)
+    val optionD = stringResource(DebugImplMR.strings.debug_toast_dialog_option_d)
+    val resultActionSheetCancel = stringResource(DebugImplMR.strings.debug_toast_dialog_result_action_sheet_cancel)
+    val btnQueueAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_queue_alert)
+    val titleFirst = stringResource(DebugImplMR.strings.debug_toast_dialog_title_first)
+    val msgFirst = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_first)
+    val titleSecond = stringResource(DebugImplMR.strings.debug_toast_dialog_title_second)
+    val msgSecond = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_second)
+    val btnTextOk = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_text_ok)
+    val resultQueueAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_result_queue_alert)
+    val resultConfirmFormat = stringResource(DebugImplMR.strings.debug_toast_dialog_result_confirm_format)
+    val resultActionSheetFormat = stringResource(DebugImplMR.strings.debug_toast_dialog_result_action_sheet_format)
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(PAGE_TITLE) },
+                title = { Text(pageTitle) },
                 actions = {
                     Text(
-                        text = BTN_CLOSE,
+                        text = btnClose,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -112,10 +116,51 @@ private fun DebugToastDialogContent(onClose: () -> Unit) {
             Modifier.fillMaxSize().padding(padding).padding(12.dp)
         ) {
             item {
-                ToastSection(toast, result) { result = it }
+                ToastSection(
+                    toast = toast,
+                    btnToastShort = btnToastShort,
+                    btnToastLong = btnToastLong,
+                    msgToastShort = msgToastShort,
+                    msgToastLong = msgToastLong,
+                    resultToastShort = resultToastShort,
+                    resultToastLong = resultToastLong,
+                    onResultChange = { result = it }
+                )
             }
             item {
-                DialogSection(dialog) { result = it }
+                DialogSection(
+                    dialog = dialog,
+                    btnAlert = btnAlert,
+                    titleAlert = titleAlert,
+                    msgAlert = msgAlert,
+                    btnTextAlert = btnTextAlert,
+                    resultAlert = resultAlert,
+                    btnConfirm = btnConfirm,
+                    titleConfirm = titleConfirm,
+                    msgConfirm = msgConfirm,
+                    btnTextConfirmOk = btnTextConfirmOk,
+                    btnTextConfirmCancel = btnTextConfirmCancel,
+                    resultConfirmConfirmed = resultConfirmConfirmed,
+                    resultConfirmCancelled = resultConfirmCancelled,
+                    resultConfirmFormat = resultConfirmFormat,
+                    btnActionSheet = btnActionSheet,
+                    titleActionSheet = titleActionSheet,
+                    msgActionSheet = msgActionSheet,
+                    optionA = optionA,
+                    optionB = optionB,
+                    optionC = optionC,
+                    optionD = optionD,
+                    resultActionSheetCancel = resultActionSheetCancel,
+                    resultActionSheetFormat = resultActionSheetFormat,
+                    btnQueueAlert = btnQueueAlert,
+                    titleFirst = titleFirst,
+                    msgFirst = msgFirst,
+                    titleSecond = titleSecond,
+                    msgSecond = msgSecond,
+                    btnTextOk = btnTextOk,
+                    resultQueueAlert = resultQueueAlert,
+                    onResultChange = { result = it }
+                )
             }
             item {
                 DebugVSpacer(8.dp)
@@ -128,56 +173,90 @@ private fun DebugToastDialogContent(onClose: () -> Unit) {
 @Composable
 private fun ToastSection(
     toast: com.kuikly.init.common.base.platform.toast.Toast,
-    result: String,
+    btnToastShort: String,
+    btnToastLong: String,
+    msgToastShort: String,
+    msgToastLong: String,
+    resultToastShort: String,
+    resultToastLong: String,
     onResultChange: (String) -> Unit
 ) {
-    DebugTestButton(BTN_TOAST_SHORT) {
-        toast.show(MSG_TOAST_SHORT, ToastDuration.SHORT)
-        onResultChange(RESULT_TOAST_SHORT)
+    DebugTestButton(btnToastShort) {
+        toast.show(msgToastShort, ToastDuration.SHORT)
+        onResultChange(resultToastShort)
     }
-    DebugTestButton(BTN_TOAST_LONG) {
-        toast.show(MSG_TOAST_LONG, ToastDuration.LONG)
-        onResultChange(RESULT_TOAST_LONG)
+    DebugTestButton(btnToastLong) {
+        toast.show(msgToastLong, ToastDuration.LONG)
+        onResultChange(resultToastLong)
     }
 }
 
 @Composable
 private fun DialogSection(
     dialog: Dialog,
+    btnAlert: String,
+    titleAlert: String,
+    msgAlert: String,
+    btnTextAlert: String,
+    resultAlert: String,
+    btnConfirm: String,
+    titleConfirm: String,
+    msgConfirm: String,
+    btnTextConfirmOk: String,
+    btnTextConfirmCancel: String,
+    resultConfirmConfirmed: String,
+    resultConfirmCancelled: String,
+    resultConfirmFormat: String,
+    btnActionSheet: String,
+    titleActionSheet: String,
+    msgActionSheet: String,
+    optionA: String,
+    optionB: String,
+    optionC: String,
+    optionD: String,
+    resultActionSheetCancel: String,
+    resultActionSheetFormat: String,
+    btnQueueAlert: String,
+    titleFirst: String,
+    msgFirst: String,
+    titleSecond: String,
+    msgSecond: String,
+    btnTextOk: String,
+    resultQueueAlert: String,
     onResultChange: (String) -> Unit
 ) {
-    DebugTestButton(BTN_ALERT) {
-        dialog.showAlert(TITLE_ALERT, MSG_ALERT, BTN_TEXT_ALERT)
-        onResultChange(RESULT_ALERT)
+    DebugTestButton(btnAlert) {
+        dialog.showAlert(titleAlert, msgAlert, btnTextAlert)
+        onResultChange(resultAlert)
     }
-    DebugTestButton(BTN_CONFIRM) {
+    DebugTestButton(btnConfirm) {
         dialog.showConfirm(
-            title = TITLE_CONFIRM,
-            message = MSG_CONFIRM,
-            confirmText = BTN_TEXT_CONFIRM_OK,
-            cancelText = BTN_TEXT_CONFIRM_CANCEL
+            title = titleConfirm,
+            message = msgConfirm,
+            confirmText = btnTextConfirmOk,
+            cancelText = btnTextConfirmCancel
         ) { picked ->
-            onResultChange("Confirm 结果：${if (picked == 0) RESULT_CONFIRM_CONFIRMED else RESULT_CONFIRM_CANCELLED}")
+            onResultChange(String.format(resultConfirmFormat, if (picked == 0) resultConfirmConfirmed else resultConfirmCancelled))
         }
     }
-    DebugTestButton(BTN_ACTION_SHEET) {
+    DebugTestButton(btnActionSheet) {
         dialog.showActionSheet(
-            title = TITLE_ACTION_SHEET,
-            message = MSG_ACTION_SHEET,
-            options = listOf(OPTION_A, OPTION_B, OPTION_C, OPTION_D)
+            title = titleActionSheet,
+            message = msgActionSheet,
+            options = listOf(optionA, optionB, optionC, optionD)
         ) { index ->
             onResultChange(
                 if (index >= 0) {
-                    "Action Sheet 选中：选项 ${('A' + index)} (index=$index)"
+                    String.format(resultActionSheetFormat, ('A' + index), index)
                 } else {
-                    RESULT_ACTION_SHEET_CANCEL
+                    resultActionSheetCancel
                 }
             )
         }
     }
-    DebugTestButton(BTN_QUEUE_ALERT) {
-        dialog.showAlert(TITLE_FIRST, MSG_FIRST, BTN_TEXT_OK)
-        dialog.showAlert(TITLE_SECOND, MSG_SECOND, BTN_TEXT_OK)
-        onResultChange(RESULT_QUEUE_ALERT)
+    DebugTestButton(btnQueueAlert) {
+        dialog.showAlert(titleFirst, msgFirst, btnTextOk)
+        dialog.showAlert(titleSecond, msgSecond, btnTextOk)
+        onResultChange(resultQueueAlert)
     }
 }

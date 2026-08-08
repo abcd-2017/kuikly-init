@@ -15,3 +15,5 @@ actual class NetworkMonitor {
         }
     }
 }
+
+actual fun provideNetworkMonitor(): NetworkMonitor = NetworkMonitor()

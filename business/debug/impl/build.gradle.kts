@@ -5,6 +5,7 @@ plugins {
     id("com.tencent.kuikly-open.kuikly")
     id("org.jetbrains.compose")
     kotlin("plugin.compose")
+    id("com.tencent.kuiklybase.resource.generator")
 }
 
 val KEY_PAGE_NAME = "pageName"
@@ -29,6 +30,8 @@ kotlin {
                 implementation(project(":common:base"))
                 implementation(project(":shared"))
                 implementation("io.insert-koin:koin-core:4.0.1")
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
         }
         val iosX64Main by getting
@@ -62,6 +65,12 @@ android {
     defaultConfig {
         minSdk = 21
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.kuikly.init.business.debug.impl"
+    multiplatformResourcesClassName = "DebugImplMR"
+    multiplatformResourcesPrefix = "debug_impl_"
 }
 
 fun getPageName(): String {

@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.tencent.kuiklybase.resource.generator")
 }
 
 kotlin {
@@ -20,6 +21,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("io.insert-koin:koin-core:4.0.1")
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
         }
         val iosX64Main by getting
@@ -40,4 +43,10 @@ android {
     defaultConfig {
         minSdk = 21
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.kuikly.init.business.debug.api"
+    multiplatformResourcesClassName = "DebugApiMR"
+    multiplatformResourcesPrefix = "debug_api_"
 }

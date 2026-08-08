@@ -33,6 +33,8 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.scan.ScanResult
 import com.kuikly.init.common.base.platform.scan.provideScanner
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -43,10 +45,11 @@ internal class DebugScannerPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
+            val pageTitle = stringResource(DebugImplMR.strings.debug_scanner_title)
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("扫码测试") },
+                        title = { Text(pageTitle) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -68,21 +71,41 @@ private fun ScannerTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    var result by remember { mutableStateOf("扫码结果将在此显示…\n提示：扫码功能依赖相机硬件，当前平台可能不支持。") }
+    val resultPlaceholder = stringResource(DebugImplMR.strings.debug_scanner_result_placeholder)
+    var result by remember { mutableStateOf(resultPlaceholder) }
     val scanner = remember { provideScanner() }
+
+    val btnOpenScan = stringResource(DebugImplMR.strings.debug_scanner_btn_open_scan)
+    val btnMockScan = stringResource(DebugImplMR.strings.debug_scanner_btn_mock_scan)
+    val resultTitle = stringResource(DebugImplMR.strings.debug_scanner_result_title)
+    val logStartScan = stringResource(DebugImplMR.strings.debug_scanner_log_start_scan)
+    val logScanSuccess = stringResource(DebugImplMR.strings.debug_scanner_log_scan_success)
+    val logScanFail = stringResource(DebugImplMR.strings.debug_scanner_log_scan_fail)
+    val logScanException = stringResource(DebugImplMR.strings.debug_scanner_log_scan_exception)
+    val logMockScan = stringResource(DebugImplMR.strings.debug_scanner_log_mock_scan)
+    val resultFormat = stringResource(DebugImplMR.strings.debug_scanner_result_format)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
             ScannerActionSection(
                 scanner = scanner,
+                btnOpenScan = btnOpenScan,
+                btnMockScan = btnMockScan,
+                logStartScan = logStartScan,
+                logScanSuccess = logScanSuccess,
+                logScanFail = logScanFail,
+                logScanException = logScanException,
+                logMockScan = logMockScan,
+                resultFormat = resultFormat,
                 onResultChange = { result = it }
             )
         }
         item {
-            ScannerResultSection(result = result)
+            ScannerResultSection(result = result, resultTitle = resultTitle)
         }
         item {
-            ScannerCloseButton(onClose)
+            ScannerCloseButton(btnText = btnClose, onClose = onClose)
         }
     }
 }
@@ -90,38 +113,46 @@ private fun ScannerTestContent(
 @Composable
 private fun ScannerActionSection(
     scanner: com.kuikly.init.common.base.platform.scan.Scanner,
+    btnOpenScan: String,
+    btnMockScan: String,
+    logStartScan: String,
+    logScanSuccess: String,
+    logScanFail: String,
+    logScanException: String,
+    logMockScan: String,
+    resultFormat: String,
     onResultChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary("打开扫码页") {
-        onResultChange("启动扫码页…")
+    HardwareActionButtonPrimary(btnOpenScan) {
+        onResultChange(logStartScan)
         try {
             scanner.startScan { scanResult ->
                 onResultChange(
                     if (scanResult != null) {
-                        "扫码成功:\n${formatResult(scanResult)}"
+                        String.format(logScanSuccess, formatResult(scanResult, resultFormat))
                     } else {
-                        "扫码取消或失败"
+                        logScanFail
                     }
                 )
             }
         } catch (e: Exception) {
-            onResultChange("扫码异常: ${e.message}")
+            onResultChange(String.format(logScanException, e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonSecondary("模拟扫码结果") {
+    HardwareActionButtonSecondary(btnMockScan) {
         val mock = ScanResult(
             content = "https://github.com/kuikly",
             format = "QR_CODE"
         )
-        onResultChange("模拟扫码结果:\n${formatResult(mock)}")
+        onResultChange(String.format(logMockScan, formatResult(mock, resultFormat)))
     }
 }
 
 @Composable
-private fun ScannerResultSection(result: String) {
+private fun ScannerResultSection(result: String, resultTitle: String) {
     Spacer(Modifier.height(16.dp))
-    Text("扫码结果", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text(resultTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -141,9 +172,9 @@ private fun ScannerResultSection(result: String) {
 }
 
 @Composable
-private fun ScannerCloseButton(onClose: () -> Unit) {
+private fun ScannerCloseButton(btnText: String, onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
+    HardwareActionButtonSecondary(btnText, onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 
@@ -177,6 +208,6 @@ private fun HardwareActionButtonSecondary(text: String, onClick: () -> Unit) {
     }
 }
 
-private fun formatResult(r: ScanResult): String {
-    return "内容: ${r.content}\n码制: ${r.format}"
+private fun formatResult(r: ScanResult, format: String): String {
+    return String.format(format, r.content, r.format)
 }

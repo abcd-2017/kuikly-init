@@ -22,3 +22,5 @@ actual class FileSystem {
     actual fun exists(path: String): Boolean = NSFileManager.defaultManager.fileExistsAtPath(path)
     actual fun delete(path: String): Boolean = NSFileManager.defaultManager.removeItemAtPath(path, null)
 }
+
+actual fun provideFileSystem(): FileSystem = FileSystem()

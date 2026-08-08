@@ -34,6 +34,8 @@ import com.kuikly.init.base.bridgeModule
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
+import com.tencent.tmm.kmmresource.compose.stringResource
+import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
@@ -46,10 +48,11 @@ internal class DebugNetworkRequestPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
+            val pageTitle = stringResource(DebugImplMR.strings.debug_network_request_title)
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("网络请求测试") },
+                        title = { Text(pageTitle) },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -75,8 +78,25 @@ private fun NetworkTestContent(
 ) {
     var cmdInput by remember { mutableStateOf("test.cmd") }
     var paramsInput by remember { mutableStateOf("{\"userId\":\"12345\"}") }
-    var result by remember { mutableStateOf("响应结果将在此显示…") }
+    val resultPlaceholder = stringResource(DebugImplMR.strings.debug_network_request_result_placeholder)
+    var result by remember { mutableStateOf(resultPlaceholder) }
     val scope = rememberCoroutineScope()
+
+    val labelCmd = stringResource(DebugImplMR.strings.debug_network_request_label_cmd)
+    val labelParams = stringResource(DebugImplMR.strings.debug_network_request_label_params)
+    val placeholderCmd = stringResource(DebugImplMR.strings.debug_network_request_placeholder_cmd)
+    val placeholderParams = stringResource(DebugImplMR.strings.debug_network_request_placeholder_params)
+    val btnSend = stringResource(DebugImplMR.strings.debug_network_request_btn_send)
+    val presetTitle = stringResource(DebugImplMR.strings.debug_network_request_preset_title)
+    val presetA = stringResource(DebugImplMR.strings.debug_network_request_preset_a)
+    val presetB = stringResource(DebugImplMR.strings.debug_network_request_preset_b)
+    val presetC = stringResource(DebugImplMR.strings.debug_network_request_preset_c)
+    val resultTitle = stringResource(DebugImplMR.strings.debug_network_request_result_title)
+    val resultSuccess = stringResource(DebugImplMR.strings.debug_network_request_result_success)
+    val resultNull = stringResource(DebugImplMR.strings.debug_network_request_result_null)
+    val resultFail = stringResource(DebugImplMR.strings.debug_network_request_result_fail)
+    val requesting = stringResource(DebugImplMR.strings.debug_network_request_requesting)
+    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
@@ -84,7 +104,11 @@ private fun NetworkTestContent(
                 cmdInput = cmdInput,
                 paramsInput = paramsInput,
                 onCmdChange = { cmdInput = it },
-                onParamsChange = { paramsInput = it }
+                onParamsChange = { paramsInput = it },
+                labelCmd = labelCmd,
+                labelParams = labelParams,
+                placeholderCmd = placeholderCmd,
+                placeholderParams = placeholderParams
             )
         }
         item {
@@ -93,6 +117,11 @@ private fun NetworkTestContent(
                 cmdInput = cmdInput,
                 paramsInput = paramsInput,
                 scope = scope,
+                btnSend = btnSend,
+                resultSuccess = resultSuccess,
+                resultNull = resultNull,
+                resultFail = resultFail,
+                requesting = requesting,
                 onResultChange = { result = it }
             )
         }
@@ -101,14 +130,18 @@ private fun NetworkTestContent(
                 onSelect = { cmd, params ->
                     cmdInput = cmd
                     paramsInput = params
-                }
+                },
+                presetTitle = presetTitle,
+                presetA = presetA,
+                presetB = presetB,
+                presetC = presetC
             )
         }
         item {
-            NetworkResultSection(result = result)
+            NetworkResultSection(result = result, resultTitle = resultTitle)
         }
         item {
-            NetworkCloseButton(onClose)
+            NetworkCloseButton(btnText = btnClose, onClose = onClose)
         }
     }
 }
@@ -118,21 +151,25 @@ private fun NetworkInputSection(
     cmdInput: String,
     paramsInput: String,
     onCmdChange: (String) -> Unit,
-    onParamsChange: (String) -> Unit
+    onParamsChange: (String) -> Unit,
+    labelCmd: String,
+    labelParams: String,
+    placeholderCmd: String,
+    placeholderParams: String
 ) {
-    Text("CMD:", fontSize = 14.sp, color = Color.Gray)
+    Text(labelCmd, fontSize = 14.sp, color = Color.Gray)
     Spacer(Modifier.height(4.dp))
     DebugTextField(
         value = cmdInput,
-        placeholder = "输入 cmd",
+        placeholder = placeholderCmd,
         onValueChange = onCmdChange
     )
     Spacer(Modifier.height(8.dp))
-    Text("请求参数 (JSON):", fontSize = 14.sp, color = Color.Gray)
+    Text(labelParams, fontSize = 14.sp, color = Color.Gray)
     Spacer(Modifier.height(4.dp))
     DebugTextField(
         value = paramsInput,
-        placeholder = "输入 reqParams JSON",
+        placeholder = placeholderParams,
         onValueChange = onParamsChange
     )
 }
@@ -143,6 +180,11 @@ private fun NetworkRequestSection(
     cmdInput: String,
     paramsInput: String,
     scope: kotlinx.coroutines.CoroutineScope,
+    btnSend: String,
+    resultSuccess: String,
+    resultNull: String,
+    resultFail: String,
+    requesting: String,
     onResultChange: (String) -> Unit
 ) {
     Spacer(Modifier.height(12.dp))
@@ -156,40 +198,44 @@ private fun NetworkRequestSection(
                     try {
                         val reqParams = JSONObject(paramsInput)
                         val startTime = bridgeModule.currentTimeStamp()
-                        onResultChange("请求中…")
+                        onResultChange(requesting)
                         val resp = bridgeModule.ssoRequest(cmdInput, reqParams)
                         val elapsed = bridgeModule.currentTimeStamp() - startTime
                         onResultChange(
                             if (resp != null) {
-                                "耗时: ${elapsed}ms\n\n${formatJson(resp.toString())}"
+                                String.format(resultSuccess, elapsed, formatJson(resp.toString()))
                             } else {
-                                "耗时: ${elapsed}ms\n\n返回 null"
+                                String.format(resultNull, elapsed)
                             }
                         )
                     } catch (e: Exception) {
-                        onResultChange("请求失败: ${e.message}")
+                        onResultChange(String.format(resultFail, e.message))
                     }
                 }
             }
             .padding(12.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text("发起 ssoRequest", color = MaterialTheme.colorScheme.onPrimary, fontSize = 15.sp)
+        Text(btnSend, color = MaterialTheme.colorScheme.onPrimary, fontSize = 15.sp)
     }
 }
 
 @Composable
 private fun NetworkPresetSection(
-    onSelect: (String, String) -> Unit
+    onSelect: (String, String) -> Unit,
+    presetTitle: String,
+    presetA: String,
+    presetB: String,
+    presetC: String
 ) {
     val presetCases = listOf(
-        "测试用例 A" to ("test.cmd" to "{\"userId\":\"12345\"}"),
-        "测试用例 B" to ("user.info" to "{\"userId\":\"999\"}"),
-        "测试用例 C" to ("app.config" to "{}")
+        presetA to ("test.cmd" to "{\"userId\":\"12345\"}"),
+        presetB to ("user.info" to "{\"userId\":\"999\"}"),
+        presetC to ("app.config" to "{}")
     )
 
     Spacer(Modifier.height(16.dp))
-    Text("预设测试用例", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text(presetTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(8.dp))
     presetCases.forEach { (label, caseData) ->
         Box(
@@ -208,9 +254,9 @@ private fun NetworkPresetSection(
 }
 
 @Composable
-private fun NetworkResultSection(result: String) {
+private fun NetworkResultSection(result: String, resultTitle: String) {
     Spacer(Modifier.height(16.dp))
-    Text("响应结果", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text(resultTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -230,7 +276,7 @@ private fun NetworkResultSection(result: String) {
 }
 
 @Composable
-private fun NetworkCloseButton(onClose: () -> Unit) {
+private fun NetworkCloseButton(btnText: String, onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
     Box(
         modifier = Modifier
@@ -241,7 +287,7 @@ private fun NetworkCloseButton(onClose: () -> Unit) {
             .padding(12.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text("关闭页面", color = Color.White, fontSize = 15.sp)
+        Text(btnText, color = Color.White, fontSize = 15.sp)
     }
     Spacer(Modifier.height(32.dp))
 }
