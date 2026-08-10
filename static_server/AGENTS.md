@@ -47,6 +47,8 @@ static_server/
 
 ## 使用方式
 
+> **注意**：static_server 目录下**无 package.json**，`npm install` / `npm run serve` 需要用户全局安装依赖（koa, koa-static, koa-bodyparser, shelljs）。
+
 ```bash
 npm install              # 安装依赖
 npm run serve            # 启动服务（8017 + 8083）
@@ -87,5 +89,6 @@ quit: control + c
 ## 注意事项
 
 - 需要全局安装 whistle (`npm install -g whistle`)
+- static_server 目录下**无 package.json**，依赖需全局安装
 - `static/` 目录下的 `nativevue2.js` 由 Gradle 构建产物同步过来
 - 移动端调试时需确保手机和电脑在同一 WiFi，并配置 whistle 代理
