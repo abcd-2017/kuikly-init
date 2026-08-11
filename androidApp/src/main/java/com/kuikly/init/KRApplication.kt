@@ -1,7 +1,7 @@
 package com.kuikly.init
 
 import android.app.Application
-// import com.kuikly.init.business.debug.impl.DebugModule // TODO: 暂时排除
+import com.kuikly.init.business.debug.impl.DebugModule
 import com.kuikly.init.business.initTask.InitTaskRunner
 import com.kuikly.init.common.base.platform.AppContext
 import com.kuikly.init.common.base.platform.ContextProvider
@@ -30,7 +30,7 @@ class KRApplication : Application() {
                 + module { single<DeviceInfo> { DeviceInfo() } }
                 + module { single<FileSystem> { FileSystem() } }
                 + module { single<NetworkMonitor> { NetworkMonitor(this@KRApplication) } }
-                // + DebugModule // TODO: 暂时排除
+                + DebugModule
             )
         }
 

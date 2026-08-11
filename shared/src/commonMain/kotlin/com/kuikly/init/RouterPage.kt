@@ -34,8 +34,11 @@ import com.tencent.kuikly.core.module.SharedPreferencesModule
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 import com.tencent.kuikly.core.pager.Pager
 import com.tencent.kuikly.core.utils.urlParams
-import com.kuikly.init.base.BasePager
-import com.kuikly.init.base.Utils
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.Button
+import com.kuikly.init.common.widget.LocalContextProvider
+import com.kuikly.init.common.widget.TextField
+import com.kuikly.init.common.widget.Utils
 import com.kuikly.init.common.base.platform.share.ShareContent
 import com.kuikly.init.common.base.platform.toast.Toast
 import com.kuikly.init.common.base.platform.toast.provideToast
@@ -47,7 +50,9 @@ internal class ComposeRoutePager : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            ComposeRouteImpl()
+            LocalContextProvider {
+                ComposeRouteImpl()
+            }
         }
     }
 

@@ -79,8 +79,7 @@ dependencies {
     implementation(project(":shared"))
     implementation(project(":common:base"))
     implementation(project(":business:initTask"))
-    // TODO: business:debug:impl 有编译问题（Kuikly API 变更），暂时排除
-    // implementation(project(":business:debug:impl"))
+    implementation(project(":business:debug:impl"))
 
     implementation("io.insert-koin:koin-android:4.0.1")
 
