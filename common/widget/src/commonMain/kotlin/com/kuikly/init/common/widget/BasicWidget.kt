@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.kuikly.init
+package com.kuikly.init.common.widget
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -309,7 +309,7 @@ fun Modifier.dragEnable(enable: Boolean): Modifier {
 }
 
 @Composable
-internal fun Button(
+public fun Button(
     onClick: () -> Unit = {},
     onClick2: (Offset) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -353,7 +353,7 @@ internal fun Modifier.border(border: Border) =
     this.border(width = border.lineWidth, color = border.color)
 
 @Composable
-internal fun TextField(
+public fun TextField(
     modifier: Modifier = Modifier,
     value: String = "",
     placeholder: String = "",

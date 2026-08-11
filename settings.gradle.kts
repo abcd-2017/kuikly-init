@@ -28,6 +28,7 @@ include(":shared")
 
 // common 基础能力模块
 include(":common:util")
+include(":common:widget")
 
 // business 业务模块
 include(":business:initTask")

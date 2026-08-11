@@ -1,10 +1,11 @@
-package com.kuikly.init.base
+package com.kuikly.init.common.widget
 
 import com.kuikly.init.common.base.platform.clipboard.Clipboard
 import com.kuikly.init.common.base.platform.clipboard.provideClipboard
 import com.kuikly.init.common.base.platform.keyboard.Keyboard
 import com.kuikly.init.common.base.platform.keyboard.provideKeyboard
 import com.kuikly.init.common.base.platform.phone.Phone
+import com.kuikly.init.common.base.platform.phone.providePhone
 import com.kuikly.init.common.base.platform.toast.Toast
 import com.kuikly.init.common.base.platform.toast.ToastDuration
 import com.kuikly.init.common.base.platform.toast.provideToast
@@ -69,7 +70,7 @@ class BridgeModule : Module() {
     // 拨打电话
     @Deprecated("Use Phone.call instead")
     fun callPhone(phoneNumber: String) {
-        Phone().call(phoneNumber)
+        providePhone().call(phoneNumber)
     }
 
     @Deprecated("Use Toast.show instead")

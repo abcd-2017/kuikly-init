@@ -56,6 +56,8 @@ kotlin {
                 implementation("com.tencent.kuikly-open:compose:${Version.getKuiklyOhosVersion()}")
                 // 平台能力接口
                 implementation(project(":common:base"))
+                // 公共 UI 组件（BasePager 等）
+                implementation(project(":common:widget"))
                 // 初始化任务
                 implementation(project(":business:initTask"))
             }

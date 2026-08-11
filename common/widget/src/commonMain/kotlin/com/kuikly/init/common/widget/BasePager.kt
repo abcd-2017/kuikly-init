@@ -1,4 +1,4 @@
-package com.kuikly.init.base
+package com.kuikly.init.common.widget
 
 import com.tencent.kuikly.compose.ComposeContainer
 import com.tencent.kuikly.core.module.Module

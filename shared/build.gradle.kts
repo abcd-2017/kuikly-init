@@ -49,7 +49,9 @@ kotlin {
                 api("com.tencent.kuikly-open:core-annotations:${Version.getKuiklyVersion()}")
                 api("com.tencent.kuikly-open:compose:${Version.getKuiklyVersion()}")
                 implementation(project(":common:base"))
+                implementation(project(":common:widget"))
                 implementation(project(":business:initTask"))
+                implementation(project(":business:debug:impl"))
                 implementation(libs.koin.core)
                 implementation("com.tencent.kuiklybase:resource-core:0.0.1")
                 implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
@@ -104,9 +106,16 @@ publishing {
 
 ksp {
     arg(KEY_PAGE_NAME, getPageName())
+    // 多模块配置：shared 是主模块，注册 debug_impl 子模块
+    arg("moduleId", "shared")
+    arg("isMainModule", "true")
+    arg("subModules", "debug_impl")
+    arg("enableMultiModule", "true")
 }
 
 dependencies {
+    // 依赖子模块以获取 KuiklyCoreEntry_debug_impl（编译时需要）
+    compileOnly(project(":business:debug:impl"))
     compileOnly("com.tencent.kuikly-open:core-ksp:${Version.getKuiklyVersion()}") {
         add("kspAndroid", this)
         add("kspIosArm64", this)

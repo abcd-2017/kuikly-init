@@ -1,10 +1,10 @@
-package com.kuikly.init.base
+package com.kuikly.init.common.widget
 
 import com.tencent.kuikly.core.base.BaseObject
 import com.tencent.kuikly.core.manager.BridgeManager
 import com.tencent.kuikly.core.manager.PagerManager
 
-internal object Utils : BaseObject() {
+public object Utils : BaseObject() {
 
     fun bridgeModule(pager: String): BridgeModule {
         return PagerManager.getPager(pager).acquireModule<BridgeModule>(BridgeModule.MODULE_NAME)

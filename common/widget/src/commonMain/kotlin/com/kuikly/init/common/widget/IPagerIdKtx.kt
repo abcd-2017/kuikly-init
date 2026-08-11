@@ -1,7 +1,8 @@
-package com.kuikly.init.base
+package com.kuikly.init.common.widget
 
 import com.tencent.kuikly.core.base.IPagerId
 import com.tencent.kuikly.core.base.pagerId
+import com.tencent.kuikly.core.timer.setTimeout
 
 /**
  * 老的方式:，需要显式传递 pagerId
@@ -19,5 +20,5 @@ val IPagerId.bridgeModule: BridgeModule by pagerId {
 }
 
 internal fun IPagerId.setTimeout(delay: Int, callback: () -> Unit): String {
-    return com.tencent.kuikly.core.timer.setTimeout(pagerId, delay, callback)
+    return setTimeout(pagerId, delay, callback)
 }
