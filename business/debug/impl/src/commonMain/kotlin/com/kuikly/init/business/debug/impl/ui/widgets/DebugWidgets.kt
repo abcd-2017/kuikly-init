@@ -48,8 +48,7 @@ internal fun DebugTestButton(
                 shape = RoundedCornerShape(6.dp)
             )
             .clickable(onClick = onClick)
-            .padding(top = 12.dp, start = 16.dp, end = 16.dp)
-            .padding(bottom = 8.dp),
+            .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 12.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(text, color = Color.White, fontSize = 15.sp)
