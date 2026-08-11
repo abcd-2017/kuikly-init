@@ -1,10 +1,7 @@
-import org.gradle.kotlin.dsl.kotlin
-
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.google.devtools.ksp")
-    id("com.tencent.kuiklybase.knoi.plugin") version("0.0.4")
+    id("com.tencent.kuiklybase.resource.generator")
 }
 
 kotlin {
@@ -15,20 +12,20 @@ kotlin {
             }
         }
     }
+
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
     ohosArm64 {
     }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":business:debug:api"))
-                implementation(project(":common:base"))
-                implementation(project(":shared"))
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
-            // OHOS 不支持 koin + multiplatformResources，清空源码目录避免编译
-            kotlin.setSrcDirs(listOf<Any>())
         }
         val iosX64Main by getting
         val iosArm64Main by getting
@@ -46,9 +43,15 @@ kotlin {
 }
 
 android {
-    namespace = "com.kuikly.init.business.debug.impl"
+    namespace = "com.kuikly.init.business.debug.api"
     compileSdk = 34
     defaultConfig {
         minSdk = 21
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.kuikly.init.business.debug.api"
+    multiplatformResourcesClassName = "DebugApiMR"
+    multiplatformResourcesPrefix = "debug_api_"
 }

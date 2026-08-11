@@ -2,15 +2,18 @@
 """
 ============================================================
   Kuikly 脚手架 - 模块脚手架脚本
-  用法:
+用法:
     python script/scaffold-module.py --type common --name util
     python script/scaffold-module.py --type business --name login
+    python script/scaffold-module.py --type page --name settings
     python script/scaffold-module.py --type common --name util --delete
     python script/scaffold-module.py --type business --name login --delete
+    python script/scaffold-module.py --type page --name settings --delete
 
-  说明:
+说明:
     --type common   创建扁平结构模块，源码直接放在模块根目录下
     --type business 创建 api/impl 分离结构，适用于业务功能模块
+    --type page     创建包含 Composable 页面的模块（全平台 + Kuikly + Compose）
     --delete        删除指定模块（取消注册 + 删除目录 + git rm）
 ============================================================
 """
@@ -141,6 +144,7 @@ TEMPLATE_COMMON_BUILD = """\
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -160,6 +164,8 @@ kotlin {{
         val commonMain by getting {{
             dependencies {{
                 implementation("io.insert-koin:koin-core:{koin_version}")
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -172,6 +178,12 @@ kotlin {{
             iosSimulatorArm64Main.dependsOn(this)
         }}
     }}
+}}
+
+multiplatformResources {{
+    multiplatformResourcesPackage = "{namespace}"
+    multiplatformResourcesClassName = "{class_name}MR"
+    multiplatformResourcesPrefix = "{module}_"
 }}
 
 android {{
@@ -187,6 +199,7 @@ TEMPLATE_BUSINESS_API_BUILD = """\
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -206,6 +219,8 @@ kotlin {{
         val commonMain by getting {{
             dependencies {{
                 implementation("io.insert-koin:koin-core:{koin_version}")
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -218,6 +233,12 @@ kotlin {{
             iosSimulatorArm64Main.dependsOn(this)
         }}
     }}
+}}
+
+multiplatformResources {{
+    multiplatformResourcesPackage = "{namespace}"
+    multiplatformResourcesClassName = "{class_name}MR"
+    multiplatformResourcesPrefix = "{module}_"
 }}
 
 android {{
@@ -233,7 +254,14 @@ TEMPLATE_BUSINESS_IMPL_BUILD = """\
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.google.devtools.ksp")
+    id("com.tencent.kuikly-open.kuikly")
+    id("org.jetbrains.compose")
+    kotlin("plugin.compose")
+    id("com.tencent.kuiklybase.resource.generator")
 }}
+
+val KEY_PAGE_NAME = "pageName"
 
 kotlin {{
     androidTarget {{
@@ -251,8 +279,15 @@ kotlin {{
     sourceSets {{
         val commonMain by getting {{
             dependencies {{
+                api("com.tencent.kuikly-open:core:${{Version.getKuiklyVersion()}}")
+                api("com.tencent.kuikly-open:core-annotations:${{Version.getKuiklyVersion()}}")
+                api("com.tencent.kuikly-open:compose:${{Version.getKuiklyVersion()}}")
                 implementation(project("{api_project_path}"))
+                implementation(project(":common:base"))
+                implementation(project(":common:widget"))
                 implementation("io.insert-koin:koin-core:{koin_version}")
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -267,6 +302,29 @@ kotlin {{
     }}
 }}
 
+ksp {{
+    arg(KEY_PAGE_NAME, getPageName())
+    // 多模块配置：{module}_impl 是子模块（moduleId 不能包含冒号）
+    arg("moduleId", "{module}_impl")
+    arg("isMainModule", "false")
+    arg("enableMultiModule", "true")
+}}
+
+dependencies {{
+    compileOnly("com.tencent.kuikly-open:core-ksp:${{Version.getKuiklyVersion()}}") {{
+        add("kspAndroid", this)
+        add("kspIosArm64", this)
+        add("kspIosX64", this)
+        add("kspIosSimulatorArm64", this)
+    }}
+}}
+
+multiplatformResources {{
+    multiplatformResourcesPackage = "{namespace}"
+    multiplatformResourcesClassName = "{class_name}MR"
+    multiplatformResourcesPrefix = "{module}_"
+}}
+
 android {{
     namespace = "{namespace}"
     compileSdk = 34
@@ -274,7 +332,99 @@ android {{
         minSdk = 21
     }}
 }}
+
+fun getPageName(): String {{
+    return (project.properties[KEY_PAGE_NAME] as? String) ?: ""
+}}
 """
+
+TEMPLATE_PAGE_BUILD = """\
+plugins {{
+    kotlin("multiplatform")
+    id("com.android.library")
+    id("com.google.devtools.ksp")
+    id("com.tencent.kuikly-open.kuikly")
+    id("org.jetbrains.compose")
+    kotlin("plugin.compose")
+    id("com.tencent.kuiklybase.resource.generator")
+}}
+
+val KEY_PAGE_NAME = "pageName"
+
+kotlin {{
+    androidTarget {{
+        compilations.all {{
+            kotlinOptions {{
+                jvmTarget = "1.8"
+            }}
+        }}
+    }}
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    sourceSets {{
+        val commonMain by getting {{
+            dependencies {{
+                api("com.tencent.kuikly-open:core:${{Version.getKuiklyVersion()}}")
+                api("com.tencent.kuikly-open:core-annotations:${{Version.getKuiklyVersion()}}")
+                api("com.tencent.kuikly-open:compose:${{Version.getKuiklyVersion()}}")
+                implementation(project(":common:base"))
+                implementation(project(":common:widget"))
+                implementation("io.insert-koin:koin-core:{koin_version}")
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
+            }}
+        }}
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {{
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }}
+    }}
+}}
+
+ksp {{
+    arg(KEY_PAGE_NAME, getPageName())
+    // 多模块配置：{module} 是子模块（moduleId 不能包含冒号）
+    arg("moduleId", "{module}")
+    arg("isMainModule", "false")
+    arg("enableMultiModule", "true")
+}}
+
+dependencies {{
+    compileOnly("com.tencent.kuikly-open:core-ksp:${{Version.getKuiklyVersion()}}") {{
+        add("kspAndroid", this)
+        add("kspIosArm64", this)
+        add("kspIosX64", this)
+        add("kspIosSimulatorArm64", this)
+    }}
+}}
+
+multiplatformResources {{
+    multiplatformResourcesPackage = "{namespace}"
+    multiplatformResourcesClassName = "{class_name}MR"
+    multiplatformResourcesPrefix = "{module}_"
+}}
+
+android {{
+    namespace = "{namespace}"
+    compileSdk = 34
+    defaultConfig {{
+        minSdk = 21
+    }}
+}}
+
+fun getPageName(): String {{
+    return (project.properties[KEY_PAGE_NAME] as? String) ?: ""
+}}
+"""
+
 
 # ============================================================
 #  模板: build.ohos.gradle.kts (OHOS 构建)
@@ -284,6 +434,7 @@ TEMPLATE_COMMON_BUILD_OHOS = """\
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -300,13 +451,13 @@ kotlin {{
     iosSimulatorArm64()
 
     ohosArm64 {{
-        binaries.sharedLib {{
-        }}
     }}
 
     sourceSets {{
         val commonMain by getting {{
             dependencies {{
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -322,6 +473,12 @@ kotlin {{
             dependsOn(commonMain)
         }}
     }}
+}}
+
+multiplatformResources {{
+    multiplatformResourcesPackage = "{namespace}"
+    multiplatformResourcesClassName = "{class_name}MR"
+    multiplatformResourcesPrefix = "{module}_"
 }}
 
 android {{
@@ -337,6 +494,7 @@ TEMPLATE_BUSINESS_API_BUILD_OHOS = """\
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -353,13 +511,78 @@ kotlin {{
     iosSimulatorArm64()
 
     ohosArm64 {{
-        binaries.sharedLib {{
-        }}
     }}
 
     sourceSets {{
         val commonMain by getting {{
             dependencies {{
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
+            }}
+        }}
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {{
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }}
+        val ohosArm64Main by getting {{
+            dependsOn(commonMain)
+        }}
+    }}
+}}
+
+multiplatformResources {{
+    multiplatformResourcesPackage = "{namespace}"
+    multiplatformResourcesClassName = "{class_name}MR"
+    multiplatformResourcesPrefix = "{module}_"
+}}
+
+android {{
+    namespace = "{namespace}"
+    compileSdk = 34
+    defaultConfig {{
+        minSdk = 21
+    }}
+}}
+"""
+
+TEMPLATE_BUSINESS_IMPL_BUILD_OHOS = """\
+import org.gradle.kotlin.dsl.kotlin
+
+plugins {{
+    kotlin("multiplatform")
+    id("com.android.library")
+    id("com.google.devtools.ksp")
+    id("com.tencent.kuiklybase.knoi.plugin") version("0.0.4")
+}}
+
+kotlin {{
+    androidTarget {{
+        compilations.all {{
+            kotlinOptions {{
+                jvmTarget = "1.8"
+            }}
+        }}
+    }}
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    ohosArm64 {{
+    }}
+
+    sourceSets {{
+        val commonMain by getting {{
+            dependencies {{
+                implementation(project("{api_project_path}"))
+                implementation(project(":common:base"))
+                implementation(project(":common:widget"))
+                implementation(project(":shared"))
             }}
         }}
         val iosX64Main by getting
@@ -386,10 +609,15 @@ android {{
 }}
 """
 
-TEMPLATE_BUSINESS_IMPL_BUILD_OHOS = """\
+TEMPLATE_PAGE_BUILD_OHOS = """\
+import org.gradle.kotlin.dsl.kotlin
+
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.google.devtools.ksp")
+    id("com.tencent.kuiklybase.knoi.plugin") version("0.0.4")
+    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -406,14 +634,19 @@ kotlin {{
     iosSimulatorArm64()
 
     ohosArm64 {{
-        binaries.sharedLib {{
-        }}
     }}
 
     sourceSets {{
         val commonMain by getting {{
             dependencies {{
-                implementation(project("{api_project_path}"))
+                implementation("com.tencent.kuikly-open:core:${{Version.getKuiklyOhosVersion()}}")
+                implementation("com.tencent.kuikly-open:core-annotations:${{Version.getKuiklyOhosVersion()}}")
+                implementation("com.tencent.kuikly-open:compose:${{Version.getKuiklyOhosVersion()}}")
+                implementation(project(":common:base"))
+                implementation(project(":common:widget"))
+                implementation(project(":shared"))
+                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
+                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -429,6 +662,12 @@ kotlin {{
             dependsOn(commonMain)
         }}
     }}
+}}
+
+multiplatformResources {{
+    multiplatformResourcesPackage = "{namespace}"
+    multiplatformResourcesClassName = "{class_name}MR"
+    multiplatformResourcesPrefix = "{module}_"
 }}
 
 android {{
@@ -507,6 +746,88 @@ val {class_name}Module: Module = module {{
 }}
 """
 
+TEMPLATE_PAGE_PAGE = """\
+package {package}
+
+import androidx.compose.runtime.Composable
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
+import com.tencent.kuikly.compose.foundation.background
+import com.tencent.kuikly.compose.foundation.clickable
+import com.tencent.kuikly.compose.foundation.layout.Box
+import com.tencent.kuikly.compose.foundation.layout.Column
+import com.tencent.kuikly.compose.foundation.layout.fillMaxSize
+import com.tencent.kuikly.compose.foundation.layout.fillMaxWidth
+import com.tencent.kuikly.compose.foundation.layout.height
+import com.tencent.kuikly.compose.foundation.layout.padding
+import com.tencent.kuikly.compose.material3.Text
+import com.tencent.kuikly.compose.setContent
+import com.tencent.kuikly.compose.ui.Alignment
+import com.tencent.kuikly.compose.ui.Modifier
+import com.tencent.kuikly.compose.ui.graphics.Color
+import com.tencent.kuikly.compose.ui.text.font.FontWeight
+import com.tencent.kuikly.compose.ui.text.style.TextAlign
+import com.tencent.kuikly.compose.ui.unit.dp
+import com.tencent.kuikly.compose.ui.unit.sp
+import com.tencent.kuikly.compose.ui.platform.LocalActivity
+import com.tencent.kuikly.core.annotations.Page
+import com.tencent.kuikly.core.module.RouterModule
+import com.tencent.tmm.kmmresource.compose.stringResource
+
+@Page("{module}_page")
+public class {class_name}Page : BasePager() {{
+    override fun willInit() {{
+        super.willInit()
+        setContent {{
+            LocalContextProvider {{
+                {class_name}Content()
+            }}
+        }}
+    }}
+}}
+
+@Composable
+private fun {class_name}Content() {{
+    val localPager = LocalActivity.current.getPager()
+    val routerModule = localPager.acquireModule<RouterModule>(RouterModule.MODULE_NAME)
+
+    val pageTitle = stringResource({class_name}MR.strings.{module}_title)
+
+    Column(modifier = Modifier.fillMaxSize().background(Color.White)) {{
+        {class_name}Header(title = pageTitle, onClose = {{ routerModule.closePage() }})
+        // TODO: 实现页面内容
+    }}
+}}
+
+@Composable
+private fun {class_name}Header(title: String, onClose: () -> Unit) {{
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(Color(0xFF7B7FE4)),
+        contentAlignment = Alignment.Center
+    ) {{
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = "✕",
+            fontSize = 20.sp,
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable {{ onClose() }}
+                .padding(12.dp)
+        )
+    }}
+}}
+"""
+
 
 # ============================================================
 #  settings.gradle.kts 注册/注销逻辑
@@ -529,8 +850,8 @@ def register_in_settings(module_gradle_paths: list[str]) -> None:
                 print(f"  跳过注册（已存在）: {gradle_path} @ {settings_path.name}")
                 continue
             new_lines.append(f'include("{gradle_path}")')
-            # 在 OHOS settings 中添加 buildFileName 重定向
-            if settings_path == SETTINGS_OHOS_KTS:
+            # 在 OHOS settings 中添加 buildFileName 重定向（仅 impl 子模块需要，api 不需要）
+            if settings_path == SETTINGS_OHOS_KTS and not gradle_path.endswith(":api"):
                 new_lines.append(f'project("{gradle_path}").buildFileName = buildFileName')
             registered_count += 1
 
@@ -577,6 +898,180 @@ def unregister_from_settings(module_gradle_paths: list[str]) -> None:
 
 
 # ============================================================
+#  shared/build.gradle.kts 注册/注销逻辑
+# ============================================================
+
+SHARED_BUILD_KTS = PROJECT_ROOT / "shared" / "build.gradle.kts"
+
+
+def register_in_shared(name: str) -> None:
+    """在 shared/build.gradle.kts 中注册新业务模块
+
+    修改三处：
+    1. kotlin {} 块内的 commonMain dependencies 添加 implementation(project(":business:{name}:impl"))
+    2. ksp 块添加/更新 arg("subModules", "{name}_impl")
+    3. 文件末尾 dependencies 块添加 compileOnly(project(":business:{name}:impl"))
+    """
+    if not SHARED_BUILD_KTS.exists():
+        print(f"  [WARN] 找不到 shared/build.gradle.kts，跳过注册")
+        return
+
+    with open(SHARED_BUILD_KTS, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    impl_project_path = f"business:{name}:impl"
+    sub_module = f"{name.replace('-', '_')}_impl"
+
+    # === 1. 在 kotlin {} 块的 commonMain dependencies 中添加 implementation ===
+    impl_dep = f'implementation(project(":business:{name}:impl"))'
+    if impl_dep not in content:
+        # 在 common:widget 依赖之后插入（shared 模块的固定依赖）
+        anchor = 'implementation(project(":common:widget"))'
+        if anchor in content:
+            # 找到 anchor 所在的行，在其后插入新行
+            lines = content.split("\n")
+            new_lines = []
+            for line in lines:
+                new_lines.append(line)
+                if line.strip() == anchor:
+                    # 使用与 anchor 相同的缩进
+                    indent = line[:len(line) - len(line.lstrip())]
+                    new_lines.append(f'{indent}{impl_dep}')
+            content = "\n".join(new_lines)
+            print(f"  添加依赖: :{impl_project_path} (commonMain implementation)")
+        else:
+            print(f"  [WARN] 未找到锚点依赖 :common:widget，跳过 implementation 添加")
+
+    # === 2. 在 ksp 块中更新 subModules ===
+    submodules_pattern = r'arg\("subModules",\s*"([^"]*)"\)'
+    match = re.search(submodules_pattern, content)
+    if match:
+        existing = match.group(1)
+        if sub_module not in existing:
+            # 追加新子模块
+            new_submodules = f"{existing}, {sub_module}"
+            content = content[:match.start(1)] + new_submodules + content[match.end(1):]
+            print(f"  更新 subModules: {existing} -> {new_submodules}")
+        else:
+            print(f"  跳过 subModules 更新（已包含 {sub_module}）")
+    else:
+        # 没有 subModules，在 isMainModule 之后添加
+        is_main_pattern = r'(arg\("isMainModule",\s*"true"\))'
+        is_main_match = re.search(is_main_pattern, content)
+        if is_main_match:
+            anchor_line = is_main_match.group(1)
+            lines = content.split("\n")
+            new_lines = []
+            for line in lines:
+                new_lines.append(line)
+                if line.strip() == anchor_line:
+                    indent = line[:len(line) - len(line.lstrip())]
+                    new_lines.append(f'{indent}arg("subModules", "{sub_module}")')
+            content = "\n".join(new_lines)
+            print(f"  添加 subModules: {sub_module}")
+        else:
+            print(f"  [WARN] 未找到 ksp 块锚点，跳过 subModules 添加")
+
+    # === 3. 在文件末尾 dependencies 块中添加 compileOnly ===
+    compile_only_dep = f'compileOnly(project(":business:{name}:impl"))'
+    if compile_only_dep not in content:
+        # 在第一个 compileOnly 之前插入（保持 core-ksp 在最后）
+        first_compile_pattern = r'(compileOnly\("com\.tencent\.kuikly-open:core-ksp)'
+        compile_match = re.search(first_compile_pattern, content)
+        if compile_match:
+            insert_pos = compile_match.start()
+            # 找到该行的行首
+            line_start = content.rfind("\n", 0, insert_pos) + 1
+            indent = content[line_start:insert_pos]
+            # 如果 indent 只包含空白，用它作为缩进
+            if indent.strip() == "":
+                content = content[:line_start] + indent + compile_only_dep + "\n" + content[line_start:]
+            else:
+                content = content[:insert_pos] + compile_only_dep + "\n" + content[insert_pos:]
+            print(f"  添加依赖: :{impl_project_path} (compileOnly)")
+        else:
+            # fallback: 在 dependencies { 块的开头后插入
+            dep_block_pattern = r'(dependencies \{\s*\n)'
+            dep_match = re.search(dep_block_pattern, content)
+            if dep_match:
+                insert_pos = dep_match.end()
+                content = content[:insert_pos] + f"    {compile_only_dep}\n" + content[insert_pos:]
+                print(f"  添加依赖: :{impl_project_path} (compileOnly)")
+            else:
+                print(f"  [WARN] 未找到 dependencies 块，跳过 compileOnly 添加")
+    else:
+        print(f"  跳过 compileOnly 添加（已存在 :{impl_project_path}）")
+
+    with open(SHARED_BUILD_KTS, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"  注册模块 {name} 到 shared/build.gradle.kts")
+
+
+def unregister_from_shared(name: str) -> None:
+    """从 shared/build.gradle.kts 中注销业务模块"""
+    if not SHARED_BUILD_KTS.exists():
+        print(f"  [WARN] 找不到 shared/build.gradle.kts，跳过注销")
+        return
+
+    with open(SHARED_BUILD_KTS, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    impl_project_path = f"business:{name}:impl"
+    sub_module = f"{name.replace('-', '_')}_impl"
+
+    # === 1. 移除 commonMain dependencies 中的 implementation ===
+    impl_dep = f'implementation(project(":business:{name}:impl"))'
+    if impl_dep in content:
+        # 移除整行（包括前面的缩进和后面的换行）
+        content = re.sub(r'[ \t]*' + re.escape(impl_dep) + r'\n?', '', content)
+        print(f"  移除依赖: :{impl_project_path} (commonMain implementation)")
+    else:
+        print(f"  跳过 implementation 移除（未找到 :{impl_project_path}）")
+
+    # === 2. 从 subModules 中移除 ===
+    submodules_pattern = r'arg\("subModules",\s*"([^"]*)"\)'
+    match = re.search(submodules_pattern, content)
+    if match:
+        existing = match.group(1)
+        if sub_module in existing:
+            # 移除该子模块
+            new_value = re.sub(r',\s*' + re.escape(sub_module), '', existing)
+            new_value = re.sub(re.escape(sub_module) + r',\s*', '', new_value)
+            new_value = re.sub(re.escape(sub_module), '', new_value)
+            new_value = new_value.strip()
+            if new_value:
+                content = content[:match.start(1)] + new_value + content[match.end(1):]
+                print(f"  更新 subModules: {existing} -> {new_value}")
+            else:
+                # 没有剩余子模块，移除整行
+                content = re.sub(
+                    r'\s*arg\("subModules",\s*"[^"]*"\)\n?',
+                    '',
+                    content
+                )
+                print(f"  移除 subModules 参数（无剩余子模块）")
+        else:
+            print(f"  跳过 subModules 移除（未包含 {sub_module}）")
+    else:
+        print(f"  跳过 subModules 移除（未找到 subModules 参数）")
+
+    # === 3. 移除 compileOnly ===
+    compile_only_dep = f'compileOnly(project(":business:{name}:impl"))'
+    if compile_only_dep in content:
+        content = re.sub(r'[ \t]*' + re.escape(compile_only_dep) + r'\n?', '', content)
+        print(f"  移除依赖: :{impl_project_path} (compileOnly)")
+    else:
+        print(f"  跳过 compileOnly 移除（未找到 :{impl_project_path}）")
+
+    # 清理多余的空行（连续超过 2 个换行压缩为 2 个）
+    content = re.sub(r'\n{4,}', '\n\n\n', content)
+
+    with open(SHARED_BUILD_KTS, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"  从 shared/build.gradle.kts 注销模块 {name}")
+
+
+# ============================================================
 #  创建 common 模块（扁平结构）
 # ============================================================
 
@@ -608,6 +1103,8 @@ def create_common_module(name: str) -> None:
         TEMPLATE_COMMON_BUILD.format(
             koin_version=KOIN_VERSION,
             namespace=base_package,
+            class_name=class_name,
+            module=name.replace("-", "_"),
         )
     )
 
@@ -616,6 +1113,8 @@ def create_common_module(name: str) -> None:
         module_dir / "build.ohos.gradle.kts",
         TEMPLATE_COMMON_BUILD_OHOS.format(
             namespace=base_package,
+            class_name=class_name,
+            module=name.replace("-", "_"),
         )
     )
 
@@ -660,6 +1159,7 @@ def create_business_module(name: str) -> None:
     impl_package_path = package_to_path(impl_package)
 
     api_project_path = f":business:{name}:api"
+    module_prefix = name.replace("-", "_")
 
     print(f"\n[创建 business 模块] business/{name}")
     print(f"  api 包名: {api_package}")
@@ -675,6 +1175,8 @@ def create_business_module(name: str) -> None:
         TEMPLATE_BUSINESS_API_BUILD.format(
             koin_version=KOIN_VERSION,
             namespace=api_package,
+            class_name=class_name,
+            module=f"{module_prefix}_api",
         )
     )
 
@@ -683,6 +1185,8 @@ def create_business_module(name: str) -> None:
         api_dir / "build.ohos.gradle.kts",
         TEMPLATE_BUSINESS_API_BUILD_OHOS.format(
             namespace=api_package,
+            class_name=class_name,
+            module=f"{module_prefix}_api",
         )
     )
 
@@ -709,6 +1213,8 @@ def create_business_module(name: str) -> None:
             koin_version=KOIN_VERSION,
             namespace=impl_package,
             api_project_path=api_project_path,
+            class_name=class_name,
+            module=f"{module_prefix}_impl",
         )
     )
 
@@ -749,10 +1255,81 @@ def create_business_module(name: str) -> None:
         f":business:{name}:impl",
     ])
 
+    # 注册到 shared/build.gradle.kts
+    register_in_shared(name)
+
     # git add
     git_add_files(CREATED_FILES)
 
     print(f"[完成] business/{name} 模块创建成功")
+
+
+# ============================================================
+#  创建 page 模块（Composable 页面）
+# ============================================================
+
+def create_page_module(name: str) -> None:
+    """创建 page 类型模块"""
+    package = read_package_name()
+    package_path = package_to_path(package)
+
+    # 模块根目录
+    module_dir = PROJECT_ROOT / "common" / name
+    base_package = f"{package}.common.{name}"
+    base_package_path = package_to_path(base_package)
+
+    # 类名（首字母大写的模块名）
+    class_name = name.replace("-", "_").split("_")
+    class_name = "".join(word.capitalize() for word in class_name)
+
+    module_prefix = name.replace("-", "_")
+
+    print(f"\n[创建 page 模块] common/{name}")
+    print(f"  包名: {base_package}")
+
+    # 创建源码集目录
+    source_sets = ["commonMain", "androidMain", "iosMain", "ohosArm64Main"]
+    for ss in source_sets:
+        make_dirs(module_dir / "src" / ss / "kotlin" / base_package_path)
+
+    # 生成 build.gradle.kts
+    write_file(
+        module_dir / "build.gradle.kts",
+        TEMPLATE_PAGE_BUILD.format(
+            koin_version=KOIN_VERSION,
+            namespace=base_package,
+            class_name=class_name,
+            module=module_prefix,
+        )
+    )
+
+    # 生成 build.ohos.gradle.kts（OHOS 构建配置）
+    write_file(
+        module_dir / "build.ohos.gradle.kts",
+        TEMPLATE_PAGE_BUILD_OHOS.format(
+            namespace=base_package,
+            class_name=class_name,
+            module=module_prefix,
+        )
+    )
+
+    # 生成示例页面文件
+    write_file(
+        module_dir / "src" / "commonMain" / "kotlin" / base_package_path / f"{class_name}Page.kt",
+        TEMPLATE_PAGE_PAGE.format(
+            package=base_package,
+            module=module_prefix,
+            class_name=class_name,
+        )
+    )
+
+    # 注册到 settings
+    register_in_settings([f":common:{name}"])
+
+    # git add
+    git_add_files(CREATED_FILES)
+
+    print(f"[完成] page/{name} 模块创建成功")
 
 
 # ============================================================
@@ -801,7 +1378,31 @@ def delete_business_module(name: str) -> None:
         f":business:{name}:impl",
     ])
 
+    # 从 shared/build.gradle.kts 注销
+    unregister_from_shared(name)
+
     print(f"[完成] business/{name} 模块已删除")
+
+
+def delete_page_module(name: str) -> None:
+    """删除 page 类型模块"""
+    module_dir = PROJECT_ROOT / "common" / name
+
+    print(f"\n[删除 page 模块] common/{name}")
+
+    if not module_dir.exists():
+        print(f"  目录不存在: {module_dir.relative_to(PROJECT_ROOT)}")
+    else:
+        # git rm 目录
+        git_rm_files([module_dir])
+        # 删除目录
+        shutil.rmtree(module_dir)
+        print(f"  已删除目录: {module_dir.relative_to(PROJECT_ROOT)}")
+
+    # 从 settings 注销
+    unregister_from_settings([f":common:{name}"])
+
+    print(f"[完成] page/{name} 模块已删除")
 
 
 # ============================================================
@@ -816,20 +1417,22 @@ def main():
 示例:
   python script/scaffold-module.py --type common --name util
   python script/scaffold-module.py --type business --name login
+  python script/scaffold-module.py --type page --name settings
   python script/scaffold-module.py --type common --name util --delete
   python script/scaffold-module.py --type business --name login --delete
+  python script/scaffold-module.py --type page --name settings --delete
         """
     )
     parser.add_argument(
         "--type",
         required=True,
-        choices=["common", "business"],
-        help="模块类型: common(扁平结构) / business(api/impl分离)"
+        choices=["common", "business", "page"],
+        help="模块类型: common(扁平结构) / business(api/impl分离) / page(Composable页面)"
     )
     parser.add_argument(
         "--name",
         required=True,
-        help="模块名称，如 util, login, user"
+        help="模块名称，如 util, login, settings"
     )
     parser.add_argument(
         "--delete",
@@ -864,11 +1467,15 @@ def main():
             delete_common_module(args.name)
         elif args.type == "business":
             delete_business_module(args.name)
+        elif args.type == "page":
+            delete_page_module(args.name)
     else:
         if args.type == "common":
             create_common_module(args.name)
         elif args.type == "business":
             create_business_module(args.name)
+        elif args.type == "page":
+            create_page_module(args.name)
 
     print("\n" + "=" * 60)
     print("  全部完成！")
