@@ -27,7 +27,8 @@ import com.tencent.kuikly.compose.ui.text.style.TextAlign
 import com.tencent.kuikly.compose.ui.text.style.TextOverflow
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.kuikly.init.base.BasePager
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
@@ -37,30 +38,32 @@ import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
 @Page("debug_text")
-internal class DebugTextPage : BasePager() {
+public class DebugTextPage : BasePager() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
         setContent {
-            val pageTitle = stringResource(DebugImplMR.strings.debug_text_title)
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary
+            LocalContextProvider {
+                val pageTitle = stringResource(DebugImplMR.strings.debug_text_title)
+                Scaffold(
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = { Text(pageTitle) },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         )
+                    }
+                ) { padding ->
+                    DebugTextContent(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding),
+                        onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                     )
                 }
-            ) { padding ->
-                DebugTextContent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
-                )
             }
         }
     }
@@ -78,7 +81,8 @@ private fun DebugTextContent(
     val sectionMultiLine = stringResource(DebugImplMR.strings.debug_text_section_multi_line)
     val sectionEmoji = stringResource(DebugImplMR.strings.debug_text_section_emoji)
     val sectionLineHeight = stringResource(DebugImplMR.strings.debug_text_section_line_height)
-    val sectionTextBackground = stringResource(DebugImplMR.strings.debug_text_section_text_background)
+    val sectionTextBackground =
+        stringResource(DebugImplMR.strings.debug_text_section_text_background)
     val sampleText = stringResource(DebugImplMR.strings.debug_text_sample)
     val textAlignLeft = stringResource(DebugImplMR.strings.debug_text_align_left)
     val textAlignCenter = stringResource(DebugImplMR.strings.debug_text_align_center)
@@ -103,10 +107,26 @@ private fun DebugTextContent(
         item { FontSizeSection(sectionFontSize, sampleText) }
         item { ColorSection(sectionColor, sampleText) }
         item { AlignSection(sectionAlign, textAlignLeft, textAlignCenter, textAlignRight) }
-        item { FontWeightSection(sectionFontWeight, textWeightNormal, textWeightBold, textWeightLight) }
+        item {
+            FontWeightSection(
+                sectionFontWeight,
+                textWeightNormal,
+                textWeightBold,
+                textWeightLight
+            )
+        }
         item { MultiLineTruncateSection(sectionMultiLine, textLongSample) }
         item { EmojiSection(sectionEmoji, textEmoji) }
-        item { LineHeightSection(sectionLineHeight, textLineHeightSample, labelLineHeight12x, labelLineHeight15x, labelLineHeight20x, prefixLineHeight) }
+        item {
+            LineHeightSection(
+                sectionLineHeight,
+                textLineHeightSample,
+                labelLineHeight12x,
+                labelLineHeight15x,
+                labelLineHeight20x,
+                prefixLineHeight
+            )
+        }
         item { TextBackgroundSection(sectionTextBackground, textBgSample1, textBgSample2) }
         item { CloseButtonSection(btnClose, onClose) }
     }

@@ -22,7 +22,8 @@ import com.tencent.kuikly.compose.ui.text.font.FontWeight
 import com.tencent.kuikly.compose.ui.text.style.TextAlign
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.kuikly.init.base.BasePager
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.DebugPageConfig
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugCardItem
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
@@ -31,22 +32,25 @@ import com.tencent.kuikly.compose.setContent
 import com.tencent.tmm.kmmresource.compose.stringResource
 import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
+import com.tencent.kuikly.compose.ui.platform.LocalActivity
 import com.tencent.kuikly.core.module.RouterModule
 
 @Page("debug_home")
-internal class DebugHomePage : BasePager() {
+public class DebugHomePage : BasePager() {
 
     override fun willInit() {
         super.willInit()
         setContent {
-            DebugHomeContent()
+            LocalContextProvider {
+                DebugHomeContent()
+            }
         }
     }
 }
 
 @Composable
 private fun DebugHomeContent() {
-    val localPager = com.tencent.kuikly.compose.ui.platform.LocalActivity.current.getPager()
+    val localPager = LocalActivity.current.getPager()
     val routerModule = localPager.acquireModule<RouterModule>(RouterModule.MODULE_NAME)
 
     Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
@@ -60,9 +64,11 @@ private fun DebugHomeContent() {
 @Composable
 private fun DebugHomeHeader(onClose: () -> Unit) {
     val titleText = stringResource(DebugImplMR.strings.debug_home_title)
+    val statusBarHeight = LocalActivity.current.pageData.statusBarHeight
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(top = statusBarHeight.dp)
             .height(56.dp)
             .background(Color(0xFF7B7FE4)),
         contentAlignment = Alignment.Center

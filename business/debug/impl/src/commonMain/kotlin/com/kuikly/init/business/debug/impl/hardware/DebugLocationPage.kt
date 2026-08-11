@@ -28,7 +28,8 @@ import com.tencent.kuikly.compose.ui.graphics.Color
 import com.tencent.kuikly.compose.ui.text.font.FontFamily
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.kuikly.init.base.BasePager
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.location.Location
 import com.kuikly.init.common.base.platform.location.LocationAccuracy
@@ -40,28 +41,30 @@ import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
 @Page("debug_location")
-internal class DebugLocationPage : BasePager() {
+public class DebugLocationPage : BasePager() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
         setContent {
-            val pageTitle = stringResource(DebugImplMR.strings.debug_location_title)
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary
+            LocalContextProvider {
+                val pageTitle = stringResource(DebugImplMR.strings.debug_location_title)
+                Scaffold(
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = { Text(pageTitle) },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         )
-                    )
-                }
-            ) { padding ->
+                    }
+                ) { padding ->
                 LocationTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
+            }
             }
         }
     }

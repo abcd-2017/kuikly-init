@@ -24,7 +24,8 @@ import com.tencent.kuikly.compose.ui.graphics.Color
 import com.tencent.kuikly.compose.ui.text.TextStyle
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.kuikly.init.base.BasePager
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugResultArea
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTestButton
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
@@ -37,12 +38,14 @@ import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
 @Page("debug_clipboard")
-internal class DebugClipboardPage : BasePager() {
+public class DebugClipboardPage : BasePager() {
 
     override fun willInit() {
         super.willInit()
         setContent {
-            DebugClipboardContent { closePage() }
+            LocalContextProvider {
+                DebugClipboardContent { closePage() }
+            }
         }
     }
 

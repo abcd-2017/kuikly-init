@@ -16,7 +16,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.tencent.kuikly.compose.ui.Modifier
-import com.kuikly.init.base.BasePager
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugResultArea
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTestButton
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
@@ -32,12 +33,14 @@ import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
 @Page("debug_toast_dialog")
-internal class DebugToastDialogPage : BasePager() {
+public class DebugToastDialogPage : BasePager() {
 
     override fun willInit() {
         super.willInit()
         setContent {
-            DebugToastDialogContent { closePage() }
+            LocalContextProvider {
+                DebugToastDialogContent { closePage() }
+            }
         }
     }
 

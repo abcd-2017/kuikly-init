@@ -24,7 +24,8 @@ import com.tencent.kuikly.compose.ui.text.TextStyle
 import com.tencent.kuikly.compose.ui.text.font.FontWeight
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.kuikly.init.base.BasePager
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugResultArea
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTestButton
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
@@ -33,16 +34,19 @@ import com.tencent.kuikly.compose.setContent
 import com.tencent.tmm.kmmresource.compose.stringResource
 import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
+import com.tencent.kuikly.compose.ui.platform.LocalActivity
 import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 
 @Page("debug_navigate")
-internal class DebugNavigatePage : BasePager() {
+public class DebugNavigatePage : BasePager() {
 
     override fun willInit() {
         super.willInit()
         setContent {
-            DebugNavigateContent()
+            LocalContextProvider {
+                DebugNavigateContent()
+            }
         }
     }
 }
@@ -54,7 +58,7 @@ private fun DebugNavigateContent() {
     var paramValue by remember { mutableStateOf("") }
     var logText by remember { mutableStateOf("") }
 
-    val localPager = com.tencent.kuikly.compose.ui.platform.LocalActivity.current.getPager()
+    val localPager = LocalActivity.current.getPager()
     val routerModule = localPager.acquireModule<RouterModule>(RouterModule.MODULE_NAME)
 
     val pageTitle = stringResource(DebugImplMR.strings.debug_navigate_title)

@@ -29,7 +29,8 @@ import com.tencent.kuikly.compose.ui.graphics.Color
 import com.tencent.kuikly.compose.ui.layout.ContentScale
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.kuikly.init.base.BasePager
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.toast.ToastDuration
@@ -43,30 +44,32 @@ import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
 @Page("debug_image")
-internal class DebugImagePage : BasePager() {
+public class DebugImagePage : BasePager() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
         setContent {
-            val pageTitle = stringResource(DebugImplMR.strings.debug_image_title)
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary
+            LocalContextProvider {
+                val pageTitle = stringResource(DebugImplMR.strings.debug_image_title)
+                Scaffold(
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = { Text(pageTitle) },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         )
-                    )
-                }
-            ) { padding ->
+                    }
+                ) { padding ->
                 DebugImageContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
+            }
             }
         }
     }

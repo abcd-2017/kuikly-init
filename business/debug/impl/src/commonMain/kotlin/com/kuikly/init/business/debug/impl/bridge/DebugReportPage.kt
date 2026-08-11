@@ -28,8 +28,9 @@ import com.tencent.kuikly.compose.ui.graphics.Color
 import com.tencent.kuikly.compose.ui.text.font.FontFamily
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.kuikly.init.base.BasePager
-import com.kuikly.init.base.bridgeModule
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
+import com.kuikly.init.common.widget.bridgeModule
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
@@ -40,29 +41,31 @@ import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 
 @Page("debug_report")
-internal class DebugReportPage : BasePager() {
+public class DebugReportPage : BasePager() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
         setContent {
-            val pageTitle = stringResource(DebugImplMR.strings.debug_report_title)
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary
+            LocalContextProvider {
+                val pageTitle = stringResource(DebugImplMR.strings.debug_report_title)
+                Scaffold(
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = { Text(pageTitle) },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         )
-                    )
-                }
-            ) { padding ->
+                    }
+                ) { padding ->
                 ReportTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     bridgeModule = bridgeModule,
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
+            }
             }
         }
     }
@@ -71,7 +74,7 @@ internal class DebugReportPage : BasePager() {
 @Composable
 private fun ReportTestContent(
     modifier: Modifier = Modifier,
-    bridgeModule: com.kuikly.init.base.BridgeModule,
+    bridgeModule: com.kuikly.init.common.widget.BridgeModule,
     onClose: () -> Unit
 ) {
     var eventCodeInput by remember { mutableStateOf("debug_event_test") }
@@ -172,7 +175,7 @@ private fun ReportInputSection(
 
 @Composable
 private fun ReportOpsSection(
-    bridgeModule: com.kuikly.init.base.BridgeModule,
+    bridgeModule: com.kuikly.init.common.widget.BridgeModule,
     eventCodeInput: String,
     dataInput: String,
     btnReportDt: String,

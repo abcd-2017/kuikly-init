@@ -19,7 +19,8 @@ import com.tencent.kuikly.compose.ui.Modifier
 import com.tencent.kuikly.compose.ui.graphics.Color
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.kuikly.init.base.BasePager
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugResultArea
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTestButton
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
@@ -32,12 +33,14 @@ import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
 @Page("debug_device")
-internal class DebugDevicePage : BasePager() {
+public class DebugDevicePage : BasePager() {
 
     override fun willInit() {
         super.willInit()
         setContent {
-            DebugDeviceContent { closePage() }
+            LocalContextProvider {
+                DebugDeviceContent { closePage() }
+            }
         }
     }
 

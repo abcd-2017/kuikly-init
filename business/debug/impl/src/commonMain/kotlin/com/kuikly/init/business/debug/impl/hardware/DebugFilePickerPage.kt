@@ -29,7 +29,8 @@ import com.tencent.kuikly.compose.ui.graphics.Color
 import com.tencent.kuikly.compose.ui.text.font.FontFamily
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.kuikly.init.base.BasePager
+import com.kuikly.init.common.widget.BasePager
+import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.picker.PickedFile
 import com.kuikly.init.common.base.platform.picker.provideFilePicker
@@ -41,28 +42,30 @@ import com.tencent.kuikly.core.module.RouterModule
 import kotlinx.coroutines.launch
 
 @Page("debug_file_picker")
-internal class DebugFilePickerPage : BasePager() {
+public class DebugFilePickerPage : BasePager() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun willInit() {
         super.willInit()
         setContent {
-            val pageTitle = stringResource(DebugImplMR.strings.debug_file_picker_title)
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary
+            LocalContextProvider {
+                val pageTitle = stringResource(DebugImplMR.strings.debug_file_picker_title)
+                Scaffold(
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = { Text(pageTitle) },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         )
-                    )
-                }
-            ) { padding ->
+                    }
+                ) { padding ->
                 FilePickerTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
+            }
             }
         }
     }
