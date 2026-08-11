@@ -26,9 +26,12 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                api("com.tencent.kuikly-open:core:${Version.getKuiklyVersion()}")
+                api("com.tencent.kuikly-open:core-annotations:${Version.getKuiklyVersion()}")
+                api("com.tencent.kuikly-open:compose:${Version.getKuiklyVersion()}")
                 implementation(project(":business:debug:api"))
                 implementation(project(":common:base"))
-                implementation(project(":shared"))
+                implementation(project(":common:widget"))
                 implementation("io.insert-koin:koin-core:4.0.1")
                 implementation("com.tencent.kuiklybase:resource-core:0.0.1")
                 implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
@@ -48,6 +51,10 @@ kotlin {
 
 ksp {
     arg(KEY_PAGE_NAME, getPageName())
+    // 多模块配置：debug_impl 是子模块（moduleId 不能包含冒号）
+    arg("moduleId", "debug_impl")
+    arg("isMainModule", "false")
+    arg("enableMultiModule", "true")
 }
 
 dependencies {
