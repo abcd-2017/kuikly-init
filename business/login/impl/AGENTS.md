@@ -53,8 +53,6 @@ val LoginModule: Module = module {
 | `:business:login:api` | 登录接口模块 |
 | `:common:base` | 平台能力抽象层 |
 | `io.insert-koin:koin-core` | Koin DI 容器 |
-| `kuiklybase:resource-core:0.0.1` | KmmResource 核心 |
-| `kuiklybase:resource-compose:0.0.1` | KmmResource Compose 扩展 |
 
 ## 构建配置
 

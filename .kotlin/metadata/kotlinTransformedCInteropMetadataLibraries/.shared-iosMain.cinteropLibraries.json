@@ -1,22 +1,12 @@
 [
   {
+    "moduleId": "com.tencent.kuikly-open:core:2.25.0-2.1.21",
+    "file": "/Users/admin/code/Android/kuikly-init/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/com.tencent.kuikly-open-core-2.25.0-2.1.21-appleMain-cinterop/com.tencent.kuikly-open_core-cinterop-kuikly-XUS1aw.klib",
+    "sourceSetName": "appleMain"
+  },
+  {
     "moduleId": "org.jetbrains.kotlinx:atomicfu:0.25.0",
-    "file": "D:\\code\\Android\\kuikly-init\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\org.jetbrains.kotlinx-atomicfu-0.25.0-iosMain-cinterop\\org.jetbrains.kotlinx_atomicfu-cinterop-interop-l0JTDg.klib",
+    "file": "/Users/admin/code/Android/kuikly-init/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/org.jetbrains.kotlinx-atomicfu-0.25.0-iosMain-cinterop/org.jetbrains.kotlinx_atomicfu-cinterop-interop-l0JTDg.klib",
     "sourceSetName": "iosMain"
-  },
-  {
-    "moduleId": "com.tencent.kuiklyx-open:coroutines:1.3.0-2.0.21",
-    "file": "D:\\code\\Android\\kuikly-init\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\com.tencent.kuiklyx-open-coroutines-1.3.0-2.0.21-iosMain-cinterop\\com.tencent.kuiklyx-open_coroutines-cinterop-OpenKuiklyIOSRender-iLv20Q.klib",
-    "sourceSetName": "iosMain"
-  },
-  {
-    "moduleId": "org.jetbrains.skiko:skiko:0.7.97-KBA-002",
-    "file": "D:\\code\\Android\\kuikly-init\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\org.jetbrains.skiko-skiko-0.7.97-KBA-002-iosMain-cinterop\\org.jetbrains.skiko_skiko-cinterop-uikit-OLJC0Q.klib",
-    "sourceSetName": "iosMain"
-  },
-  {
-    "moduleId": "org.jetbrains.compose.ui:ui-uikit:1.6.1-KBA-001",
-    "file": "D:\\code\\Android\\kuikly-init\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\org.jetbrains.compose.ui-ui-uikit-1.6.1-KBA-001-uikitMain-cinterop\\org.jetbrains.compose.ui_ui-uikit-cinterop-utils-owY4WQ.klib",
-    "sourceSetName": "uikitMain"
   }
 ]

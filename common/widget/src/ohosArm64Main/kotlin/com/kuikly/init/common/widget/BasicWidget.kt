@@ -3,13 +3,14 @@
 
 package com.kuikly.init.common.widget
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
+import com.tencent.kuikly.compose.foundation.layout.Box
+import com.tencent.kuikly.compose.foundation.layout.padding
+import com.tencent.kuikly.compose.foundation.text.BasicTextField
+import com.tencent.kuikly.compose.ui.Modifier
+import com.tencent.kuikly.compose.ui.text.TextStyle
+import com.tencent.kuikly.compose.ui.text.input.TextFieldValue
+import com.tencent.kuikly.compose.ui.unit.dp
 
 @Composable
 public fun Button(
@@ -28,7 +29,7 @@ public fun TextField(
     value: String = "",
     placeholder: String = "",
     onValueChange: (String) -> Unit,
-    textStyle: androidx.compose.ui.text.TextStyle = androidx.compose.ui.text.TextStyle.Default,
+    textStyle: TextStyle = TextStyle.Default,
 ) {
     var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
     BasicTextField(

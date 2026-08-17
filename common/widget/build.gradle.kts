@@ -2,7 +2,6 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("com.google.devtools.ksp")
-    id("com.tencent.kuiklybase.resource.generator")
     id("org.jetbrains.compose")
     kotlin("plugin.compose")
 }
@@ -28,8 +27,6 @@ kotlin {
                 api("com.tencent.kuikly-open:compose:${Version.getKuiklyVersion()}")
                 implementation(project(":common:base"))
                 implementation("io.insert-koin:koin-core:4.0.1")
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
         }
         val iosX64Main by getting
@@ -42,12 +39,6 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
         }
     }
-}
-
-multiplatformResources {
-    multiplatformResourcesPackage = "com.kuikly.init.common.widget"
-    multiplatformResourcesClassName = "WidgetMR"
-    multiplatformResourcesPrefix = "widget_"
 }
 
 android {

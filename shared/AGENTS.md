@@ -125,8 +125,6 @@ arg("enableMultiModule", "true")
 | `:business:initTask` | implementation | 启动任务框架 |
 | `:business:debug:impl` | implementation | Debug 页面实现 |
 | `libs.koin.core` | implementation | Koin DI 容器 |
-| `kuiklybase:resource-core:0.0.1` | implementation | KmmResource 核心 |
-| `kuiklybase:resource-compose:0.0.1` | implementation | KmmResource Compose 扩展 |
 
 ## 构建产物
 

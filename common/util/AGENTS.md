@@ -38,11 +38,6 @@ object StringUtils {
 
 ## 依赖
 
-| 依赖 | 说明 |
-|------|------|
-| `kuiklybase:resource-core:0.0.1` | KmmResource 核心 |
-| `kuiklybase:resource-compose:0.0.1` | KmmResource Compose 扩展 |
-
 > **注意**：本模块**零框架依赖**（无 Kuikly、无 Koin、无协程），最大化可移植性。
 
 ## 构建配置

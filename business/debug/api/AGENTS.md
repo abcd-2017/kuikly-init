@@ -46,8 +46,6 @@ data class TestPageInfo(
 | 依赖 | 说明 |
 |------|------|
 | `io.insert-koin:koin-core:4.0.1` | Koin DI（接口标记用） |
-| `kuiklybase:resource-core:0.0.1` | KmmResource 核心 |
-| `kuiklybase:resource-compose:0.0.1` | KmmResource Compose 扩展 |
 
 > **注意**：本模块**无 Kuikly @Page/Compose 依赖**，保持轻量，可被 impl 模块和 shared 模块安全引用。
 

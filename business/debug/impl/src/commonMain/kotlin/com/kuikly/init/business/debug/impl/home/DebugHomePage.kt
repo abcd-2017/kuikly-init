@@ -23,7 +23,6 @@ import com.tencent.kuikly.compose.ui.text.style.TextAlign
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.common.widget.BasePager
-import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.DebugPageConfig
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugCardItem
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
@@ -41,9 +40,9 @@ public class DebugHomePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            LocalContextProvider {
-                DebugHomeContent()
-            }
+            
+            DebugHomeContent()
+
         }
     }
 }

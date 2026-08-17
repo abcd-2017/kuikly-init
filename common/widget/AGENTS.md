@@ -10,7 +10,6 @@ UI 组件 + 桥接模块，提供 Kuikly 页面基类、共享 UI 组件库和�
 2. **共享 UI 组件**：`BasicWidget` 提供 Modifier 扩展 + 通用组件
 3. **核心桥接**：`BridgeModule` 封装 30+ 原生桥接方法
 4. **桥接扩展**：`IPagerIdKtx` 提供 pagerId 扩展访问
-5. **平台上下文**：`LocalContextProvider` 包装平台特定上下文
 
 ## 详细目录结构
 
@@ -24,15 +23,9 @@ common/widget/
     │   ├── BasicWidget.kt        # 📌 共享 UI 组件库（扩展函数 + 手势 + Button/TextField/Modal/ComposeNavigationBar）
     │   ├── BridgeModule.kt       # 📌 核心桥接模块（30+ 方法，6 个 Deprecated）
     │   ├── IPagerIdKtx.kt        # 📌 pagerId 扩展（bridgeModule 访问 + setTimeout）
-    │   ├── LocalContextProvider.kt # 📌 expect fun（平台上下文包装）
     │   └── Utils.kt              # 📌 bridgeModule 访问/日志/价格转换
-    ├── androidMain/
-    │   └── LocalContextProvider.kt — actual 实现（提供 LocalContext）
-    ├── iosMain/
-    │   └── LocalContextProvider.kt — actual 实现（透传 content）
     └── ohosArm64Main/
-        ├── BasicWidget.kt           — 简化版（部分 Compose 扩展 OHOS 不可用）
-        └── LocalContextProvider.kt — actual 实现（透传 content）
+        └── BasicWidget.kt           — 简化版（部分 Compose 扩展 OHOS 不可用）
 ```
 
 ## 核心类说明
@@ -128,16 +121,6 @@ Utils.bridgeModule(pagerId).reportPageCostTimeForError()
 | `logToNative(pagerId/content)` | 日志输出 |
 | `convertToPriceStr(price: Long): String` | 分转元价格转换 |
 
-### LocalContextProvider.kt
-
-```kotlin
-@Composable
-expect fun LocalContextProvider(content: @Composable () -> Unit)
-```
-
-- **Android actual**：提供 `LocalContext`（`android.content.Context`）
-- **iOS / OHOS actual**：直接透传 content
-
 ## 依赖
 
 | 依赖 | 类型 | 说明 |
@@ -147,8 +130,6 @@ expect fun LocalContextProvider(content: @Composable () -> Unit)
 | `com.tencent.kuikly-open:compose` | api | Kuikly Compose |
 | `:common:base` | implementation | 平台能力抽象层 |
 | `io.insert-koin:koin-core:4.0.1` | implementation | Koin DI |
-| `kuiklybase:resource-core:0.0.1` | implementation | KmmResource 核心 |
-| `kuiklybase:resource-compose:0.0.1` | implementation | KmmResource Compose |
 
 ## 构建配置
 

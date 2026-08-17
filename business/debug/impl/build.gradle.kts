@@ -5,7 +5,6 @@ plugins {
     id("com.tencent.kuikly-open.kuikly")
     id("org.jetbrains.compose")
     kotlin("plugin.compose")
-    id("com.tencent.kuiklybase.resource.generator")
 }
 
 val KEY_PAGE_NAME = "pageName"
@@ -26,15 +25,10 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.tencent.kuikly-open:core:${Version.getKuiklyVersion()}")
-                api("com.tencent.kuikly-open:core-annotations:${Version.getKuiklyVersion()}")
-                api("com.tencent.kuikly-open:compose:${Version.getKuiklyVersion()}")
                 implementation(project(":business:debug:api"))
                 implementation(project(":common:base"))
-                implementation(project(":common:widget"))
+                implementation(project(":shared"))
                 implementation("io.insert-koin:koin-core:4.0.1")
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
         }
         val iosX64Main by getting
@@ -51,10 +45,6 @@ kotlin {
 
 ksp {
     arg(KEY_PAGE_NAME, getPageName())
-    // 多模块配置：debug_impl 是子模块（moduleId 不能包含冒号）
-    arg("moduleId", "debug_impl")
-    arg("isMainModule", "false")
-    arg("enableMultiModule", "true")
 }
 
 dependencies {
@@ -72,12 +62,6 @@ android {
     defaultConfig {
         minSdk = 21
     }
-}
-
-multiplatformResources {
-    multiplatformResourcesPackage = "com.kuikly.init.business.debug.impl"
-    multiplatformResourcesClassName = "DebugImplMR"
-    multiplatformResourcesPrefix = "debug_impl_"
 }
 
 fun getPageName(): String {

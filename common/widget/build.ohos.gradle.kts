@@ -2,7 +2,6 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("com.google.devtools.ksp")
-    id("com.tencent.kuiklybase.resource.generator")
 }
 
 kotlin {
@@ -29,8 +28,6 @@ kotlin {
                 implementation("com.tencent.kuikly-open:compose:${Version.getKuiklyOhosVersion()}")
                 implementation(project(":common:base"))
                 // 注意：koin-core 不支持 OHOS，在 OHOS 构建中移除
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
         }
         val iosX64Main by getting
@@ -46,12 +43,6 @@ kotlin {
             dependsOn(commonMain)
         }
     }
-}
-
-multiplatformResources {
-    multiplatformResourcesPackage = "com.kuikly.init.common.widget"
-    multiplatformResourcesClassName = "WidgetMR"
-    multiplatformResourcesPrefix = "widget_"
 }
 
 android {

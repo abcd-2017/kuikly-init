@@ -8,7 +8,6 @@ plugins {
     id("org.jetbrains.compose")
     kotlin("plugin.compose")
     // KNOI 插件仅在 OHOS 构建中应用（build.ohos.gradle.kts），此处不应用
-    id("com.tencent.kuiklybase.resource.generator")
 }
 
 val KEY_PAGE_NAME = "pageName"
@@ -53,8 +52,6 @@ kotlin {
                 implementation(project(":business:initTask"))
                 implementation(project(":business:debug:impl"))
                 implementation(libs.koin.core)
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }
         }
         val commonTest by getting {
@@ -150,10 +147,4 @@ fun getCommonCompilerArgs(): List<String> {
 
 fun getLinkerArgs(): List<String> {
     return listOf()
-}
-
-multiplatformResources {
-    multiplatformResourcesPackage = "com.kuikly.init"
-    multiplatformResourcesClassName = "SharedMR"
-    multiplatformResourcesPrefix = "shared_"
 }

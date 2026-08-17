@@ -130,8 +130,6 @@ sealed class ShareContent {
 |------|------|------|
 | `io.insert-koin:koin-core` | implementation | Koin DI 容器 |
 | `org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1` | api | Kotlin 协程 |
-| `kuiklybase:resource-core:0.0.1` | implementation | KmmResource 核心 |
-| `kuiklybase:resource-compose:0.0.1` | implementation | KmmResource Compose |
 
 ## 依赖（androidMain 额外）
 

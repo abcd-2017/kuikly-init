@@ -29,7 +29,6 @@ import com.tencent.kuikly.compose.ui.text.font.FontFamily
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.common.widget.BasePager
-import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.common.widget.bridgeModule
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.keyboard.provideKeyboard
@@ -47,18 +46,18 @@ public class DebugPhoneKeyboardPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            LocalContextProvider {
-                val pageTitle = stringResource(DebugImplMR.strings.debug_phone_title)
-                Scaffold(
-                    topBar = {
-                        CenterAlignedTopAppBar(
-                            title = { Text(pageTitle) },
-                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                titleContentColor = MaterialTheme.colorScheme.onPrimary
-                            )
+            
+            val pageTitle = stringResource(DebugImplMR.strings.debug_phone_title)
+            Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = { Text(pageTitle) },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
-                    }
+                    )
+
                 ) { padding ->
                 PhoneKeyboardTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),

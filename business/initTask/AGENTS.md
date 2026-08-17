@@ -91,8 +91,6 @@ object CommonInitTasks {
 |------|------|
 | `:common:base` | 平台能力抽象层 |
 | `io.insert-koin:koin-core` | Koin DI 容器 |
-| `kuiklybase:resource-core:0.0.1` | KmmResource 核心 |
-| `kuiklybase:resource-compose:0.0.1` | KmmResource Compose 扩展 |
 
 > **注意**：本模块**无 Kuikly core/compose 依赖**，保持轻量，可被各平台初始化代码安全引用。
 

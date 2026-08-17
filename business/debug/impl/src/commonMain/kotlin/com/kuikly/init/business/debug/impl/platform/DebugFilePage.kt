@@ -21,7 +21,6 @@ import com.tencent.kuikly.compose.ui.text.TextStyle
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
 import com.kuikly.init.common.widget.BasePager
-import com.kuikly.init.common.widget.LocalContextProvider
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugResultArea
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTestButton
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
@@ -40,9 +39,9 @@ public class DebugFilePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            LocalContextProvider {
-                DebugFileContent { closePage() }
-            }
+            
+            DebugFileContent { closePage() }
+
         }
     }
 

@@ -158,15 +158,6 @@ git rebase -i main             # 交互式压缩
 2. 检查各模块的 `AGENTS.md` 是否需要更新
 3. 如有新增/删除/变更的类、方法、配置，同步更新对应模块文档
 
-### ⛔ 远程推送约束（必须严格执行）
-
-1. **禁止主 agent 直接 push**：任何推送到远程的操作（push/pull/force push）必须先向用户详细说明推送内容、目标分支、是否 force push，**获得用户明确批准后方可执行**
-2. **禁止 force push 到 main**：除非用户明确表示"force push 到 main"，否则禁止任何 force push 操作
-3. **违规示例**：
-   - ❌ 主 agent 自行判断"需要同步"就直接 push → 必须先问用户
-   - ❌ 主 agent 自行 reset + force push → 必须先问用户
-   - ✅ 向用户报告"需要 force push 到 main 来撤销 commit X" → 等用户确认 → 执行
-
 ---
 
 ## 用户偏好
