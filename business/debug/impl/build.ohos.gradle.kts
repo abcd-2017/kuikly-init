@@ -1,10 +1,22 @@
 import org.gradle.kotlin.dsl.kotlin
 
+val KEY_PAGE_NAME = "pageName"
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("com.google.devtools.ksp")
     id("com.tencent.kuiklybase.knoi.plugin") version("0.0.4")
+}
+
+ksp {
+    arg("pageName", getPageName())
+    arg("moduleId", "debug_impl")
+    arg("enableMultiModule", "true")
+}
+
+fun getPageName(): String {
+    return (project.properties["pageName"] as? String) ?: ""
 }
 
 kotlin {
@@ -25,9 +37,13 @@ kotlin {
             dependencies {
                 implementation(project(":business:debug:api"))
                 implementation(project(":common:base"))
-                implementation(project(":shared"))
+                implementation(project(":common:widget"))
+                // 直接依赖 Kuikly OHOS 框架，替代 implementation(project(":shared")) 以打破循环依赖
+                implementation("com.tencent.kuikly-open:core:${Version.getKuiklyOhosVersion()}")
+                implementation("com.tencent.kuikly-open:core-annotations:${Version.getKuiklyOhosVersion()}")
+                implementation("com.tencent.kuikly-open:compose:${Version.getKuiklyOhosVersion()}")
             }
-            // OHOS 不支持 koin + multiplatformResources，清空源码目录避免编译
+            // OHOS 编译器不支持 commonMain 的部分语法，清空源码目录避免编译
             kotlin.setSrcDirs(listOf<Any>())
         }
         val iosX64Main by getting

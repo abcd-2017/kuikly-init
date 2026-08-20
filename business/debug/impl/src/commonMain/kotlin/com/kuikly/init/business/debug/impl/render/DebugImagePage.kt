@@ -37,8 +37,6 @@ import com.kuikly.init.common.base.platform.toast.provideToast
 import com.tencent.kuikly.compose.coil3.rememberAsyncImagePainter
 import com.tencent.kuikly.compose.foundation.Image
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -50,7 +48,7 @@ public class DebugImagePage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_image_title)
+            val pageTitle = "图片渲染测试"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -79,40 +77,16 @@ private fun DebugImageContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val sectionNetworkImage = stringResource(DebugImplMR.strings.debug_image_section_network_image)
-    val sectionRounded = stringResource(DebugImplMR.strings.debug_image_section_rounded)
-    val sectionContentScale = stringResource(DebugImplMR.strings.debug_image_section_content_scale)
-    val sectionBordered = stringResource(DebugImplMR.strings.debug_image_section_bordered)
-    val sectionFixedSize = stringResource(DebugImplMR.strings.debug_image_section_fixed_size)
-    val sectionClickable = stringResource(DebugImplMR.strings.debug_image_section_clickable)
-    val labelImage1 = stringResource(DebugImplMR.strings.debug_image_label_image_1)
-    val labelImage2 = stringResource(DebugImplMR.strings.debug_image_label_image_2)
-    val labelImage3 = stringResource(DebugImplMR.strings.debug_image_label_image_3)
-    val label0dp = stringResource(DebugImplMR.strings.debug_image_label_0dp)
-    val label8dp = stringResource(DebugImplMR.strings.debug_image_label_8dp)
-    val label16dp = stringResource(DebugImplMR.strings.debug_image_label_16dp)
-    val labelCircle = stringResource(DebugImplMR.strings.debug_image_label_circle)
-    val labelFit = stringResource(DebugImplMR.strings.debug_image_label_fit)
-    val labelCrop = stringResource(DebugImplMR.strings.debug_image_label_crop)
-    val labelFillBounds = stringResource(DebugImplMR.strings.debug_image_label_fill_bounds)
-    val labelBordered = stringResource(DebugImplMR.strings.debug_image_label_bordered)
-    val label50x50 = stringResource(DebugImplMR.strings.debug_image_label_50x50)
-    val label100x100 = stringResource(DebugImplMR.strings.debug_image_label_100x100)
-    val label150x150 = stringResource(DebugImplMR.strings.debug_image_label_150x150)
-    val labelClickTest = stringResource(DebugImplMR.strings.debug_image_label_click_test)
-    val msgImageClicked = stringResource(DebugImplMR.strings.debug_image_msg_image_clicked)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
-
     LazyColumn(
         modifier = modifier.padding(16.dp)
     ) {
-        item { NetworkImageSection(sectionNetworkImage, labelImage1, labelImage2, labelImage3) }
-        item { RoundedCornerSection(sectionRounded, label0dp, label8dp, label16dp, labelCircle) }
-        item { ContentScaleSection(sectionContentScale, labelFit, labelCrop, labelFillBounds) }
-        item { BorderedImageSection(sectionBordered, labelBordered) }
-        item { FixedSizeSection(sectionFixedSize, label50x50, label100x100, label150x150) }
-        item { ClickableImageSection(sectionClickable, labelClickTest, msgImageClicked) }
-        item { CloseButtonSection(btnClose, onClose) }
+        item { NetworkImageSection("网络图片", "图1", "图2", "图3") }
+        item { RoundedCornerSection("圆角图片", "0dp", "8dp", "16dp", "圆形") }
+        item { ContentScaleSection("缩放模式", "Fit", "Crop", "FillBounds") }
+        item { BorderedImageSection("带边框图片", "带边框") }
+        item { FixedSizeSection("固定尺寸", "50x50", "100x100", "150x150") }
+        item { ClickableImageSection("图片点击", "点击测试", "图片被点击") }
+        item { CloseButtonSection("关闭页面", onClose) }
     }
 }
 

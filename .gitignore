@@ -33,7 +33,6 @@ build/
 *.ipa
 
 # OHOS 构建产物（sync 脚本复制的资源）
-ohosApp/entry/src/main/resources/resfile/image_adapter/
 ohosApp/entry/libs/
 
 ## Claude Code 输出产物（过程文件，不版本管理）

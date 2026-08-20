@@ -111,7 +111,6 @@ fun Modifier.margin(
 //) {
 //    val placeholder = when (placeholderSrc) {
 //        is Painter -> placeholderSrc
-//        is DrawableResource -> painterResource(placeholderSrc)
 //        is String -> rememberAsyncImagePainter(placeholderSrc)
 //        else -> null
 //    }

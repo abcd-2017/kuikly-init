@@ -22,11 +22,8 @@ shared/
 └── src/
     ├── commonMain/               # 所有平台共享代码
     │   ├── assets/               # 打包到各平台的静态资源
-    │   │   └── image_adapter/
-    │   │       └── sample.png    # 图片适配器测试用基准图
     │   └── kotlin/com/kuikly/init/
     │       ├── RouterPage.kt             # 📌 入口/路由控制台页面 (@Page("router", supportInLocal = true))
-    │       ├── ImageAdapterBenchmarks.kt  # 📌 图片适配器基准测试页 (@Page("image_adapter"))
     │       └── FileListSupport.kt        # 📌 expect 跨平台文件枚举声明
     ├── androidMain/              # Android 专属共享代码
     │   └── kotlin/com/kuikly/init/
@@ -52,13 +49,8 @@ shared/
 - 入口页面 `@Page("router", supportInLocal = true)`，提供页面路由跳转控制台
 - UI 结构：logo + 输入框 + 跳转按钮，渐变紫色主题
 - 内置 SharedPreferences 缓存最近输入（key: `router_last_input_key2`）
-- 快捷跳转 "ImageAdapter基准测试"（`image_adapter`）和 "Debug 测试中心"（`debug_home`）
+- 快捷跳转 "Debug 测试中心"（`debug_home`）
 - 跳转逻辑：解析 `pageName` 或 `pageName&key=value` 格式，通过 `RouterModule.openPage()` 导航
-
-### ImageAdapterBenchmarks.kt
-- 图片适配器基准测试页 `@Page("image_adapter")`
-- 继承 `ComposeContainer`，4 个测试场景：base64 图片、assets 图片、http/https 图片、gif 动图
-- 验证点：intrinsicSize、Image 渲染、drawImage、capInsets
 
 ### FileListSupport.kt
 - `internal expect fun listFilesInDirectory(dir: String): List<String>` 跨平台文件枚举声明
@@ -82,12 +74,11 @@ shared/
 
 ## 页面注册
 
-本模块自身仅注册 **2 个页面**：
+本模块自身仅注册 **1 个页面**：
 
 | 页面名 | 注解 | 说明 |
 |--------|------|------|
 | `router` | `@Page("router", supportInLocal = true)` | 入口/路由控制台 |
-| `image_adapter` | `@Page("image_adapter")` | 图片适配器基准测试 |
 
 Debug 系列页面由 `:business:debug:impl` 子模块通过 multi-module KSP 注册（`subModules=debug_impl`）。
 
@@ -96,10 +87,9 @@ Debug 系列页面由 `:business:debug:impl` 子模块通过 multi-module KSP �
 ### 版本
 - Kuikly：`2.25.0-2.1.21`（标准）/ `2.25.0-2.0.21-ohos`（OHOS）
 - Kotlin：`2.1.21`（标准）/ `2.0.21-ohos`（OHOS）
-- KmmResource：`0.0.1`（0.1.0 有 StackOverflow bug）
 
 ### 插件
-`multiplatform`, `native.cocoapods`, `android.library`, `ksp`, `maven-publish`, `kuikly`, `jetcompose`, `plugin.compose`, `kuiklybase.resource.generator`
+`multiplatform`, `native.cocoapods`, `android.library`, `ksp`, `maven-publish`, `kuikly`, `jetcompose`, `plugin.compose`
 
 ### KSP 参数
 ```kotlin
@@ -109,9 +99,6 @@ arg("subModules", "debug_impl")
 arg("enableMultiModule", "true")
 ```
 
-### 资源
-- TMM package: `com.kuikly.init`
-- 资源类: `SharedMR`
 
 ## 依赖（commonMain）
 

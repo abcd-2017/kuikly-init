@@ -38,7 +38,6 @@ kotlin {
             isStatic = true
             license = "MIT"
         }
-        extraSpecAttributes["resources"] = "['src/commonMain/assets/**']"
     }
 
     sourceSets {
@@ -111,8 +110,6 @@ ksp {
 }
 
 dependencies {
-    // 依赖子模块以获取 KuiklyCoreEntry_debug_impl（编译时需要）
-    compileOnly(project(":business:debug:impl"))
     compileOnly("com.tencent.kuikly-open:core-ksp:${Version.getKuiklyVersion()}") {
         add("kspAndroid", this)
         add("kspIosArm64", this)
@@ -147,4 +144,18 @@ fun getCommonCompilerArgs(): List<String> {
 
 fun getLinkerArgs(): List<String> {
     return listOf()
+}
+
+// 当 CocoaPods (pod) 不存在时，跳过 podInstall 任务，避免构建失败
+tasks.withType<org.jetbrains.kotlin.gradle.targets.native.tasks.PodInstallTask>().configureEach {
+    onlyIf {
+        val result = exec {
+            commandLine("which", "pod")
+            isIgnoreExitValue = true
+        }
+        if (result.exitValue != 0) {
+            logger.warn("CocoaPods (pod) not found in PATH. Skipping podInstall.")
+        }
+        result.exitValue == 0
+    }
 }

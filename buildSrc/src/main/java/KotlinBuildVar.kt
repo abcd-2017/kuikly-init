@@ -18,10 +18,6 @@ object Version {
     fun getKuiklyOhosVersion(): String {
         return "$KUIKLY_VERSION-$KOTLIN_OHOS_VERSION"
     }
-
-    // KmmResource（注意：0.1.0 有 StackOverflow bug，使用 0.0.1）
-    private const val RESOURCE_VERSION = "0.0.1"
-    fun getResourceVersion(): String = RESOURCE_VERSION
 }
 
 object BuildPlugin {

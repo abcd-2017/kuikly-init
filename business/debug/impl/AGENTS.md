@@ -127,15 +127,12 @@ ksp {
 | `:common:base` | implementation | 平台能力抽象层 |
 | `:common:widget` | implementation | 共享 UI 组件 |
 | `io.insert-koin:koin-core:4.0.1` | implementation | Koin DI |
-| `kuiklybase:resource-core:0.0.1` | implementation | KmmResource 核心 |
-| `kuiklybase:resource-compose:0.0.1` | implementation | KmmResource Compose |
 | `com.tencent.kuikly-open:core-ksp` | compileOnly + ksp | KSP 注解处理器 |
 
 ## 构建配置
 
 - 目标平台：Android + iOS（X64 / Arm64 / SimulatorArm64）+ OHOS（独立构建）
-- 资源类：`DebugImplMR`（前缀 `debug_impl_`）
-- 插件：`multiplatform`, `android.library`, `ksp`, `kuikly`, `jetcompose`, `plugin.compose`, `kuiklybase.resource.generator`
+- 插件：`multiplatform`, `android.library`, `ksp`, `kuikly`, `jetcompose`, `plugin.compose`
 
 ## 开发约定
 

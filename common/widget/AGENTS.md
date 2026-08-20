@@ -134,8 +134,7 @@ Utils.bridgeModule(pagerId).reportPageCostTimeForError()
 ## 构建配置
 
 - 目标平台：Android + iOS（X64 / Arm64 / SimulatorArm64）+ OHOS（独立构建）
-- 资源类：`WidgetMR`（前缀 `widget_`）
-- 插件：`multiplatform`, `android.library`, `ksp`, `kuiklybase.resource.generator`, `jetcompose`, `plugin.compose`
+- 插件：`multiplatform`, `android.library`, `ksp`, `jetcompose`, `plugin.compose`
 
 ## 开发约定
 

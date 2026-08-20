@@ -27,7 +27,11 @@ kotlin {
             dependencies {
                 implementation(project(":business:debug:api"))
                 implementation(project(":common:base"))
-                implementation(project(":shared"))
+                implementation(project(":common:widget"))
+                // 直接依赖 Kuikly 框架，替代 implementation(project(":shared")) 以打破循环依赖
+                implementation("com.tencent.kuikly-open:core:${Version.getKuiklyVersion()}")
+                implementation("com.tencent.kuikly-open:core-annotations:${Version.getKuiklyVersion()}")
+                implementation("com.tencent.kuikly-open:compose:${Version.getKuiklyVersion()}")
                 implementation("io.insert-koin:koin-core:4.0.1")
             }
         }
@@ -45,6 +49,8 @@ kotlin {
 
 ksp {
     arg(KEY_PAGE_NAME, getPageName())
+    arg("moduleId", "debug_impl")
+    arg("enableMultiModule", "true")
 }
 
 dependencies {

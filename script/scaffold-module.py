@@ -144,7 +144,6 @@ TEMPLATE_COMMON_BUILD = """\
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -164,8 +163,6 @@ kotlin {{
         val commonMain by getting {{
             dependencies {{
                 implementation("io.insert-koin:koin-core:{koin_version}")
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -178,12 +175,6 @@ kotlin {{
             iosSimulatorArm64Main.dependsOn(this)
         }}
     }}
-}}
-
-multiplatformResources {{
-    multiplatformResourcesPackage = "{namespace}"
-    multiplatformResourcesClassName = "{class_name}MR"
-    multiplatformResourcesPrefix = "{module}_"
 }}
 
 android {{
@@ -199,7 +190,6 @@ TEMPLATE_BUSINESS_API_BUILD = """\
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -219,8 +209,6 @@ kotlin {{
         val commonMain by getting {{
             dependencies {{
                 implementation("io.insert-koin:koin-core:{koin_version}")
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -233,12 +221,6 @@ kotlin {{
             iosSimulatorArm64Main.dependsOn(this)
         }}
     }}
-}}
-
-multiplatformResources {{
-    multiplatformResourcesPackage = "{namespace}"
-    multiplatformResourcesClassName = "{class_name}MR"
-    multiplatformResourcesPrefix = "{module}_"
 }}
 
 android {{
@@ -258,7 +240,6 @@ plugins {{
     id("com.tencent.kuikly-open.kuikly")
     id("org.jetbrains.compose")
     kotlin("plugin.compose")
-    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 val KEY_PAGE_NAME = "pageName"
@@ -286,8 +267,6 @@ kotlin {{
                 implementation(project(":common:base"))
                 implementation(project(":common:widget"))
                 implementation("io.insert-koin:koin-core:{koin_version}")
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -319,12 +298,6 @@ dependencies {{
     }}
 }}
 
-multiplatformResources {{
-    multiplatformResourcesPackage = "{namespace}"
-    multiplatformResourcesClassName = "{class_name}MR"
-    multiplatformResourcesPrefix = "{module}_"
-}}
-
 android {{
     namespace = "{namespace}"
     compileSdk = 34
@@ -346,7 +319,6 @@ plugins {{
     id("com.tencent.kuikly-open.kuikly")
     id("org.jetbrains.compose")
     kotlin("plugin.compose")
-    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 val KEY_PAGE_NAME = "pageName"
@@ -373,8 +345,6 @@ kotlin {{
                 implementation(project(":common:base"))
                 implementation(project(":common:widget"))
                 implementation("io.insert-koin:koin-core:{koin_version}")
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -406,12 +376,6 @@ dependencies {{
     }}
 }}
 
-multiplatformResources {{
-    multiplatformResourcesPackage = "{namespace}"
-    multiplatformResourcesClassName = "{class_name}MR"
-    multiplatformResourcesPrefix = "{module}_"
-}}
-
 android {{
     namespace = "{namespace}"
     compileSdk = 34
@@ -434,7 +398,6 @@ TEMPLATE_COMMON_BUILD_OHOS = """\
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -456,8 +419,6 @@ kotlin {{
     sourceSets {{
         val commonMain by getting {{
             dependencies {{
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -473,12 +434,6 @@ kotlin {{
             dependsOn(commonMain)
         }}
     }}
-}}
-
-multiplatformResources {{
-    multiplatformResourcesPackage = "{namespace}"
-    multiplatformResourcesClassName = "{class_name}MR"
-    multiplatformResourcesPrefix = "{module}_"
 }}
 
 android {{
@@ -494,7 +449,6 @@ TEMPLATE_BUSINESS_API_BUILD_OHOS = """\
 plugins {{
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -516,8 +470,6 @@ kotlin {{
     sourceSets {{
         val commonMain by getting {{
             dependencies {{
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -533,12 +485,6 @@ kotlin {{
             dependsOn(commonMain)
         }}
     }}
-}}
-
-multiplatformResources {{
-    multiplatformResourcesPackage = "{namespace}"
-    multiplatformResourcesClassName = "{class_name}MR"
-    multiplatformResourcesPrefix = "{module}_"
 }}
 
 android {{
@@ -617,7 +563,6 @@ plugins {{
     id("com.android.library")
     id("com.google.devtools.ksp")
     id("com.tencent.kuiklybase.knoi.plugin") version("0.0.4")
-    id("com.tencent.kuiklybase.resource.generator")
 }}
 
 kotlin {{
@@ -645,8 +590,6 @@ kotlin {{
                 implementation(project(":common:base"))
                 implementation(project(":common:widget"))
                 implementation(project(":shared"))
-                implementation("com.tencent.kuiklybase:resource-core:0.0.1")
-                implementation("com.tencent.kuiklybase:resource-compose:0.0.1")
             }}
         }}
         val iosX64Main by getting
@@ -662,12 +605,6 @@ kotlin {{
             dependsOn(commonMain)
         }}
     }}
-}}
-
-multiplatformResources {{
-    multiplatformResourcesPackage = "{namespace}"
-    multiplatformResourcesClassName = "{class_name}MR"
-    multiplatformResourcesPrefix = "{module}_"
 }}
 
 android {{
@@ -772,8 +709,6 @@ import com.tencent.kuikly.compose.ui.unit.sp
 import com.tencent.kuikly.compose.ui.platform.LocalActivity
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
-import com.tencent.tmm.kmmresource.compose.stringResource
-
 @Page("{module}_page")
 public class {class_name}Page : BasePager() {{
     override fun willInit() {{
@@ -791,7 +726,7 @@ private fun {class_name}Content() {{
     val localPager = LocalActivity.current.getPager()
     val routerModule = localPager.acquireModule<RouterModule>(RouterModule.MODULE_NAME)
 
-    val pageTitle = stringResource({class_name}MR.strings.{module}_title)
+    val pageTitle = "{module}_title"
 
     Column(modifier = Modifier.fillMaxSize().background(Color.White)) {{
         {class_name}Header(title = pageTitle, onClose = {{ routerModule.closePage() }})

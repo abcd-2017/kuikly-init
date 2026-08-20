@@ -6,7 +6,7 @@ Gradle 构建辅助模块，集中管理项目版本号和 Kuikly 插件依赖�
 
 ## 核心职责
 
-1. **版本统一管理**：Kuikly 版本、Kotlin 版本、KmmResource 版本集中定义
+1. **版本统一管理**：Kuikly 版本、Kotlin 版本集中定义
 2. **插件声明**：Kuikly Gradle 插件的延迟初始化
 
 ## 目录结构
@@ -29,13 +29,11 @@ buildSrc/
 | `KUIKLY_VERSION` | `"2.25.0"` | Kuikly 框架版本 |
 | `KOTLIN_VERSION` | `"2.1.21"` | 标准 Kotlin 版本 |
 | `KOTLIN_OHOS_VERSION` | `"2.0.21-ohos"` | 鸿蒙适配 Kotlin 版本 |
-| `RESOURCE_VERSION` | `"0.0.1"` | KmmResource 版本（注意：0.1.0 有 StackOverflow bug，使用 0.0.1） |
 
 | 方法 | 返回值示例 | 说明 |
 |------|-----------|------|
 | `getKuiklyVersion()` | `"2.25.0-2.1.21"` | 标准构建用 Kuikly 完整版本号 |
 | `getKuiklyOhosVersion()` | `"2.25.0-2.0.21-ohos"` | OHOS 构建用 Kuikly 完整版本号 |
-| `getResourceVersion()` | `"0.0.1"` | KmmResource 版本号 |
 
 #### BuildPlugin 对象
 

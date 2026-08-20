@@ -60,6 +60,8 @@ kotlin {
                 implementation(project(":common:widget"))
                 // 初始化任务
                 implementation(project(":business:initTask"))
+                // 调试页面 + KNOI 桥接
+                implementation(project(":business:debug:impl"))
             }
         }
         val commonTest by getting {
@@ -114,6 +116,8 @@ publishing {
 
 ksp {
     arg(KEY_PAGE_NAME, getPageName())
+    arg("moduleId", "shared")
+    // OHOS 构建中 debug:impl 源码被清空，不注册子模块
 }
 
 dependencies {

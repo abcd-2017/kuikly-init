@@ -71,8 +71,7 @@ kuikly-init/
 │   └── src/commonMain/kotlin/com/kuikly/init/
 │       ├── base/              # BasePager, BridgeModule, Utils, IPagerIdKtx
 │       ├── BasicWidget.kt     # 共享 Compose 组件
-│       ├── RouterPage.kt      # @Page("router") — 入口/路由页面
-│       └── ImageAdapterBenchmarks.kt  # @Page("image_adapter") — 图片测试页
+│       └── RouterPage.kt      # @Page("router") — 入口/路由页面
 ├── androidApp/                # Android 应用入口
 │   └── src/main/java/com/kuikly/init/
 │       ├── KuiklyRenderActivity.kt   # 承载 Kuikly 页面的主 Activity

@@ -138,12 +138,6 @@ internal fun ComposeRouteImpl() {
         )
 
         Button({
-            jumpPage(localPager, "image_adapter")
-        }) {
-            Text("ImageAdapter基准测试")
-        }
-
-        Button({
             jumpPage(localPager, "debug_home")
         }) {
             Text("Debug 测试中心")

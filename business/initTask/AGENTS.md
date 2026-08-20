@@ -97,8 +97,7 @@ object CommonInitTasks {
 ## 构建配置
 
 - 目标平台：Android + iOS（X64 / Arm64 / SimulatorArm64）+ OHOS（独立构建）
-- 资源类：`InitTaskMR`（前缀 `init_task_`）
-- 插件：`multiplatform`, `android.library`, `kuiklybase.resource.generator`
+- 插件：`multiplatform`, `android.library`
 
 ## 开发约定
 

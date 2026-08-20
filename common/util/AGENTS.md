@@ -43,8 +43,7 @@ object StringUtils {
 ## 构建配置
 
 - 目标平台：Android + iOS（X64 / Arm64 / SimulatorArm64）
-- 资源类：`UtilMR`（前缀 `util_`）
-- 插件：`multiplatform`, `android.library`, `kuiklybase.resource.generator`
+- 插件：`multiplatform`, `android.library`
 
 ## 开发约定
 

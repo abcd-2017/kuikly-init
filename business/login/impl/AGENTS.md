@@ -57,8 +57,7 @@ val LoginModule: Module = module {
 ## 构建配置
 
 - 目标平台：Android + iOS（X64 / Arm64 / SimulatorArm64）+ OHOS（独立构建）
-- 资源类：`LoginImplMR`（前缀 `login_impl_`）
-- 插件：`multiplatform`, `android.library`, `kuiklybase.resource.generator`
+- 插件：`multiplatform`, `android.library`
 
 ## 开发约定
 
