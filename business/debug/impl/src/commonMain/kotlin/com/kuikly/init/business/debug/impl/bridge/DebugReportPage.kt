@@ -33,8 +33,6 @@ import com.kuikly.init.common.widget.bridgeModule
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
@@ -47,7 +45,7 @@ public class DebugReportPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_report_title)
+            val pageTitle = "上报测试"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -78,31 +76,31 @@ private fun ReportTestContent(
 ) {
     var eventCodeInput by remember { mutableStateOf("debug_event_test") }
     var dataInput by remember { mutableStateOf("{\"action\":\"click\",\"page\":\"debug_report\"}") }
-    val logPrefix = stringResource(DebugImplMR.strings.debug_report_log_prefix)
+    val logPrefix = "上报日志：\n"
     var log by remember { mutableStateOf(logPrefix) }
 
-    val labelEventCode = stringResource(DebugImplMR.strings.debug_report_label_event_code)
-    val labelData = stringResource(DebugImplMR.strings.debug_report_label_data)
-    val placeholderEventCode = stringResource(DebugImplMR.strings.debug_report_placeholder_event_code)
-    val placeholderData = stringResource(DebugImplMR.strings.debug_report_placeholder_data)
-    val btnReportDt = stringResource(DebugImplMR.strings.debug_report_btn_report_dt)
-    val btnReportRealTime = stringResource(DebugImplMR.strings.debug_report_btn_report_real_time)
-    val btnBatchReport = stringResource(DebugImplMR.strings.debug_report_btn_batch_report)
-    val logReportDtSuccess = stringResource(DebugImplMR.strings.debug_report_log_report_dt_success)
-    val logReportDtFail = stringResource(DebugImplMR.strings.debug_report_log_report_dt_fail)
-    val logReportRealTimeSuccess = stringResource(DebugImplMR.strings.debug_report_log_report_real_time_success)
-    val logReportRealTimeFail = stringResource(DebugImplMR.strings.debug_report_log_report_real_time_fail)
-    val logBatchReport = stringResource(DebugImplMR.strings.debug_report_log_batch_report)
-    val logBatchReportFail = stringResource(DebugImplMR.strings.debug_report_log_batch_report_fail)
-    val reportLogTitle = stringResource(DebugImplMR.strings.debug_operation_log)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val labelEventCode = "EventCode:"
+    val labelData = "Data (JSON):"
+    val placeholderEventCode = "输入 eventCode"
+    val placeholderData = "输入 data JSON"
+    val btnReportDt = "reportDT 事件上报"
+    val btnReportRealTime = "reportRealTime 实时上报"
+    val btnBatchReport = "批量上报 5 条测试事件"
+    val logReportDtSuccess = "reportDT → eventCode=%1\$s, data=%2\$s"
+    val logReportDtFail = "reportDT 失败: %1\$s"
+    val logReportRealTimeSuccess = "reportRealTime → eventCode=%1\$s, data=%2\$s"
+    val logReportRealTimeFail = "reportRealTime 失败: %1\$s"
+    val logBatchReport = "批量上报 #%1\$d → eventCode=debug_batch_event"
+    val logBatchReportFail = "批量上报 #%1\$d 失败: %1\$s"
+    val reportLogTitle = "操作日志"
+    val btnClose = "关闭页面"
 
     fun onLogChange(newLog: String) {
         log = newLog
     }
 
     fun appendLog(msg: String) {
-        onLogChange("[${bridgeModule.currentTimeStamp()}] $msg\n$log")
+        onLogChange("[\${bridgeModule.currentTimeStamp()}] \$msg\n\$log")
     }
 
     LazyColumn(modifier = modifier.padding(16.dp)) {

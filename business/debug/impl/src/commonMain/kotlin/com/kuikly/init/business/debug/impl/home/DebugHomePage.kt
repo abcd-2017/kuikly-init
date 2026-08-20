@@ -28,8 +28,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugCardItem
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.compose.ui.platform.LocalActivity
 import com.tencent.kuikly.core.module.RouterModule
@@ -62,7 +60,7 @@ private fun DebugHomeContent() {
 
 @Composable
 private fun DebugHomeHeader(onClose: () -> Unit) {
-    val titleText = stringResource(DebugImplMR.strings.debug_home_title)
+    val titleText = "Debug 测试中心"
     val statusBarHeight = LocalActivity.current.pageData.statusBarHeight
     Box(
         modifier = Modifier

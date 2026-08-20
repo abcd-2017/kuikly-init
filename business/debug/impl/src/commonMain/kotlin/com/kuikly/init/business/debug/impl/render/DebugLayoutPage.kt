@@ -33,8 +33,6 @@ import com.kuikly.init.common.widget.BasePager
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -46,7 +44,7 @@ public class DebugLayoutPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_layout_title)
+            val pageTitle = "布局测试"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -75,26 +73,26 @@ private fun DebugLayoutContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val sectionColumnNest = stringResource(DebugImplMR.strings.debug_layout_section_column_nest)
-    val sectionRowArrange = stringResource(DebugImplMR.strings.debug_layout_section_row_arrange)
-    val sectionBoxOverlap = stringResource(DebugImplMR.strings.debug_layout_section_box_overlap)
-    val sectionWeight = stringResource(DebugImplMR.strings.debug_layout_section_weight)
-    val sectionScroll = stringResource(DebugImplMR.strings.debug_layout_section_scroll)
-    val sectionPadding = stringResource(DebugImplMR.strings.debug_layout_section_padding)
-    val sectionCenterAlign = stringResource(DebugImplMR.strings.debug_layout_section_center_align)
-    val textOuterColumn = stringResource(DebugImplMR.strings.debug_layout_text_outer_column)
-    val textInnerColumn = stringResource(DebugImplMR.strings.debug_layout_text_inner_column)
-    val labelRed = stringResource(DebugImplMR.strings.debug_layout_label_red)
-    val labelBlue = stringResource(DebugImplMR.strings.debug_layout_label_blue)
-    val labelGreen = stringResource(DebugImplMR.strings.debug_layout_label_green)
-    val textWeight1 = stringResource(DebugImplMR.strings.debug_layout_text_weight_1)
-    val textWeight2 = stringResource(DebugImplMR.strings.debug_layout_text_weight_2)
-    val prefixCard = stringResource(DebugImplMR.strings.debug_layout_prefix_card)
-    val label8dp = stringResource(DebugImplMR.strings.debug_layout_label_8dp)
-    val label16dp = stringResource(DebugImplMR.strings.debug_layout_label_16dp)
-    val label24dp = stringResource(DebugImplMR.strings.debug_layout_label_24dp)
-    val textCenter = stringResource(DebugImplMR.strings.debug_layout_text_center)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val sectionColumnNest = "Column 嵌套"
+    val sectionRowArrange = "Row 排列"
+    val sectionBoxOverlap = "Box 层叠"
+    val sectionWeight = "权重布局 (1:2)"
+    val sectionScroll = "滚动测试 (20 卡片)"
+    val sectionPadding = "边距对比 (8dp / 16dp / 24dp)"
+    val sectionCenterAlign = "居中对齐"
+    val textOuterColumn = "外层 Column"
+    val textInnerColumn = "内层 Column"
+    val labelRed = "红"
+    val labelBlue = "蓝"
+    val labelGreen = "绿"
+    val textWeight1 = "1"
+    val textWeight2 = "2"
+    val prefixCard = "卡片 #"
+    val label8dp = "8dp"
+    val label16dp = "16dp"
+    val label24dp = "24dp"
+    val textCenter = "中"
+    val btnClose = "关闭页面"
 
     LazyColumn(
         modifier = modifier.padding(16.dp)
@@ -255,7 +253,7 @@ private fun ScrollSection(title: String, prefixCard: String) {
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
                     Text(
-                        text = "$prefixCard${index + 1}",
+                        text = "\$prefixCard\${index + 1}",
                         modifier = Modifier.padding(12.dp),
                         fontSize = 14.sp
                     )

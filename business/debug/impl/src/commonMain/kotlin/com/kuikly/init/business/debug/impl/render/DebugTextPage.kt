@@ -31,8 +31,6 @@ import com.kuikly.init.common.widget.BasePager
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugSectionTitle
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -44,7 +42,7 @@ public class DebugTextPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_text_title)
+            val pageTitle = "文本渲染测试"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -73,32 +71,32 @@ private fun DebugTextContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val sectionFontSize = stringResource(DebugImplMR.strings.debug_text_section_font_size)
-    val sectionColor = stringResource(DebugImplMR.strings.debug_text_section_color)
-    val sectionAlign = stringResource(DebugImplMR.strings.debug_text_section_align)
-    val sectionFontWeight = stringResource(DebugImplMR.strings.debug_text_section_font_weight)
-    val sectionMultiLine = stringResource(DebugImplMR.strings.debug_text_section_multi_line)
-    val sectionEmoji = stringResource(DebugImplMR.strings.debug_text_section_emoji)
-    val sectionLineHeight = stringResource(DebugImplMR.strings.debug_text_section_line_height)
+    val sectionFontSize = "字体大小"
+    val sectionColor = "颜色"
+    val sectionAlign = "对齐"
+    val sectionFontWeight = "字重"
+    val sectionMultiLine = "多行截断"
+    val sectionEmoji = "Emoji"
+    val sectionLineHeight = "行高"
     val sectionTextBackground =
-        stringResource(DebugImplMR.strings.debug_text_section_text_background)
-    val sampleText = stringResource(DebugImplMR.strings.debug_text_sample)
-    val textAlignLeft = stringResource(DebugImplMR.strings.debug_text_align_left)
-    val textAlignCenter = stringResource(DebugImplMR.strings.debug_text_align_center)
-    val textAlignRight = stringResource(DebugImplMR.strings.debug_text_align_right)
-    val textWeightNormal = stringResource(DebugImplMR.strings.debug_text_weight_normal)
-    val textWeightBold = stringResource(DebugImplMR.strings.debug_text_weight_bold)
-    val textWeightLight = stringResource(DebugImplMR.strings.debug_text_weight_light)
-    val textLongSample = stringResource(DebugImplMR.strings.debug_text_long_sample)
-    val textEmoji = stringResource(DebugImplMR.strings.debug_text_emoji)
-    val textLineHeightSample = stringResource(DebugImplMR.strings.debug_text_line_height_sample)
-    val labelLineHeight12x = stringResource(DebugImplMR.strings.debug_text_label_line_height_1_2x)
-    val labelLineHeight15x = stringResource(DebugImplMR.strings.debug_text_label_line_height_1_5x)
-    val labelLineHeight20x = stringResource(DebugImplMR.strings.debug_text_label_line_height_2_0x)
-    val prefixLineHeight = stringResource(DebugImplMR.strings.debug_text_prefix_line_height)
-    val textBgSample1 = stringResource(DebugImplMR.strings.debug_text_bg_sample_1)
-    val textBgSample2 = stringResource(DebugImplMR.strings.debug_text_bg_sample_2)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+        "文本背景"
+    val sampleText = "Kuikly 跨端脚手架"
+    val textAlignLeft = "左对齐文本 — Kuikly 跨端脚手架"
+    val textAlignCenter = "居中文本 — Kuikly 跨端脚手架"
+    val textAlignRight = "右对齐文本 — Kuikly 跨端脚手架"
+    val textWeightNormal = "Normal 字重"
+    val textWeightBold = "Bold 字重"
+    val textWeightLight = "Light 字重"
+    val textLongSample = "这是一段很长的文本，用于测试 maxLines 和 overflow 的截断效果。Kuikly 是腾讯推出的跨端开发框架，支持 Android、iOS、鸿蒙三端。它基于 Kotlin Multiplatform 技术，提供了统一的 DSL 和组件能力。"
+    val textEmoji = "🎉🔥💯👍🚀❤️✨"
+    val textLineHeightSample = "这是一段用于测试不同行高效果的文本。行高影响段落的可读性和视觉密度。"
+    val labelLineHeight12x = "1.2x"
+    val labelLineHeight15x = "1.5x"
+    val labelLineHeight20x = "2.0x"
+    val prefixLineHeight = "↑ lineHeight "
+    val textBgSample1 = "带背景色的文字"
+    val textBgSample2 = "另一种背景色"
+    val btnClose = "关闭页面"
 
     LazyColumn(
         modifier = modifier.padding(16.dp)
@@ -237,7 +235,7 @@ private fun LineHeightSection(
                 .padding(4.dp)
         )
         Text(
-            text = "$prefixLineHeight$label",
+            text = "\$prefixLineHeight\$label",
             fontSize = 10.sp,
             color = Color.Gray
         )

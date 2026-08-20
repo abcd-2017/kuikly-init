@@ -30,8 +30,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugTestButton
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.compose.ui.platform.LocalActivity
 import com.tencent.kuikly.core.module.RouterModule
@@ -60,29 +58,29 @@ private fun DebugNavigateContent() {
     val localPager = LocalActivity.current.getPager()
     val routerModule = localPager.acquireModule<RouterModule>(RouterModule.MODULE_NAME)
 
-    val pageTitle = stringResource(DebugImplMR.strings.debug_navigate_title)
-    val sectionOpenPage = stringResource(DebugImplMR.strings.debug_navigate_section_open_page)
-    val sectionOpenWithParams = stringResource(DebugImplMR.strings.debug_navigate_section_open_with_params)
-    val sectionClosePage = stringResource(DebugImplMR.strings.debug_navigate_section_close_page)
-    val sectionMultiLevel = stringResource(DebugImplMR.strings.debug_navigate_section_multi_level)
-    val sectionLog = stringResource(DebugImplMR.strings.debug_navigate_section_log)
-    val placeholderPageName = stringResource(DebugImplMR.strings.debug_navigate_placeholder_page_name)
-    val placeholderParamPage = stringResource(DebugImplMR.strings.debug_navigate_placeholder_param_page)
-    val placeholderKey = stringResource(DebugImplMR.strings.debug_navigate_placeholder_key)
-    val placeholderValue = stringResource(DebugImplMR.strings.debug_navigate_placeholder_value)
-    val btnOpen = stringResource(DebugImplMR.strings.debug_navigate_btn_open)
-    val btnOpenWithParams = stringResource(DebugImplMR.strings.debug_navigate_btn_open_with_params)
-    val btnClosePage = stringResource(DebugImplMR.strings.debug_navigate_btn_close_page)
-    val btnGotoDebugText = stringResource(DebugImplMR.strings.debug_navigate_btn_goto_debug_text)
-    val labelNoLog = stringResource(DebugImplMR.strings.debug_navigate_label_no_log)
-    val logOpenSuccess = stringResource(DebugImplMR.strings.debug_navigate_log_open_success)
-    val logOpenWithParamsSuccess = stringResource(DebugImplMR.strings.debug_navigate_log_open_with_params_success)
-    val logCloseSuccess = stringResource(DebugImplMR.strings.debug_navigate_log_close_success)
-    val logPageNameEmpty = stringResource(DebugImplMR.strings.debug_navigate_log_page_name_empty)
-    val logMultiLevel = stringResource(DebugImplMR.strings.debug_navigate_log_multi_level)
+    val pageTitle = "页面跳转"
+    val sectionOpenPage = "1. 跳转到指定 Page"
+    val sectionOpenWithParams = "2. 带参数跳转"
+    val sectionClosePage = "3. 关闭当前页"
+    val sectionMultiLevel = "4. 多级跳转测试"
+    val sectionLog = "5. 跳转结果日志"
+    val placeholderPageName = "输入 pageName"
+    val placeholderParamPage = "pageName"
+    val placeholderKey = "key"
+    val placeholderValue = "value"
+    val btnOpen = "跳转"
+    val btnOpenWithParams = "带参数跳转"
+    val btnClosePage = "关闭当前页"
+    val btnGotoDebugText = "跳转到 debug_text"
+    val labelNoLog = "（暂无日志）"
+    val logOpenSuccess = "✅ openPage(\"%1\$s\")"
+    val logOpenWithParamsSuccess = "✅ openPage(\"%1\$s\", %2$s)"
+    val logCloseSuccess = "✅ closePage()"
+    val logPageNameEmpty = "❌ pageName 为空"
+    val logMultiLevel = "✅ 跳转到 debug_text → 请在 debug_text 跳转到 debug_image"
 
     fun appendLog(message: String) {
-        logText = if (logText.isEmpty()) message else "$logText\n$message"
+        logText = if (logText.isEmpty()) message else "\$logText\n\$message"
     }
 
     Column(
@@ -178,7 +176,7 @@ private fun NavigateOpenPageSection(
     )
     DebugTextField(
         value = pageName,
-        placeholder = stringResource(DebugImplMR.strings.debug_navigate_placeholder_page_name),
+        placeholder = "输入 pageName",
         onValueChange = onPageNameChange
     )
     DebugTestButton(text = btnText, onClick = onOpenPage)

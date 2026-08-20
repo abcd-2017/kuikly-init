@@ -33,8 +33,6 @@ import com.kuikly.init.common.widget.bridgeModule
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.share.provideShare
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -46,7 +44,7 @@ public class DebugSharePage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_share_title)
+            val pageTitle = "分享"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -75,33 +73,33 @@ private fun ShareTestContent(
     bridgeModule: com.kuikly.init.common.widget.BridgeModule,
     onClose: () -> Unit
 ) {
-    val logPrefix = stringResource(DebugImplMR.strings.debug_share_log_prefix)
+    val logPrefix = "分享日志：\n"
     var log by remember { mutableStateOf(logPrefix) }
     val share = remember { provideShare() }
 
-    val btnShareText = stringResource(DebugImplMR.strings.debug_share_btn_share_text)
-    val btnShareLink = stringResource(DebugImplMR.strings.debug_share_btn_share_link)
-    val btnShareImage = stringResource(DebugImplMR.strings.debug_share_btn_share_image)
-    val btnShareFile = stringResource(DebugImplMR.strings.debug_share_btn_share_file)
-    val logTitle = stringResource(DebugImplMR.strings.debug_share_log_title)
-    val textContent = stringResource(DebugImplMR.strings.debug_share_text_content)
-    val linkUrl = stringResource(DebugImplMR.strings.debug_share_link_url)
-    val linkTitle = stringResource(DebugImplMR.strings.debug_share_link_title)
-    val linkDescription = stringResource(DebugImplMR.strings.debug_share_link_description)
-    val imagePath = stringResource(DebugImplMR.strings.debug_share_image_path)
-    val filePath = stringResource(DebugImplMR.strings.debug_share_file_path)
-    val logShareText = stringResource(DebugImplMR.strings.debug_share_log_share_text)
-    val logShareTextException = stringResource(DebugImplMR.strings.debug_share_log_share_text_exception)
-    val logShareLink = stringResource(DebugImplMR.strings.debug_share_log_share_link)
-    val logShareLinkException = stringResource(DebugImplMR.strings.debug_share_log_share_link_exception)
-    val logShareImage = stringResource(DebugImplMR.strings.debug_share_log_share_image)
-    val logShareImageException = stringResource(DebugImplMR.strings.debug_share_log_share_image_exception)
-    val logShareFile = stringResource(DebugImplMR.strings.debug_share_log_share_file)
-    val logShareFileException = stringResource(DebugImplMR.strings.debug_share_log_share_file_exception)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val btnShareText = "分享文本"
+    val btnShareLink = "分享链接"
+    val btnShareImage = "分享图片"
+    val btnShareFile = "分享文件"
+    val logTitle = "分享日志"
+    val textContent = "Hello Kuikly! 这是一条测试分享文本。"
+    val linkUrl = "https://github.com/kuikly"
+    val linkTitle = "Kuikly 跨端框架"
+    val linkDescription = "Kuikly 是腾讯推出的跨端开发框架"
+    val imagePath = "/data/local/tmp/test.png"
+    val filePath = "/data/local/tmp/test.pdf"
+    val logShareText = "[分享文本] 内容: %1\$s"
+    val logShareTextException = "[分享文本] 异常: %1\$s"
+    val logShareLink = "[分享链接] url: %1\$s"
+    val logShareLinkException = "[分享链接] 异常: %1\$s"
+    val logShareImage = "[分享图片] 路径: %1\$s (文件可能不存在)"
+    val logShareImageException = "[分享图片] 异常: %1\$s"
+    val logShareFile = "[分享文件] 路径: %1\$s, mime=application/pdf (文件可能不存在)"
+    val logShareFileException = "[分享文件] 异常: %1\$s"
+    val btnClose = "关闭页面"
 
     fun appendLog(msg: String) {
-        log = "[${bridgeModule.currentTimeStamp()}] $msg\n$log"
+        log = "[\${bridgeModule.currentTimeStamp()}] \$msg\n\$log"
     }
 
     LazyColumn(modifier = modifier.padding(16.dp)) {

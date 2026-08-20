@@ -34,8 +34,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.keyboard.provideKeyboard
 import com.kuikly.init.common.base.platform.phone.providePhone
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -47,7 +45,7 @@ public class DebugPhoneKeyboardPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_phone_title)
+            val pageTitle = "电话 & 键盘"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -76,25 +74,25 @@ private fun PhoneKeyboardTestContent(
     bridgeModule: com.kuikly.init.common.widget.BridgeModule,
     onClose: () -> Unit
 ) {
-    val logPrefix = stringResource(DebugImplMR.strings.debug_phone_log_prefix)
+    val logPrefix = "操作日志：\n"
     var log by remember { mutableStateOf(logPrefix) }
     val phone = remember { providePhone() }
     val keyboard = remember { provideKeyboard() }
 
-    val btnCall = stringResource(DebugImplMR.strings.debug_phone_btn_call)
-    val btnHideKeyboard = stringResource(DebugImplMR.strings.debug_phone_btn_hide_keyboard)
-    val btnShowKeyboard = stringResource(DebugImplMR.strings.debug_phone_btn_show_keyboard)
-    val logTitle = stringResource(DebugImplMR.strings.debug_phone_log_title)
-    val logCall = stringResource(DebugImplMR.strings.debug_phone_log_call)
-    val logCallException = stringResource(DebugImplMR.strings.debug_phone_log_call_exception)
-    val logHideKeyboard = stringResource(DebugImplMR.strings.debug_phone_log_hide_keyboard)
-    val logHideKeyboardException = stringResource(DebugImplMR.strings.debug_phone_log_hide_keyboard_exception)
-    val logShowKeyboard = stringResource(DebugImplMR.strings.debug_phone_log_show_keyboard)
-    val logShowKeyboardException = stringResource(DebugImplMR.strings.debug_phone_log_show_keyboard_exception)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val btnCall = "拨打电话 10086"
+    val btnHideKeyboard = "隐藏键盘"
+    val btnShowKeyboard = "显示键盘"
+    val logTitle = "操作日志"
+    val logCall = "[拨打电话] 10086 (跳转拨号界面)"
+    val logCallException = "[拨打电话] 异常: %1\$s"
+    val logHideKeyboard = "[隐藏键盘] 已调用 hide()"
+    val logHideKeyboardException = "[隐藏键盘] 异常: %1\$s"
+    val logShowKeyboard = "[显示键盘] 已调用 show() (iOS 可能为空操作)"
+    val logShowKeyboardException = "[显示键盘] 异常: %1\$s"
+    val btnClose = "关闭页面"
 
     fun appendLog(msg: String) {
-        log = "[${bridgeModule.currentTimeStamp()}] $msg\n$log"
+        log = "[\${bridgeModule.currentTimeStamp()}] \$msg\n\$log"
     }
 
     LazyColumn(modifier = modifier.padding(16.dp)) {

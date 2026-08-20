@@ -27,8 +27,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.time.provideNtpClock
 import com.kuikly.init.common.base.platform.time.provideTimezone
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import kotlinx.coroutines.launch
@@ -53,19 +51,19 @@ public class DebugTimePage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugTimeContent(onClose: () -> Unit) {
-    val placeholderText = stringResource(DebugImplMR.strings.debug_time_result_placeholder)
+    val placeholderText = "点击刷新按钮获取时间信息"
     var result by remember { mutableStateOf(placeholderText) }
     val ntpClock = remember { provideNtpClock() }
     val timezone = remember { provideTimezone() }
     val scope = rememberCoroutineScope()
 
-    val pageTitle = stringResource(DebugImplMR.strings.debug_time_title)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close)
-    val labelTimeInfo = stringResource(DebugImplMR.strings.debug_time_label_time_info)
-    val btnRefresh = stringResource(DebugImplMR.strings.debug_time_btn_refresh)
-    val resultFormat = stringResource(DebugImplMR.strings.debug_time_result_format)
-    val fetchFail = stringResource(DebugImplMR.strings.debug_time_fetch_fail)
-    val detecting = stringResource(DebugImplMR.strings.debug_time_detecting)
+    val pageTitle = "NTP 时钟"
+    val btnClose = "关闭"
+    val labelTimeInfo = "时间同步 / 时区信息"
+    val btnRefresh = "刷新时间信息"
+    val resultFormat = "NTP 服务器时间：%1\$s\nNTP 时间偏差（毫秒）：%2\$s\n本地时区 ID：%3\$s\n时区偏移量：%4\$d 分钟（%5\$d 小时）\n是否夏令时：%6\$s\n时区缩写：%7\$s"
+    val fetchFail = "获取失败"
+    val detecting = "检测中……"
 
     Scaffold(
         topBar = {

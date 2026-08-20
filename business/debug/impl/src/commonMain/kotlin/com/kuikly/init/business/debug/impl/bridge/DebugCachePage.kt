@@ -33,8 +33,6 @@ import com.kuikly.init.common.widget.bridgeModule
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.pager.Pager
@@ -47,7 +45,7 @@ public class DebugCachePage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_cache_title)
+            val pageTitle = "缓存测试"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -78,35 +76,35 @@ private fun CacheTestContent(
 ) {
     var keyInput by remember { mutableStateOf("") }
     var valueInput by remember { mutableStateOf("") }
-    val logPrefix = stringResource(DebugImplMR.strings.debug_cache_log_prefix)
+    val logPrefix = "操作日志：\n"
     var log by remember { mutableStateOf(logPrefix) }
 
-    val labelKey = stringResource(DebugImplMR.strings.debug_cache_label_key)
-    val labelValue = stringResource(DebugImplMR.strings.debug_cache_label_value)
-    val placeholderKey = stringResource(DebugImplMR.strings.debug_cache_placeholder_key)
-    val placeholderValue = stringResource(DebugImplMR.strings.debug_cache_placeholder_value)
-    val btnSetCache = stringResource(DebugImplMR.strings.debug_cache_btn_set_cache)
-    val btnGetCacheSync = stringResource(DebugImplMR.strings.debug_cache_btn_get_cache_sync)
-    val btnGetCacheAsync = stringResource(DebugImplMR.strings.debug_cache_btn_get_cache_async)
-    val btnBatchWrite = stringResource(DebugImplMR.strings.debug_cache_btn_batch_write)
-    val logSetCacheFail = stringResource(DebugImplMR.strings.debug_cache_log_set_cache_fail)
-    val logSetCacheSuccess = stringResource(DebugImplMR.strings.debug_cache_log_set_cache_success)
-    val logGetCacheFail = stringResource(DebugImplMR.strings.debug_cache_log_get_cache_fail)
-    val logGetCacheSuccess = stringResource(DebugImplMR.strings.debug_cache_log_get_cache_success)
-    val logFetchCacheFail = stringResource(DebugImplMR.strings.debug_cache_log_fetch_cache_fail)
-    val logFetchCacheSuccess = stringResource(DebugImplMR.strings.debug_cache_log_fetch_cache_success)
-    val logBatchWrite = stringResource(DebugImplMR.strings.debug_cache_log_batch_write)
-    val valueEmpty = stringResource(DebugImplMR.strings.debug_cache_value_empty)
-    val valueNull = stringResource(DebugImplMR.strings.debug_cache_value_null)
-    val operationLog = stringResource(DebugImplMR.strings.debug_operation_log)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val labelKey = "Key:"
+    val labelValue = "Value:"
+    val placeholderKey = "输入 key"
+    val placeholderValue = "输入 value"
+    val btnSetCache = "setCache 写入缓存"
+    val btnGetCacheSync = "getCache 同步读取"
+    val btnGetCacheAsync = "fetchCache 异步读取"
+    val btnBatchWrite = "批量写入 3 条测试数据"
+    val logSetCacheFail = "[setCache] 失败：key 为空"
+    val logSetCacheSuccess = "[setCache] key=%1\$s, value=%2\$s → 写入完成"
+    val logGetCacheFail = "[getCache] 失败：key 为空"
+    val logGetCacheSuccess = "[getCache] key=%1\$s → %2\$s"
+    val logFetchCacheFail = "[fetchCache] 失败：key 为空"
+    val logFetchCacheSuccess = "[fetchCache] key=%1\$s → %2\$s"
+    val logBatchWrite = "[批量写入] key=%1\$s, value=%2\$s"
+    val valueEmpty = "(空)"
+    val valueNull = "(null)"
+    val operationLog = "操作日志"
+    val btnClose = "关闭页面"
 
     fun onLogChange(newLog: String) {
         log = newLog
     }
 
     fun appendLog(msg: String) {
-        onLogChange("$msg\n$log")
+        onLogChange("\$msg\n\$log")
     }
 
     LazyColumn(

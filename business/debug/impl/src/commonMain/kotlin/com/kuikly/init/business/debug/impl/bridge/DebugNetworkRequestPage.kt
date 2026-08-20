@@ -34,8 +34,6 @@ import com.kuikly.init.common.widget.bridgeModule
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
@@ -49,7 +47,7 @@ public class DebugNetworkRequestPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_network_request_title)
+            val pageTitle = "网络请求测试"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -80,25 +78,25 @@ private fun NetworkTestContent(
 ) {
     var cmdInput by remember { mutableStateOf("test.cmd") }
     var paramsInput by remember { mutableStateOf("{\"userId\":\"12345\"}") }
-    val resultPlaceholder = stringResource(DebugImplMR.strings.debug_network_request_result_placeholder)
+    val resultPlaceholder = "响应结果将在此显示…"
     var result by remember { mutableStateOf(resultPlaceholder) }
     val scope = rememberCoroutineScope()
 
-    val labelCmd = stringResource(DebugImplMR.strings.debug_network_request_label_cmd)
-    val labelParams = stringResource(DebugImplMR.strings.debug_network_request_label_params)
-    val placeholderCmd = stringResource(DebugImplMR.strings.debug_network_request_placeholder_cmd)
-    val placeholderParams = stringResource(DebugImplMR.strings.debug_network_request_placeholder_params)
-    val btnSend = stringResource(DebugImplMR.strings.debug_network_request_btn_send)
-    val presetTitle = stringResource(DebugImplMR.strings.debug_network_request_preset_title)
-    val presetA = stringResource(DebugImplMR.strings.debug_network_request_preset_a)
-    val presetB = stringResource(DebugImplMR.strings.debug_network_request_preset_b)
-    val presetC = stringResource(DebugImplMR.strings.debug_network_request_preset_c)
-    val resultTitle = stringResource(DebugImplMR.strings.debug_network_request_result_title)
-    val resultSuccess = stringResource(DebugImplMR.strings.debug_network_request_result_success)
-    val resultNull = stringResource(DebugImplMR.strings.debug_network_request_result_null)
-    val resultFail = stringResource(DebugImplMR.strings.debug_network_request_result_fail)
-    val requesting = stringResource(DebugImplMR.strings.debug_network_request_requesting)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val labelCmd = "CMD:"
+    val labelParams = "请求参数 (JSON):"
+    val placeholderCmd = "输入 cmd"
+    val placeholderParams = "输入 reqParams JSON"
+    val btnSend = "发起 ssoRequest"
+    val presetTitle = "预设测试用例"
+    val presetA = "测试用例 A"
+    val presetB = "测试用例 B"
+    val presetC = "测试用例 C"
+    val resultTitle = "响应结果"
+    val resultSuccess = "耗时: %1\$dms\n\n%2\$s"
+    val resultNull = "耗时: %1\$dms\n\n返回 null"
+    val resultFail = "请求失败: %1\$s"
+    val requesting = "请求中…"
+    val btnClose = "关闭页面"
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {

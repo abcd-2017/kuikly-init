@@ -28,8 +28,6 @@ import com.tencent.kuikly.compose.ui.text.font.FontWeight
 import com.tencent.kuikly.compose.ui.unit.Dp
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.compose.ui.unit.sp
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 
 /**
  * Debug 页面通用按钮样式（渐变紫色）
@@ -99,7 +97,7 @@ internal fun DebugInfoRow(label: String, value: String) {
             .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         Text(
-            text = "$label: $value",
+            text = "\$label: \$value",
             fontSize = 14.sp,
             color = Color(0xFF555555)
         )
@@ -182,7 +180,7 @@ internal fun DebugScaffold(
     onClose: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    val closeText = stringResource(DebugImplMR.strings.debug_close)
+    val closeText = "关闭"
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(

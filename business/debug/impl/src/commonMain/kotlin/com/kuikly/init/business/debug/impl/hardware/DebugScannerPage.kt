@@ -33,8 +33,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.scan.ScanResult
 import com.kuikly.init.common.base.platform.scan.provideScanner
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -46,7 +44,7 @@ public class DebugScannerPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_scanner_title)
+            val pageTitle = "扫码"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -73,20 +71,20 @@ private fun ScannerTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val resultPlaceholder = stringResource(DebugImplMR.strings.debug_scanner_result_placeholder)
+    val resultPlaceholder = "扫码结果将在此显示…\n提示：扫码功能依赖相机硬件，当前平台可能不支持。"
     var result by remember { mutableStateOf(resultPlaceholder) }
     val scanner = remember { provideScanner() }
 
-    val btnOpenScan = stringResource(DebugImplMR.strings.debug_scanner_btn_open_scan)
-    val btnMockScan = stringResource(DebugImplMR.strings.debug_scanner_btn_mock_scan)
-    val resultTitle = stringResource(DebugImplMR.strings.debug_scanner_result_title)
-    val logStartScan = stringResource(DebugImplMR.strings.debug_scanner_log_start_scan)
-    val logScanSuccess = stringResource(DebugImplMR.strings.debug_scanner_log_scan_success)
-    val logScanFail = stringResource(DebugImplMR.strings.debug_scanner_log_scan_fail)
-    val logScanException = stringResource(DebugImplMR.strings.debug_scanner_log_scan_exception)
-    val logMockScan = stringResource(DebugImplMR.strings.debug_scanner_log_mock_scan)
-    val resultFormat = stringResource(DebugImplMR.strings.debug_scanner_result_format)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val btnOpenScan = "打开扫码页"
+    val btnMockScan = "模拟扫码结果"
+    val resultTitle = "扫码结果"
+    val logStartScan = "启动扫码页…"
+    val logScanSuccess = "扫码成功:\n%1\$s"
+    val logScanFail = "扫码取消或失败"
+    val logScanException = "扫码异常: %1\$s"
+    val logMockScan = "模拟扫码结果:\n%1\$s"
+    val resultFormat = "内容: %1\$s\n码制: %2\$s"
+    val btnClose = "关闭页面"
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {

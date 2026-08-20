@@ -27,8 +27,6 @@ import com.kuikly.init.common.base.platform.haptic.HapticNotification
 import com.kuikly.init.common.base.platform.haptic.HapticStyle
 import com.kuikly.init.common.base.platform.haptic.provideHaptic
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -52,32 +50,32 @@ public class DebugHapticPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugHapticContent(onClose: () -> Unit) {
-    val placeholderText = stringResource(DebugImplMR.strings.debug_haptic_result_placeholder)
+    val placeholderText = "点击按钮触发震动"
     var result by remember { mutableStateOf(placeholderText) }
     val haptic = remember { provideHaptic() }
 
-    val pageTitle = stringResource(DebugImplMR.strings.debug_haptic_title)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close)
-    val labelImpact = stringResource(DebugImplMR.strings.debug_haptic_label_impact)
-    val labelNotification = stringResource(DebugImplMR.strings.debug_haptic_label_notification)
-    val btnImpactLight = stringResource(DebugImplMR.strings.debug_haptic_btn_impact_light)
-    val btnImpactMedium = stringResource(DebugImplMR.strings.debug_haptic_btn_impact_medium)
-    val btnImpactHeavy = stringResource(DebugImplMR.strings.debug_haptic_btn_impact_heavy)
-    val btnNotificationSuccess = stringResource(DebugImplMR.strings.debug_haptic_btn_notification_success)
-    val btnNotificationWarning = stringResource(DebugImplMR.strings.debug_haptic_btn_notification_warning)
-    val btnNotificationFailure = stringResource(DebugImplMR.strings.debug_haptic_btn_notification_failure)
-    val btnSelection = stringResource(DebugImplMR.strings.debug_haptic_btn_selection)
-    val btnStop = stringResource(DebugImplMR.strings.debug_haptic_btn_stop)
-    val btnContinuous = stringResource(DebugImplMR.strings.debug_haptic_btn_continuous)
-    val resultImpactLight = stringResource(DebugImplMR.strings.debug_haptic_result_impact_light)
-    val resultImpactMedium = stringResource(DebugImplMR.strings.debug_haptic_result_impact_medium)
-    val resultImpactHeavy = stringResource(DebugImplMR.strings.debug_haptic_result_impact_heavy)
-    val resultNotificationSuccess = stringResource(DebugImplMR.strings.debug_haptic_result_notification_success)
-    val resultNotificationWarning = stringResource(DebugImplMR.strings.debug_haptic_result_notification_warning)
-    val resultNotificationFailure = stringResource(DebugImplMR.strings.debug_haptic_result_notification_failure)
-    val resultSelection = stringResource(DebugImplMR.strings.debug_haptic_result_selection)
-    val resultStop = stringResource(DebugImplMR.strings.debug_haptic_result_stop)
-    val resultContinuous = stringResource(DebugImplMR.strings.debug_haptic_result_continuous)
+    val pageTitle = "震动反馈"
+    val btnClose = "关闭"
+    val labelImpact = "冲击反馈（Impact）"
+    val labelNotification = "通知反馈（Notification）"
+    val btnImpactLight = "Impact Light"
+    val btnImpactMedium = "Impact Medium"
+    val btnImpactHeavy = "Impact Heavy"
+    val btnNotificationSuccess = "Notification Success"
+    val btnNotificationWarning = "Notification Warning"
+    val btnNotificationFailure = "Notification Failure"
+    val btnSelection = "Selection 震动"
+    val btnStop = "停止震动"
+    val btnContinuous = "连续震动测试"
+    val resultImpactLight = "Impact Light 已触发"
+    val resultImpactMedium = "Impact Medium 已触发"
+    val resultImpactHeavy = "Impact Heavy 已触发"
+    val resultNotificationSuccess = "Notification Success 已触发"
+    val resultNotificationWarning = "Notification Warning 已触发"
+    val resultNotificationFailure = "Notification Failure 已触发"
+    val resultSelection = "Selection 震动已触发"
+    val resultStop = "震动已停止"
+    val resultContinuous = "连续震动测试已触发（Light -> Medium -> Heavy）"
 
     Scaffold(
         topBar = {

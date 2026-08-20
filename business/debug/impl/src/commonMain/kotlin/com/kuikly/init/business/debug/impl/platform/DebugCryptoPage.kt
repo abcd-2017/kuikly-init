@@ -27,8 +27,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.crypto.provideCrypto
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -52,45 +50,45 @@ public class DebugCryptoPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugCryptoContent(onClose: () -> Unit) {
-    val placeholderText = stringResource(DebugImplMR.strings.debug_crypto_result_placeholder)
+    val placeholderText = "操作结果将在此显示"
     var result by remember { mutableStateOf(placeholderText) }
-    val defaultPlain = stringResource(DebugImplMR.strings.debug_crypto_default_plain_text)
-    val defaultKey = stringResource(DebugImplMR.strings.debug_crypto_default_key_text)
+    val defaultPlain = "Hello Kuikly"
+    val defaultKey = "1234567890123456"
     var plainText by remember { mutableStateOf(defaultPlain) }
     var keyText by remember { mutableStateOf(defaultKey) }
     var cipherText by remember { mutableStateOf("") }
     val crypto = remember { provideCrypto() }
 
-    val pageTitle = stringResource(DebugImplMR.strings.debug_crypto_title)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close)
-    val labelAesPlain = stringResource(DebugImplMR.strings.debug_crypto_label_aes_plain)
-    val labelAesKey = stringResource(DebugImplMR.strings.debug_crypto_label_aes_key)
-    val labelHashEncode = stringResource(DebugImplMR.strings.debug_crypto_label_hash_encode)
-    val placeholderInput = stringResource(DebugImplMR.strings.debug_crypto_placeholder_input)
-    val placeholderKey = stringResource(DebugImplMR.strings.debug_crypto_placeholder_key)
-    val placeholderHashInput = stringResource(DebugImplMR.strings.debug_crypto_placeholder_hash_input)
-    val btnAesEncrypt = stringResource(DebugImplMR.strings.debug_crypto_btn_aes_encrypt)
-    val btnAesDecrypt = stringResource(DebugImplMR.strings.debug_crypto_btn_aes_decrypt)
-    val btnMd5 = stringResource(DebugImplMR.strings.debug_crypto_btn_md5)
-    val btnSha256 = stringResource(DebugImplMR.strings.debug_crypto_btn_sha256)
-    val btnBase64Encode = stringResource(DebugImplMR.strings.debug_crypto_btn_base64_encode)
-    val btnBase64Decode = stringResource(DebugImplMR.strings.debug_crypto_btn_base64_decode)
-    val btnBuiltinTest = stringResource(DebugImplMR.strings.debug_crypto_btn_builtin_test)
-    val resultAesEncryptSuccess = stringResource(DebugImplMR.strings.debug_crypto_result_aes_encrypt_success)
-    val resultAesEncryptFail = stringResource(DebugImplMR.strings.debug_crypto_result_aes_encrypt_fail)
-    val resultAesDecryptEmpty = stringResource(DebugImplMR.strings.debug_crypto_result_aes_decrypt_empty)
-    val resultAesDecryptSuccess = stringResource(DebugImplMR.strings.debug_crypto_result_aes_decrypt_success)
-    val resultAesDecryptFail = stringResource(DebugImplMR.strings.debug_crypto_result_aes_decrypt_fail)
-    val resultMd5Success = stringResource(DebugImplMR.strings.debug_crypto_result_md5_success)
-    val resultMd5Fail = stringResource(DebugImplMR.strings.debug_crypto_result_md5_fail)
-    val resultSha256Success = stringResource(DebugImplMR.strings.debug_crypto_result_sha256_success)
-    val resultSha256Fail = stringResource(DebugImplMR.strings.debug_crypto_result_sha256_fail)
-    val resultBase64EncodeSuccess = stringResource(DebugImplMR.strings.debug_crypto_result_base64_encode_success)
-    val resultBase64EncodeFail = stringResource(DebugImplMR.strings.debug_crypto_result_base64_encode_fail)
-    val resultBase64DecodeEmpty = stringResource(DebugImplMR.strings.debug_crypto_result_base64_decode_empty)
-    val resultBase64DecodeSuccess = stringResource(DebugImplMR.strings.debug_crypto_result_base64_decode_success)
-    val resultBase64DecodeFail = stringResource(DebugImplMR.strings.debug_crypto_result_base64_decode_fail)
-    val resultBuiltinTest = stringResource(DebugImplMR.strings.debug_crypto_result_builtin_test)
+    val pageTitle = "加解密"
+    val btnClose = "关闭"
+    val labelAesPlain = "AES 明文："
+    val labelAesKey = "AES 密钥："
+    val labelHashEncode = "哈希 / 编码："
+    val placeholderInput = "输入明文"
+    val placeholderKey = "输入密钥"
+    val placeholderHashInput = "输入要哈希/编码的文本"
+    val btnAesEncrypt = "AES 加密"
+    val btnAesDecrypt = "AES 解密"
+    val btnMd5 = "MD5 哈希"
+    val btnSha256 = "SHA-256 哈希"
+    val btnBase64Encode = "Base64 编码"
+    val btnBase64Decode = "Base64 解码"
+    val btnBuiltinTest = "内置测试用例（\"Hello Kuikly\"）"
+    val resultAesEncryptSuccess = "AES 加密结果：%1\$s"
+    val resultAesEncryptFail = "AES 加密失败"
+    val resultAesDecryptEmpty = "请先执行 AES 加密"
+    val resultAesDecryptSuccess = "AES 解密结果：%1\$s"
+    val resultAesDecryptFail = "AES 解密失败"
+    val resultMd5Success = "MD5：%1\$s"
+    val resultMd5Fail = "MD5 计算失败"
+    val resultSha256Success = "SHA-256：%1\$s"
+    val resultSha256Fail = "SHA-256 计算失败"
+    val resultBase64EncodeSuccess = "Base64 编码：%1\$s"
+    val resultBase64EncodeFail = "Base64 编码失败"
+    val resultBase64DecodeEmpty = "请先执行 Base64 编码"
+    val resultBase64DecodeSuccess = "Base64 解码：%1\$s"
+    val resultBase64DecodeFail = "Base64 解码失败"
+    val resultBuiltinTest = "测试文本：\"%1\$s\"\nMD5：%2$s\nSHA-256：%3$s\nAES(1234567890123456)：%4$s"
 
     Scaffold(
         topBar = {

@@ -37,8 +37,6 @@ import com.kuikly.init.common.base.platform.mediapicker.MediaMediaType
 import com.kuikly.init.common.base.platform.mediapicker.PickedMedia
 import com.kuikly.init.common.base.platform.mediapicker.provideMediaPicker
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import kotlinx.coroutines.launch
@@ -51,7 +49,7 @@ public class DebugCameraPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_camera_title)
+            val pageTitle = "相机 & 相册"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -78,37 +76,37 @@ private fun CameraTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val logPrefix = stringResource(DebugImplMR.strings.debug_camera_log_prefix)
+    val logPrefix = "操作日志：\n提示：相机/录像功能依赖硬件，当前平台可能不支持。\n"
     var log by remember { mutableStateOf(logPrefix) }
     val scope = rememberCoroutineScope()
     val camera = remember { provideCamera() }
     val mediaPicker = remember { provideMediaPicker() }
 
-    val btnTakePhoto = stringResource(DebugImplMR.strings.debug_camera_btn_take_photo)
-    val btnRecordVideo = stringResource(DebugImplMR.strings.debug_camera_btn_record_video)
-    val btnPickImage = stringResource(DebugImplMR.strings.debug_camera_btn_pick_image)
-    val btnPickVideo = stringResource(DebugImplMR.strings.debug_camera_btn_pick_video)
-    val logTakePhotoCalling = stringResource(DebugImplMR.strings.debug_camera_log_take_photo_calling)
-    val logTakePhotoSuccess = stringResource(DebugImplMR.strings.debug_camera_log_take_photo_success)
-    val logTakePhotoFail = stringResource(DebugImplMR.strings.debug_camera_log_take_photo_fail)
-    val logTakePhotoException = stringResource(DebugImplMR.strings.debug_camera_log_take_photo_exception)
-    val logRecordVideoCalling = stringResource(DebugImplMR.strings.debug_camera_log_record_video_calling)
-    val logRecordVideoSuccess = stringResource(DebugImplMR.strings.debug_camera_log_record_video_success)
-    val logRecordVideoFail = stringResource(DebugImplMR.strings.debug_camera_log_record_video_fail)
-    val logRecordVideoException = stringResource(DebugImplMR.strings.debug_camera_log_record_video_exception)
-    val logPickImageCalling = stringResource(DebugImplMR.strings.debug_camera_log_pick_image_calling)
-    val logPickImageSuccess = stringResource(DebugImplMR.strings.debug_camera_log_pick_image_success)
-    val logPickImageFail = stringResource(DebugImplMR.strings.debug_camera_log_pick_image_fail)
-    val logPickImageException = stringResource(DebugImplMR.strings.debug_camera_log_pick_image_exception)
-    val logPickVideoCalling = stringResource(DebugImplMR.strings.debug_camera_log_pick_video_calling)
-    val logPickVideoSuccess = stringResource(DebugImplMR.strings.debug_camera_log_pick_video_success)
-    val logPickVideoFail = stringResource(DebugImplMR.strings.debug_camera_log_pick_video_fail)
-    val logPickVideoException = stringResource(DebugImplMR.strings.debug_camera_log_pick_video_exception)
-    val logTitle = stringResource(DebugImplMR.strings.debug_operation_log)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val btnTakePhoto = "拍照"
+    val btnRecordVideo = "录像"
+    val btnPickImage = "从相册选择图片"
+    val btnPickVideo = "从相册选择视频"
+    val logTakePhotoCalling = "[拍照] 调用中…"
+    val logTakePhotoSuccess = "[拍照] 成功:\n%1\$s"
+    val logTakePhotoFail = "[拍照] 取消或失败"
+    val logTakePhotoException = "[拍照] 异常: %1\$s"
+    val logRecordVideoCalling = "[录像] 调用中…"
+    val logRecordVideoSuccess = "[录像] 成功:\n%1\$s"
+    val logRecordVideoFail = "[录像] 取消或失败"
+    val logRecordVideoException = "[录像] 异常: %1\$s"
+    val logPickImageCalling = "[相册选图] 调用中…"
+    val logPickImageSuccess = "[相册选图] 成功:\n%1\$s"
+    val logPickImageFail = "[相册选图] 取消或失败"
+    val logPickImageException = "[相册选图] 异常: %1\$s"
+    val logPickVideoCalling = "[相册选视频] 调用中…"
+    val logPickVideoSuccess = "[相册选视频] 成功:\n%1\$s"
+    val logPickVideoFail = "[相册选视频] 取消或失败"
+    val logPickVideoException = "[相册选视频] 异常: %1\$s"
+    val logTitle = "操作日志"
+    val btnClose = "关闭页面"
 
     fun appendLog(msg: String) {
-        log = "$msg\n$log"
+        log = "\$msg\n\$log"
     }
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
@@ -318,10 +316,10 @@ private fun HardwareActionButtonSecondary(text: String, onClick: () -> Unit) {
 }
 
 private fun mediaInfo(media: CapturedMedia): String {
-    return "path=${media.path}\nname=${media.name}\nsize=${media.size}B\nmime=${media.mimeType}"
+    return "path=\${media.path}\nname=\${media.name}\nsize=\${media.size}B\nmime=\${media.mimeType}"
 }
 
 private fun pickedInfo(media: PickedMedia): String {
-    return "path=${media.path}\nname=${media.name}\nsize=${media.size}B\nmime=${media.mimeType}" +
-            (media.duration?.let { "\nduration=${it}ms" } ?: "")
+    return "path=\${media.path}\nname=\${media.name}\nsize=\${media.size}B\nmime=\${media.mimeType}" +
+            (media.duration?.let { "\nduration=\${it}ms" } ?: "")
 }

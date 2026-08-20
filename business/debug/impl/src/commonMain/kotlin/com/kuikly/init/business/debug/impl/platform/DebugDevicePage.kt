@@ -26,8 +26,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.DeviceInfo
 import com.kuikly.init.common.base.platform.screen.provideScreenInfo
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -51,15 +49,15 @@ public class DebugDevicePage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugDeviceContent(onClose: () -> Unit) {
-    val placeholderText = stringResource(DebugImplMR.strings.debug_device_result_placeholder)
+    val placeholderText = "点击刷新按钮获取设备信息"
     var result by remember { mutableStateOf(placeholderText) }
     val deviceInfo = remember { DeviceInfo() }
 
-    val pageTitle = stringResource(DebugImplMR.strings.debug_device_title)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close)
-    val labelDeviceInfo = stringResource(DebugImplMR.strings.debug_device_label_device_info)
-    val btnRefresh = stringResource(DebugImplMR.strings.debug_device_btn_refresh)
-    val resultFormat = stringResource(DebugImplMR.strings.debug_device_result_format)
+    val pageTitle = "设备信息"
+    val btnClose = "关闭"
+    val labelDeviceInfo = "设备信息"
+    val btnRefresh = "刷新全部信息"
+    val resultFormat = "设备 ID：%1\$s\nOS 版本：%2\$s\n设备型号：%3\$s\n屏幕宽度：%4\$d dp (%5\$d px)\n屏幕高度：%6\$d dp (%7\$d px)\n屏幕密度 DPI：%8\$d\n密度比例：%9\$s"
 
     Scaffold(
         topBar = {

@@ -33,8 +33,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.biometric.BiometricType
 import com.kuikly.init.common.base.platform.biometric.provideBiometric
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -46,7 +44,7 @@ public class DebugBiometricPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_biometric_title)
+            val pageTitle = "生物识别测试"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -73,28 +71,28 @@ private fun BiometricTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val resultPlaceholder = stringResource(DebugImplMR.strings.debug_biometric_result_placeholder)
+    val resultPlaceholder = "认证结果将在此显示…\n提示：生物识别依赖硬件，当前平台可能不支持。"
     var result by remember { mutableStateOf(resultPlaceholder) }
     val biometric = remember { provideBiometric() }
 
-    val btnDetectSupport = stringResource(DebugImplMR.strings.debug_biometric_btn_detect_support)
-    val btnGetTypes = stringResource(DebugImplMR.strings.debug_biometric_btn_get_types)
-    val btnAuthenticate = stringResource(DebugImplMR.strings.debug_biometric_btn_authenticate)
-    val resultTitle = stringResource(DebugImplMR.strings.debug_biometric_result_title)
-    val resultDetectSupport = stringResource(DebugImplMR.strings.debug_biometric_result_detect_support)
-    val resultDetectSupportException = stringResource(DebugImplMR.strings.debug_biometric_result_detect_support_exception)
-    val resultNoTypes = stringResource(DebugImplMR.strings.debug_biometric_result_no_types)
-    val resultGetTypesSuccess = stringResource(DebugImplMR.strings.debug_biometric_result_get_types_success)
-    val resultGetTypesException = stringResource(DebugImplMR.strings.debug_biometric_result_get_types_exception)
-    val resultAuthenticateCalling = stringResource(DebugImplMR.strings.debug_biometric_result_authenticate_calling)
-    val resultAuthenticateResult = stringResource(DebugImplMR.strings.debug_biometric_result_authenticate_result)
-    val resultAuthenticateException = stringResource(DebugImplMR.strings.debug_biometric_result_authenticate_exception)
-    val authenticateTitle = stringResource(DebugImplMR.strings.debug_biometric_authenticate_title)
-    val authenticateCancel = stringResource(DebugImplMR.strings.debug_biometric_authenticate_cancel)
-    val typeFace = stringResource(DebugImplMR.strings.debug_biometric_type_face)
-    val typeFingerprint = stringResource(DebugImplMR.strings.debug_biometric_type_fingerprint)
-    val typePin = stringResource(DebugImplMR.strings.debug_biometric_type_pin)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val btnDetectSupport = "检测设备是否支持"
+    val btnGetTypes = "获取支持的类型"
+    val btnAuthenticate = "发起生物识别认证"
+    val resultTitle = "认证结果"
+    val resultDetectSupport = "设备支持生物识别: %1\$s"
+    val resultDetectSupportException = "检测支持异常: %1\$s"
+    val resultNoTypes = "无支持的生物识别类型"
+    val resultGetTypesSuccess = "支持的类型:\n%1\$s"
+    val resultGetTypesException = "获取类型异常: %1\$s"
+    val resultAuthenticateCalling = "发起认证…"
+    val resultAuthenticateResult = "认证结果: %1\$s"
+    val resultAuthenticateException = "认证异常: %1\$s"
+    val authenticateTitle = "身份验证"
+    val authenticateCancel = "取消"
+    val typeFace = "人脸"
+    val typeFingerprint = "指纹"
+    val typePin = "PIN/密码"
+    val btnClose = "关闭页面"
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
@@ -165,7 +163,7 @@ private fun BiometricDetectSection(
                 if (types.isEmpty()) {
                     resultNoTypes
                 } else {
-                    val labelList = types.joinToString("\n") { "• ${typeLabel(it, typeFace, typeFingerprint, typePin)}" }
+                    val labelList = types.joinToString("\n") { "• \${typeLabel(it, typeFace, typeFingerprint, typePin)}" }
                     String.format(resultGetTypesSuccess, labelList)
                 }
             )

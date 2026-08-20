@@ -34,8 +34,6 @@ import com.kuikly.init.common.base.platform.location.Location
 import com.kuikly.init.common.base.platform.location.LocationAccuracy
 import com.kuikly.init.common.base.platform.location.provideLocationProvider
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -47,7 +45,7 @@ public class DebugLocationPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_location_title)
+            val pageTitle = "定位"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -74,28 +72,28 @@ private fun LocationTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val logPrefix = stringResource(DebugImplMR.strings.debug_location_log_prefix)
+    val logPrefix = "定位日志：\n提示：定位功能依赖硬件和权限，当前平台可能不支持。\n"
     var log by remember { mutableStateOf(logPrefix) }
     val locationProvider = remember { provideLocationProvider() }
 
-    val btnRequestPermission = stringResource(DebugImplMR.strings.debug_location_btn_request_permission)
-    val btnGetLocationPrecise = stringResource(DebugImplMR.strings.debug_location_btn_get_location_precise)
-    val btnGetLocationBalanced = stringResource(DebugImplMR.strings.debug_location_btn_get_location_balanced)
-    val logTitle = stringResource(DebugImplMR.strings.debug_location_log_title)
-    val logRequestPermissionCalling = stringResource(DebugImplMR.strings.debug_location_log_request_permission_calling)
-    val logRequestPermissionResult = stringResource(DebugImplMR.strings.debug_location_log_request_permission_result)
-    val logRequestPermissionException = stringResource(DebugImplMR.strings.debug_location_log_request_permission_exception)
-    val logGetLocationCalling = stringResource(DebugImplMR.strings.debug_location_log_get_location_calling)
-    val logGetLocationSuccess = stringResource(DebugImplMR.strings.debug_location_log_get_location_success)
-    val logGetLocationNull = stringResource(DebugImplMR.strings.debug_location_log_get_location_null)
-    val logGetLocationException = stringResource(DebugImplMR.strings.debug_location_log_get_location_exception)
-    val permissionGranted = stringResource(DebugImplMR.strings.debug_location_permission_granted)
-    val permissionDenied = stringResource(DebugImplMR.strings.debug_location_permission_denied)
-    val resultFormat = stringResource(DebugImplMR.strings.debug_location_result_format)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val btnRequestPermission = "请求定位权限"
+    val btnGetLocationPrecise = "获取当前位置 (高精度)"
+    val btnGetLocationBalanced = "获取当前位置 (均衡)"
+    val logTitle = "定位日志"
+    val logRequestPermissionCalling = "[权限请求] 调用 requestPermission…"
+    val logRequestPermissionResult = "[权限请求] 结果: %1\$s"
+    val logRequestPermissionException = "[权限请求] 异常: %1\$s"
+    val logGetLocationCalling = "[获取位置] 调用 getCurrentLocation(%1\$s)…"
+    val logGetLocationSuccess = "[获取位置] 成功:\n%1\$s"
+    val logGetLocationNull = "[获取位置] 返回 null"
+    val logGetLocationException = "[获取位置] 异常: %1\$s"
+    val permissionGranted = "已授权"
+    val permissionDenied = "被拒绝"
+    val resultFormat = "纬度: %1\$s\n经度: %2\$s%3\$s%4\$s%5\$s%6\$s"
+    val btnClose = "关闭页面"
 
     fun appendLog(msg: String) {
-        log = "$msg\n$log"
+        log = "\$msg\n\$log"
     }
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
@@ -260,9 +258,9 @@ private fun HardwareActionButtonSecondary(text: String, onClick: () -> Unit) {
 }
 
 private fun formatLocation(loc: Location, format: String): String {
-    val accuracyPart = loc.accuracy?.let { "\n精度: ${it}米" } ?: ""
-    val altitudePart = loc.altitude?.let { "\n海拔: ${it}米" } ?: ""
-    val speedPart = loc.speed?.let { "\n速度: ${it}m/s" } ?: ""
-    val timestampPart = loc.timestamp?.let { "\n时间戳: $it" } ?: ""
+    val accuracyPart = loc.accuracy?.let { "\n精度: \${it}米" } ?: ""
+    val altitudePart = loc.altitude?.let { "\n海拔: \${it}米" } ?: ""
+    val speedPart = loc.speed?.let { "\n速度: \${it}m/s" } ?: ""
+    val timestampPart = loc.timestamp?.let { "\n时间戳: \$it" } ?: ""
     return String.format(format, loc.latitude, loc.longitude, accuracyPart, altitudePart, speedPart, timestampPart)
 }

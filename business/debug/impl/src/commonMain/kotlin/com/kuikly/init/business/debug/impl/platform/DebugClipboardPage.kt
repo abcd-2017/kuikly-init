@@ -31,8 +31,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugTextField
 import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.clipboard.provideClipboard
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -56,32 +54,32 @@ public class DebugClipboardPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugClipboardContent(onClose: () -> Unit) {
-    val placeholderText = stringResource(DebugImplMR.strings.debug_clipboard_result_placeholder)
+    val placeholderText = "操作结果将在此显示"
     var result by remember { mutableStateOf(placeholderText) }
-    val defaultInput = stringResource(DebugImplMR.strings.debug_clipboard_input_default)
+    val defaultInput = "自定义测试文本"
     var inputText by remember { mutableStateOf(defaultInput) }
     val clipboard = remember { provideClipboard() }
 
-    val pageTitle = stringResource(DebugImplMR.strings.debug_clipboard_title)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close)
-    val btnCopyPreset = stringResource(DebugImplMR.strings.debug_clipboard_btn_copy_preset)
-    val btnCopyTimestamp = stringResource(DebugImplMR.strings.debug_clipboard_btn_copy_timestamp)
-    val btnPaste = stringResource(DebugImplMR.strings.debug_clipboard_btn_paste)
-    val btnClear = stringResource(DebugImplMR.strings.debug_clipboard_btn_clear)
-    val btnCheck = stringResource(DebugImplMR.strings.debug_clipboard_btn_check)
-    val presetText = stringResource(DebugImplMR.strings.debug_clipboard_preset_text)
-    val resultPresetCopied = stringResource(DebugImplMR.strings.debug_clipboard_result_preset_copied)
-    val resultClipboardEmpty = stringResource(DebugImplMR.strings.debug_clipboard_result_clipboard_empty)
-    val resultClipboardCleared = stringResource(DebugImplMR.strings.debug_clipboard_result_clipboard_cleared)
-    val labelCustomInput = stringResource(DebugImplMR.strings.debug_clipboard_label_custom_input)
-    val placeholderCustomInput = stringResource(DebugImplMR.strings.debug_clipboard_placeholder_custom_input)
-    val btnCopy = stringResource(DebugImplMR.strings.debug_clipboard_btn_copy)
-    val btnVerify = stringResource(DebugImplMR.strings.debug_clipboard_btn_verify)
-    val resultCopyTimestamp = stringResource(DebugImplMR.strings.debug_clipboard_result_copy_timestamp)
-    val resultPasteContent = stringResource(DebugImplMR.strings.debug_clipboard_result_paste_content)
-    val resultHasText = stringResource(DebugImplMR.strings.debug_clipboard_result_has_text)
-    val resultCopyCustom = stringResource(DebugImplMR.strings.debug_clipboard_result_copy_custom)
-    val resultVerify = stringResource(DebugImplMR.strings.debug_clipboard_result_verify)
+    val pageTitle = "剪贴板"
+    val btnClose = "关闭"
+    val btnCopyPreset = "复制预设文本到剪贴板"
+    val btnCopyTimestamp = "复制当前时间戳到剪贴板"
+    val btnPaste = "读取剪贴板内容"
+    val btnClear = "清空剪贴板"
+    val btnCheck = "检查剪贴板是否有内容"
+    val presetText = "Kuikly Clipboard Test"
+    val resultPresetCopied = "已复制预设文本：Kuikly Clipboard Test"
+    val resultClipboardEmpty = "剪贴板为空"
+    val resultClipboardCleared = "剪贴板已清空"
+    val labelCustomInput = "自定义文本输入："
+    val placeholderCustomInput = "输入要复制到剪贴板的文本"
+    val btnCopy = "复制"
+    val btnVerify = "读取验证"
+    val resultCopyTimestamp = "已复制时间戳：%1\$s"
+    val resultPasteContent = "剪贴板内容：%1\$s"
+    val resultHasText = "剪贴板是否有内容：%1\$s"
+    val resultCopyCustom = "已复制自定义文本：%1\$s"
+    val resultVerify = "读取结果：%1\$s\n与输入一致：%2\$s"
 
     Scaffold(
         topBar = {

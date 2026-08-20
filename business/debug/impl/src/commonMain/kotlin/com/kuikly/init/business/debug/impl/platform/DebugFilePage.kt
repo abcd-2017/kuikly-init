@@ -28,8 +28,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.FileSystem
 import com.kuikly.init.common.base.platform.provideFileSystem
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -53,39 +51,39 @@ public class DebugFilePage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugFileContent(onClose: () -> Unit) {
-    val placeholderText = stringResource(DebugImplMR.strings.debug_file_result_placeholder)
+    val placeholderText = "操作结果将在此显示"
     var result by remember { mutableStateOf(placeholderText) }
-    val defaultFileName = stringResource(DebugImplMR.strings.debug_file_default_file_name)
-    val defaultFileContent = stringResource(DebugImplMR.strings.debug_file_default_file_content)
+    val defaultFileName = "test.txt"
+    val defaultFileContent = "Hello Kuikly FileSystem"
     var fileName by remember { mutableStateOf(defaultFileName) }
     var fileContent by remember { mutableStateOf(defaultFileContent) }
     val fileSystem = remember { provideFileSystem() }
 
-    val pageTitle = stringResource(DebugImplMR.strings.debug_file_title)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close)
-    val labelFileName = stringResource(DebugImplMR.strings.debug_file_label_file_name)
-    val labelFileContent = stringResource(DebugImplMR.strings.debug_file_label_file_content)
-    val labelLargeFile = stringResource(DebugImplMR.strings.debug_file_label_large_file)
-    val placeholderFileName = stringResource(DebugImplMR.strings.debug_file_placeholder_file_name)
-    val placeholderFileContent = stringResource(DebugImplMR.strings.debug_file_placeholder_file_content)
-    val btnWriteFile = stringResource(DebugImplMR.strings.debug_file_btn_write_file)
-    val btnReadFile = stringResource(DebugImplMR.strings.debug_file_btn_read_file)
-    val btnCheckExists = stringResource(DebugImplMR.strings.debug_file_btn_check_exists)
-    val btnDeleteFile = stringResource(DebugImplMR.strings.debug_file_btn_delete_file)
-    val btnGetPath = stringResource(DebugImplMR.strings.debug_file_btn_get_path)
-    val btnWrite1kb = stringResource(DebugImplMR.strings.debug_file_btn_write_1kb)
-    val btnWrite10kb = stringResource(DebugImplMR.strings.debug_file_btn_write_10kb)
-    val btnWrite100kb = stringResource(DebugImplMR.strings.debug_file_btn_write_100kb)
-    val resultWriteSuccess = stringResource(DebugImplMR.strings.debug_file_result_write_success)
-    val resultWriteFail = stringResource(DebugImplMR.strings.debug_file_result_write_fail)
-    val resultFileNotExist = stringResource(DebugImplMR.strings.debug_file_result_file_not_exist)
-    val resultReadSuccess = stringResource(DebugImplMR.strings.debug_file_result_read_success)
-    val resultReadFail = stringResource(DebugImplMR.strings.debug_file_result_read_fail)
-    val resultExists = stringResource(DebugImplMR.strings.debug_file_result_exists)
-    val resultDelete = stringResource(DebugImplMR.strings.debug_file_result_delete)
-    val resultDeleteFail = stringResource(DebugImplMR.strings.debug_file_result_delete_fail)
-    val resultGetPath = stringResource(DebugImplMR.strings.debug_file_result_get_path)
-    val resultWriteSize = stringResource(DebugImplMR.strings.debug_file_result_write_size)
+    val pageTitle = "文件读写"
+    val btnClose = "关闭"
+    val labelFileName = "文件名："
+    val labelFileContent = "文件内容："
+    val labelLargeFile = "大文件写入测试："
+    val placeholderFileName = "输入文件名"
+    val placeholderFileContent = "输入文件内容"
+    val btnWriteFile = "写入文件"
+    val btnReadFile = "读取文件"
+    val btnCheckExists = "检查文件是否存在"
+    val btnDeleteFile = "删除文件"
+    val btnGetPath = "获取文件绝对路径"
+    val btnWrite1kb = "写入 1KB 文件"
+    val btnWrite10kb = "写入 10KB 文件"
+    val btnWrite100kb = "写入 100KB 文件"
+    val resultWriteSuccess = "写入成功：%1\$s\n内容：%2\$s"
+    val resultWriteFail = "写入失败：%1\$s"
+    val resultFileNotExist = "文件不存在：%1\$s"
+    val resultReadSuccess = "读取成功：%1\$s\n内容：%2\$s"
+    val resultReadFail = "读取失败：%1\$s"
+    val resultExists = "文件 %1\$s 存在：%2\$s"
+    val resultDelete = "删除 %1\$s：%2\$s"
+    val resultDeleteFail = "删除失败：%1\$s"
+    val resultGetPath = "当前测试文件路径：%1\$s\n（FileSystem 抽象层不提供目录枚举能力）"
+    val resultWriteSize = "写入 %1\$s（%2\$d 字节）成功"
 
     Scaffold(
         topBar = {

@@ -34,8 +34,6 @@ import com.kuikly.init.business.debug.impl.ui.widgets.DebugVSpacer
 import com.kuikly.init.common.base.platform.picker.PickedFile
 import com.kuikly.init.common.base.platform.picker.provideFilePicker
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 import kotlinx.coroutines.launch
@@ -48,7 +46,7 @@ public class DebugFilePickerPage : BasePager() {
         super.willInit()
         setContent {
             
-            val pageTitle = stringResource(DebugImplMR.strings.debug_file_picker_title)
+            val pageTitle = "文件选择"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -75,24 +73,24 @@ private fun FilePickerTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val resultPlaceholder = stringResource(DebugImplMR.strings.debug_file_picker_result_placeholder)
+    val resultPlaceholder = "选择的文件信息将在此显示…"
     var result by remember { mutableStateOf(resultPlaceholder) }
     val scope = rememberCoroutineScope()
     val filePicker = remember { provideFilePicker() }
 
-    val btnPickFile = stringResource(DebugImplMR.strings.debug_file_picker_btn_pick_file)
-    val btnPickImage = stringResource(DebugImplMR.strings.debug_file_picker_btn_pick_image)
-    val btnPickDocument = stringResource(DebugImplMR.strings.debug_file_picker_btn_pick_document)
-    val resultTitle = stringResource(DebugImplMR.strings.debug_file_picker_result_title)
-    val resultPickFileSuccess = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_file_success)
-    val resultPickImageSuccess = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_image_success)
-    val resultPickDocumentSuccess = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_document_success)
-    val resultCancel = stringResource(DebugImplMR.strings.debug_file_picker_result_cancel)
-    val resultPickFileException = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_file_exception)
-    val resultPickImageException = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_image_exception)
-    val resultPickDocumentException = stringResource(DebugImplMR.strings.debug_file_picker_result_pick_document_exception)
-    val resultFormat = stringResource(DebugImplMR.strings.debug_file_picker_result_format)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close_page)
+    val btnPickFile = "pickFile 选择任意文件"
+    val btnPickImage = "pickImage 选择图片"
+    val btnPickDocument = "pickDocument 选择文档"
+    val resultTitle = "文件信息"
+    val resultPickFileSuccess = "选择文件成功:\n%1\$s"
+    val resultPickImageSuccess = "选择图片成功:\n%1\$s"
+    val resultPickDocumentSuccess = "选择文档成功:\n%1\$s"
+    val resultCancel = "取消选择"
+    val resultPickFileException = "选择文件异常: %1\$s"
+    val resultPickImageException = "选择图片异常: %1\$s"
+    val resultPickDocumentException = "选择文档异常: %1\$s"
+    val resultFormat = "name=%1\$s\npath=%2\$s\nsize=%3\$sB\nmime=%4\$s"
+    val btnClose = "关闭页面"
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {

@@ -27,8 +27,6 @@ import com.kuikly.init.common.base.platform.NetworkMonitor
 import com.kuikly.init.common.base.platform.NetworkType
 import com.kuikly.init.common.base.platform.provideNetworkMonitor
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
 
@@ -52,20 +50,20 @@ public class DebugNetworkPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugNetworkContent(onClose: () -> Unit) {
-    val placeholderText = stringResource(DebugImplMR.strings.debug_network_result_placeholder)
+    val placeholderText = "点击刷新按钮检测网络状态"
     var result by remember { mutableStateOf(placeholderText) }
     val monitor = remember { provideNetworkMonitor() }
 
-    val pageTitle = stringResource(DebugImplMR.strings.debug_network_title)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close)
-    val labelNetworkStatus = stringResource(DebugImplMR.strings.debug_network_label_network_status)
-    val btnRefresh = stringResource(DebugImplMR.strings.debug_network_btn_refresh)
-    val resultFormat = stringResource(DebugImplMR.strings.debug_network_result_format)
-    val statusConnected = stringResource(DebugImplMR.strings.debug_network_status_connected)
-    val statusDisconnected = stringResource(DebugImplMR.strings.debug_network_status_disconnected)
-    val typeWifi = stringResource(DebugImplMR.strings.debug_network_type_wifi)
-    val typeCellular = stringResource(DebugImplMR.strings.debug_network_type_cellular)
-    val typeNone = stringResource(DebugImplMR.strings.debug_network_type_none)
+    val pageTitle = "网络监听"
+    val btnClose = "关闭"
+    val labelNetworkStatus = "网络状态检测"
+    val btnRefresh = "刷新网络状态"
+    val resultFormat = "检测时间：%1\$s\n网络连接状态：%2\$s\n网络类型：%3\$s"
+    val statusConnected = "已连接"
+    val statusDisconnected = "未连接"
+    val typeWifi = "WIFI"
+    val typeCellular = "CELLULAR"
+    val typeNone = "NONE"
 
     Scaffold(
         topBar = {

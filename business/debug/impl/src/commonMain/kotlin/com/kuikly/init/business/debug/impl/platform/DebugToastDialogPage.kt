@@ -25,8 +25,6 @@ import com.kuikly.init.common.base.platform.dialog.provideDialog
 import com.kuikly.init.common.base.platform.toast.ToastDuration
 import com.kuikly.init.common.base.platform.toast.provideToast
 import com.tencent.kuikly.compose.setContent
-import com.tencent.tmm.kmmresource.compose.stringResource
-import com.kuikly.init.business.debug.impl.DebugImplMR
 import com.tencent.kuikly.compose.ui.unit.dp
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.module.RouterModule
@@ -51,48 +49,48 @@ public class DebugToastDialogPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugToastDialogContent(onClose: () -> Unit) {
-    val placeholderText = stringResource(DebugImplMR.strings.debug_toast_dialog_result_placeholder)
+    val placeholderText = "操作结果将在此显示"
     var result by remember { mutableStateOf(placeholderText) }
     val toast = remember { provideToast() }
     val dialog = remember { provideDialog() }
 
-    val pageTitle = stringResource(DebugImplMR.strings.debug_toast_dialog_title)
-    val btnClose = stringResource(DebugImplMR.strings.debug_close)
-    val btnToastShort = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_toast_short)
-    val btnToastLong = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_toast_long)
-    val msgToastShort = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_toast_short)
-    val resultToastShort = stringResource(DebugImplMR.strings.debug_toast_dialog_result_toast_short)
-    val msgToastLong = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_toast_long)
-    val resultToastLong = stringResource(DebugImplMR.strings.debug_toast_dialog_result_toast_long)
-    val btnAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_alert)
-    val titleAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_title_alert)
-    val msgAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_alert)
-    val btnTextAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_text_alert)
-    val resultAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_result_alert)
-    val btnConfirm = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_confirm)
-    val titleConfirm = stringResource(DebugImplMR.strings.debug_toast_dialog_title_confirm)
-    val msgConfirm = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_confirm)
-    val btnTextConfirmOk = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_text_confirm_ok)
-    val btnTextConfirmCancel = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_text_confirm_cancel)
-    val resultConfirmConfirmed = stringResource(DebugImplMR.strings.debug_toast_dialog_result_confirm_confirmed)
-    val resultConfirmCancelled = stringResource(DebugImplMR.strings.debug_toast_dialog_result_confirm_cancelled)
-    val btnActionSheet = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_action_sheet)
-    val titleActionSheet = stringResource(DebugImplMR.strings.debug_toast_dialog_title_action_sheet)
-    val msgActionSheet = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_action_sheet)
-    val optionA = stringResource(DebugImplMR.strings.debug_toast_dialog_option_a)
-    val optionB = stringResource(DebugImplMR.strings.debug_toast_dialog_option_b)
-    val optionC = stringResource(DebugImplMR.strings.debug_toast_dialog_option_c)
-    val optionD = stringResource(DebugImplMR.strings.debug_toast_dialog_option_d)
-    val resultActionSheetCancel = stringResource(DebugImplMR.strings.debug_toast_dialog_result_action_sheet_cancel)
-    val btnQueueAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_queue_alert)
-    val titleFirst = stringResource(DebugImplMR.strings.debug_toast_dialog_title_first)
-    val msgFirst = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_first)
-    val titleSecond = stringResource(DebugImplMR.strings.debug_toast_dialog_title_second)
-    val msgSecond = stringResource(DebugImplMR.strings.debug_toast_dialog_msg_second)
-    val btnTextOk = stringResource(DebugImplMR.strings.debug_toast_dialog_btn_text_ok)
-    val resultQueueAlert = stringResource(DebugImplMR.strings.debug_toast_dialog_result_queue_alert)
-    val resultConfirmFormat = stringResource(DebugImplMR.strings.debug_toast_dialog_result_confirm_format)
-    val resultActionSheetFormat = stringResource(DebugImplMR.strings.debug_toast_dialog_result_action_sheet_format)
+    val pageTitle = "Toast & 对话框"
+    val btnClose = "关闭"
+    val btnToastShort = "Toast SHORT"
+    val btnToastLong = "Toast LONG"
+    val msgToastShort = "这是一条 SHORT Toast"
+    val resultToastShort = "Toast SHORT 已触发"
+    val msgToastLong = "这是一条 LONG Toast"
+    val resultToastLong = "Toast LONG 已触发"
+    val btnAlert = "Alert 提示框（单按钮）"
+    val titleAlert = "提示"
+    val msgAlert = "这是一个 Alert 提示框"
+    val btnTextAlert = "我知道了"
+    val resultAlert = "Alert 已弹出"
+    val btnConfirm = "Confirm 确认框（双按钮）"
+    val titleConfirm = "确认"
+    val msgConfirm = "确定要执行此操作吗？"
+    val btnTextConfirmOk = "确定"
+    val btnTextConfirmCancel = "取消"
+    val resultConfirmConfirmed = "确认"
+    val resultConfirmCancelled = "取消"
+    val btnActionSheet = "Action Sheet（多选项）"
+    val titleActionSheet = "请选择"
+    val msgActionSheet = "请从下列选项中选择一个"
+    val optionA = "选项 A"
+    val optionB = "选项 B"
+    val optionC = "选项 C"
+    val optionD = "选项 D"
+    val resultActionSheetCancel = "Action Sheet 已取消"
+    val btnQueueAlert = "连续弹两个 Alert（测试队列）"
+    val titleFirst = "第一个"
+    val msgFirst = "这是第一个 Alert"
+    val titleSecond = "第二个"
+    val msgSecond = "这是第二个 Alert"
+    val btnTextOk = "确定"
+    val resultQueueAlert = "已触发两个 Alert（队列模式）"
+    val resultConfirmFormat = "Confirm 结果：%1\$s"
+    val resultActionSheetFormat = "Action Sheet 选中：选项 %1\$c (index=%2\$d)"
 
     Scaffold(
         topBar = {
