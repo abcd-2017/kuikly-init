@@ -46,25 +46,23 @@ public class DebugNetworkRequestPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "网络请求测试"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("网络请求测试") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
+                }
+            ) { padding ->
                 NetworkTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     bridgeModule = bridgeModule,
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -78,25 +76,8 @@ private fun NetworkTestContent(
 ) {
     var cmdInput by remember { mutableStateOf("test.cmd") }
     var paramsInput by remember { mutableStateOf("{\"userId\":\"12345\"}") }
-    val resultPlaceholder = "响应结果将在此显示…"
-    var result by remember { mutableStateOf(resultPlaceholder) }
+    var result by remember { mutableStateOf("响应结果将在此显示…") }
     val scope = rememberCoroutineScope()
-
-    val labelCmd = "CMD:"
-    val labelParams = "请求参数 (JSON):"
-    val placeholderCmd = "输入 cmd"
-    val placeholderParams = "输入 reqParams JSON"
-    val btnSend = "发起 ssoRequest"
-    val presetTitle = "预设测试用例"
-    val presetA = "测试用例 A"
-    val presetB = "测试用例 B"
-    val presetC = "测试用例 C"
-    val resultTitle = "响应结果"
-    val resultSuccess = "耗时: %1\$dms\n\n%2\$s"
-    val resultNull = "耗时: %1\$dms\n\n返回 null"
-    val resultFail = "请求失败: %1\$s"
-    val requesting = "请求中…"
-    val btnClose = "关闭页面"
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
@@ -105,10 +86,10 @@ private fun NetworkTestContent(
                 paramsInput = paramsInput,
                 onCmdChange = { cmdInput = it },
                 onParamsChange = { paramsInput = it },
-                labelCmd = labelCmd,
-                labelParams = labelParams,
-                placeholderCmd = placeholderCmd,
-                placeholderParams = placeholderParams
+                labelCmd = "CMD:",
+                labelParams = "请求参数 (JSON):",
+                placeholderCmd = "输入 cmd",
+                placeholderParams = "输入 reqParams JSON"
             )
         }
         item {
@@ -117,11 +98,11 @@ private fun NetworkTestContent(
                 cmdInput = cmdInput,
                 paramsInput = paramsInput,
                 scope = scope,
-                btnSend = btnSend,
-                resultSuccess = resultSuccess,
-                resultNull = resultNull,
-                resultFail = resultFail,
-                requesting = requesting,
+                btnSend = "发起 ssoRequest",
+                resultSuccess = "耗时: %1\$dms\n\n%2\$s",
+                resultNull = "耗时: %1\$dms\n\n返回 null",
+                resultFail = "请求失败: %1\$s",
+                requesting = "请求中…",
                 onResultChange = { result = it }
             )
         }
@@ -131,17 +112,17 @@ private fun NetworkTestContent(
                     cmdInput = cmd
                     paramsInput = params
                 },
-                presetTitle = presetTitle,
-                presetA = presetA,
-                presetB = presetB,
-                presetC = presetC
+                presetTitle = "预设测试用例",
+                presetA = "测试用例 A",
+                presetB = "测试用例 B",
+                presetC = "测试用例 C"
             )
         }
         item {
-            NetworkResultSection(result = result, resultTitle = resultTitle)
+            NetworkResultSection(result = result, resultTitle = "响应结果")
         }
         item {
-            NetworkCloseButton(btnText = btnClose, onClose = onClose)
+            NetworkCloseButton(btnText = "关闭页面", onClose = onClose)
         }
     }
 }

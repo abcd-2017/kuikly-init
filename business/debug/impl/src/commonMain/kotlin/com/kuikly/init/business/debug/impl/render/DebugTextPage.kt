@@ -41,28 +41,25 @@ public class DebugTextPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "文本渲染测试"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("文本渲染测试") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
-                    DebugTextContent(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(padding),
-                        onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
-                    )
                 }
+            ) { padding ->
+                DebugTextContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
+                )
             }
-        }
     }
 }
 
@@ -71,61 +68,46 @@ private fun DebugTextContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val sectionFontSize = "字体大小"
-    val sectionColor = "颜色"
-    val sectionAlign = "对齐"
-    val sectionFontWeight = "字重"
-    val sectionMultiLine = "多行截断"
-    val sectionEmoji = "Emoji"
-    val sectionLineHeight = "行高"
-    val sectionTextBackground =
-        "文本背景"
-    val sampleText = "Kuikly 跨端脚手架"
-    val textAlignLeft = "左对齐文本 — Kuikly 跨端脚手架"
-    val textAlignCenter = "居中文本 — Kuikly 跨端脚手架"
-    val textAlignRight = "右对齐文本 — Kuikly 跨端脚手架"
-    val textWeightNormal = "Normal 字重"
-    val textWeightBold = "Bold 字重"
-    val textWeightLight = "Light 字重"
-    val textLongSample = "这是一段很长的文本，用于测试 maxLines 和 overflow 的截断效果。Kuikly 是腾讯推出的跨端开发框架，支持 Android、iOS、鸿蒙三端。它基于 Kotlin Multiplatform 技术，提供了统一的 DSL 和组件能力。"
-    val textEmoji = "🎉🔥💯👍🚀❤️✨"
-    val textLineHeightSample = "这是一段用于测试不同行高效果的文本。行高影响段落的可读性和视觉密度。"
-    val labelLineHeight12x = "1.2x"
-    val labelLineHeight15x = "1.5x"
-    val labelLineHeight20x = "2.0x"
-    val prefixLineHeight = "↑ lineHeight "
-    val textBgSample1 = "带背景色的文字"
-    val textBgSample2 = "另一种背景色"
-    val btnClose = "关闭页面"
-
     LazyColumn(
         modifier = modifier.padding(16.dp)
     ) {
-        item { FontSizeSection(sectionFontSize, sampleText) }
-        item { ColorSection(sectionColor, sampleText) }
-        item { AlignSection(sectionAlign, textAlignLeft, textAlignCenter, textAlignRight) }
+        item { FontSizeSection("字体大小", "Kuikly 跨端脚手架") }
+        item { ColorSection("颜色", "Kuikly 跨端脚手架") }
+        item {
+            AlignSection(
+                "对齐",
+                "左对齐文本 — Kuikly 跨端脚手架",
+                "居中文本 — Kuikly 跨端脚手架",
+                "右对齐文本 — Kuikly 跨端脚手架"
+            )
+        }
         item {
             FontWeightSection(
-                sectionFontWeight,
-                textWeightNormal,
-                textWeightBold,
-                textWeightLight
+                "字重",
+                "Normal 字重",
+                "Bold 字重",
+                "Light 字重"
             )
         }
-        item { MultiLineTruncateSection(sectionMultiLine, textLongSample) }
-        item { EmojiSection(sectionEmoji, textEmoji) }
+        item {
+            MultiLineTruncateSection(
+                "多行截断",
+                "这是一段很长的文本，用于测试 maxLines 和 overflow 的截断效果。Kuikly 是腾讯推出的跨端开发框架，支持 Android、iOS、鸿蒙三端。它基于 Kotlin Multiplatform 技术，提供了统一的 DSL 和组件能力。"
+            )
+        }
+        item { EmojiSection("Emoji", "🎉🔥💯👍🚀❤️✨") }
         item {
             LineHeightSection(
-                sectionLineHeight,
-                textLineHeightSample,
-                labelLineHeight12x,
-                labelLineHeight15x,
-                labelLineHeight20x,
-                prefixLineHeight
+                "行高",
+                "这是一段用于测试不同行高效果的文本。行高影响段落的可读性和视觉密度。",
+                "1.2x",
+                "1.5x",
+                "2.0x",
+                "↑ lineHeight "
             )
         }
-        item { TextBackgroundSection(sectionTextBackground, textBgSample1, textBgSample2) }
-        item { CloseButtonSection(btnClose, onClose) }
+        item { TextBackgroundSection("文本背景", "带背景色的文字", "另一种背景色") }
+        item { CloseButtonSection("关闭页面", onClose) }
     }
 }
 
@@ -289,4 +271,7 @@ private fun CloseButtonSection(btnText: String, onClose: () -> Unit) {
         )
     }
     DebugVSpacer(32.dp)
+}
+
+
 }

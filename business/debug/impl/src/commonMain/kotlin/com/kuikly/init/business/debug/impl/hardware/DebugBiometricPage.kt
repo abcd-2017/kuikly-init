@@ -43,85 +43,47 @@ public class DebugBiometricPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "生物识别测试"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("生物识别测试") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
+                }
+            ) { padding ->
                 BiometricTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
             }
-            }
-        }
     }
 }
+
 
 @Composable
 private fun BiometricTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val resultPlaceholder = "认证结果将在此显示…\n提示：生物识别依赖硬件，当前平台可能不支持。"
-    var result by remember { mutableStateOf(resultPlaceholder) }
+    var result by remember { mutableStateOf("认证结果将在此显示…\n提示：生物识别依赖硬件，当前平台可能不支持。") }
     val biometric = remember { provideBiometric() }
-
-    val btnDetectSupport = "检测设备是否支持"
-    val btnGetTypes = "获取支持的类型"
-    val btnAuthenticate = "发起生物识别认证"
-    val resultTitle = "认证结果"
-    val resultDetectSupport = "设备支持生物识别: %1\$s"
-    val resultDetectSupportException = "检测支持异常: %1\$s"
-    val resultNoTypes = "无支持的生物识别类型"
-    val resultGetTypesSuccess = "支持的类型:\n%1\$s"
-    val resultGetTypesException = "获取类型异常: %1\$s"
-    val resultAuthenticateCalling = "发起认证…"
-    val resultAuthenticateResult = "认证结果: %1\$s"
-    val resultAuthenticateException = "认证异常: %1\$s"
-    val authenticateTitle = "身份验证"
-    val authenticateCancel = "取消"
-    val typeFace = "人脸"
-    val typeFingerprint = "指纹"
-    val typePin = "PIN/密码"
-    val btnClose = "关闭页面"
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
             BiometricDetectSection(
                 biometric = biometric,
-                btnDetectSupport = btnDetectSupport,
-                btnGetTypes = btnGetTypes,
-                btnAuthenticate = btnAuthenticate,
-                resultDetectSupport = resultDetectSupport,
-                resultDetectSupportException = resultDetectSupportException,
-                resultNoTypes = resultNoTypes,
-                resultGetTypesSuccess = resultGetTypesSuccess,
-                resultGetTypesException = resultGetTypesException,
-                resultAuthenticateCalling = resultAuthenticateCalling,
-                resultAuthenticateResult = resultAuthenticateResult,
-                resultAuthenticateException = resultAuthenticateException,
-                authenticateTitle = authenticateTitle,
-                authenticateCancel = authenticateCancel,
-                typeFace = typeFace,
-                typeFingerprint = typeFingerprint,
-                typePin = typePin,
                 onResultChange = { result = it }
             )
         }
         item {
-            BiometricResultSection(result = result, resultTitle = resultTitle)
+            BiometricResultSection(result = result)
         }
         item {
-            BiometricCloseButton(btnText = btnClose, onClose = onClose)
+            BiometricCloseButton(onClose = onClose)
         }
     }
 }
@@ -129,68 +91,52 @@ private fun BiometricTestContent(
 @Composable
 private fun BiometricDetectSection(
     biometric: com.kuikly.init.common.base.platform.biometric.Biometric,
-    btnDetectSupport: String,
-    btnGetTypes: String,
-    btnAuthenticate: String,
-    resultDetectSupport: String,
-    resultDetectSupportException: String,
-    resultNoTypes: String,
-    resultGetTypesSuccess: String,
-    resultGetTypesException: String,
-    resultAuthenticateCalling: String,
-    resultAuthenticateResult: String,
-    resultAuthenticateException: String,
-    authenticateTitle: String,
-    authenticateCancel: String,
-    typeFace: String,
-    typeFingerprint: String,
-    typePin: String,
     onResultChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary(btnDetectSupport) {
+    HardwareActionButtonPrimary("检测设备是否支持") {
         try {
             val supported = biometric.isSupported()
-            onResultChange(String.format(resultDetectSupport, supported))
+            onResultChange(String.format("设备支持生物识别: %1\$s", supported))
         } catch (e: Exception) {
-            onResultChange(String.format(resultDetectSupportException, e.message))
+            onResultChange(String.format("检测支持异常: %1\$s", e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary(btnGetTypes) {
+    HardwareActionButtonPrimary("获取支持的类型") {
         try {
             val types = biometric.getSupportedTypes()
             onResultChange(
                 if (types.isEmpty()) {
-                    resultNoTypes
+                    "无支持的生物识别类型"
                 } else {
-                    val labelList = types.joinToString("\n") { "• \${typeLabel(it, typeFace, typeFingerprint, typePin)}" }
-                    String.format(resultGetTypesSuccess, labelList)
+                    val labelList = types.joinToString("\n") { "• \${typeLabel(it)}" }
+                    String.format("支持的类型:\n%1\$s", labelList)
                 }
             )
         } catch (e: Exception) {
-            onResultChange(String.format(resultGetTypesException, e.message))
+            onResultChange(String.format("获取类型异常: %1\$s", e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonSecondary(btnAuthenticate) {
-        onResultChange(resultAuthenticateCalling)
+    HardwareActionButtonSecondary("发起生物识别认证") {
+        onResultChange("发起认证…")
         try {
             biometric.authenticate(
-                title = authenticateTitle,
-                cancelText = authenticateCancel
+                title = "身份验证",
+                cancelText = "取消"
             ) { authResult ->
-                onResultChange(String.format(resultAuthenticateResult, authResult))
+                onResultChange(String.format("认证结果: %1\$s", authResult))
             }
         } catch (e: Exception) {
-            onResultChange(String.format(resultAuthenticateException, e.message))
+            onResultChange(String.format("认证异常: %1\$s", e.message))
         }
     }
 }
 
 @Composable
-private fun BiometricResultSection(result: String, resultTitle: String) {
+private fun BiometricResultSection(result: String) {
     Spacer(Modifier.height(16.dp))
-    Text(resultTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text("认证结果", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -210,9 +156,9 @@ private fun BiometricResultSection(result: String, resultTitle: String) {
 }
 
 @Composable
-private fun BiometricCloseButton(btnText: String, onClose: () -> Unit) {
+private fun BiometricCloseButton(onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary(btnText, onClick = onClose)
+    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 
@@ -246,8 +192,9 @@ private fun HardwareActionButtonSecondary(text: String, onClick: () -> Unit) {
     }
 }
 
-private fun typeLabel(type: BiometricType, typeFace: String, typeFingerprint: String, typePin: String): String = when (type) {
-    BiometricType.FACE -> typeFace
-    BiometricType.FINGERPRINT -> typeFingerprint
-    BiometricType.PIN -> typePin
+private fun typeLabel(type: BiometricType): String = when (type) {
+    BiometricType.FACE -> "人脸"
+    BiometricType.FINGERPRINT -> "指纹"
+    BiometricType.PIN -> "PIN/密码"
+}
 }

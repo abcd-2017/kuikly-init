@@ -36,7 +36,7 @@ public class DebugCryptoPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
+
             DebugCryptoContent { closePage() }
 
         }
@@ -50,53 +50,19 @@ public class DebugCryptoPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugCryptoContent(onClose: () -> Unit) {
-    val placeholderText = "操作结果将在此显示"
-    var result by remember { mutableStateOf(placeholderText) }
-    val defaultPlain = "Hello Kuikly"
-    val defaultKey = "1234567890123456"
-    var plainText by remember { mutableStateOf(defaultPlain) }
-    var keyText by remember { mutableStateOf(defaultKey) }
+    var result by remember { mutableStateOf("操作结果将在此显示") }
+    var plainText by remember { mutableStateOf("Hello Kuikly") }
+    var keyText by remember { mutableStateOf("1234567890123456") }
     var cipherText by remember { mutableStateOf("") }
     val crypto = remember { provideCrypto() }
-
-    val pageTitle = "加解密"
-    val btnClose = "关闭"
-    val labelAesPlain = "AES 明文："
-    val labelAesKey = "AES 密钥："
-    val labelHashEncode = "哈希 / 编码："
-    val placeholderInput = "输入明文"
-    val placeholderKey = "输入密钥"
-    val placeholderHashInput = "输入要哈希/编码的文本"
-    val btnAesEncrypt = "AES 加密"
-    val btnAesDecrypt = "AES 解密"
-    val btnMd5 = "MD5 哈希"
-    val btnSha256 = "SHA-256 哈希"
-    val btnBase64Encode = "Base64 编码"
-    val btnBase64Decode = "Base64 解码"
-    val btnBuiltinTest = "内置测试用例（\"Hello Kuikly\"）"
-    val resultAesEncryptSuccess = "AES 加密结果：%1\$s"
-    val resultAesEncryptFail = "AES 加密失败"
-    val resultAesDecryptEmpty = "请先执行 AES 加密"
-    val resultAesDecryptSuccess = "AES 解密结果：%1\$s"
-    val resultAesDecryptFail = "AES 解密失败"
-    val resultMd5Success = "MD5：%1\$s"
-    val resultMd5Fail = "MD5 计算失败"
-    val resultSha256Success = "SHA-256：%1\$s"
-    val resultSha256Fail = "SHA-256 计算失败"
-    val resultBase64EncodeSuccess = "Base64 编码：%1\$s"
-    val resultBase64EncodeFail = "Base64 编码失败"
-    val resultBase64DecodeEmpty = "请先执行 Base64 编码"
-    val resultBase64DecodeSuccess = "Base64 解码：%1\$s"
-    val resultBase64DecodeFail = "Base64 解码失败"
-    val resultBuiltinTest = "测试文本：\"%1\$s\"\nMD5：%2$s\nSHA-256：%3$s\nAES(1234567890123456)：%4$s"
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(pageTitle) },
+                title = { Text("加解密") },
                 actions = {
                     Text(
-                        text = btnClose,
+                        text = "关闭",
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -109,7 +75,7 @@ private fun DebugCryptoContent(onClose: () -> Unit) {
                 )
             )
         }
-    ) { padding ->
+            ) { padding ->
         LazyColumn(
             Modifier.fillMaxSize().padding(padding).padding(12.dp)
         ) {
@@ -118,11 +84,7 @@ private fun DebugCryptoContent(onClose: () -> Unit) {
                     plainText = plainText,
                     keyText = keyText,
                     onPlainTextChange = { plainText = it },
-                    onKeyTextChange = { keyText = it },
-                    labelAesPlain = labelAesPlain,
-                    labelAesKey = labelAesKey,
-                    placeholderInput = placeholderInput,
-                    placeholderKey = placeholderKey
+                    onKeyTextChange = { keyText = it }
                 )
             }
             item {
@@ -132,13 +94,6 @@ private fun DebugCryptoContent(onClose: () -> Unit) {
                     keyText = keyText,
                     cipherText = cipherText,
                     onCipherTextChange = { cipherText = it },
-                    btnAesEncrypt = btnAesEncrypt,
-                    btnAesDecrypt = btnAesDecrypt,
-                    resultAesEncryptSuccess = resultAesEncryptSuccess,
-                    resultAesEncryptFail = resultAesEncryptFail,
-                    resultAesDecryptEmpty = resultAesDecryptEmpty,
-                    resultAesDecryptSuccess = resultAesDecryptSuccess,
-                    resultAesDecryptFail = resultAesDecryptFail,
                     onResultChange = { result = it }
                 )
             }
@@ -147,25 +102,6 @@ private fun DebugCryptoContent(onClose: () -> Unit) {
                     crypto = crypto,
                     plainText = plainText,
                     cipherText = cipherText,
-                    labelHashEncode = labelHashEncode,
-                    placeholderHashInput = placeholderHashInput,
-                    btnMd5 = btnMd5,
-                    btnSha256 = btnSha256,
-                    btnBase64Encode = btnBase64Encode,
-                    btnBase64Decode = btnBase64Decode,
-                    btnBuiltinTest = btnBuiltinTest,
-                    resultMd5Success = resultMd5Success,
-                    resultMd5Fail = resultMd5Fail,
-                    resultSha256Success = resultSha256Success,
-                    resultSha256Fail = resultSha256Fail,
-                    resultBase64EncodeSuccess = resultBase64EncodeSuccess,
-                    resultBase64EncodeFail = resultBase64EncodeFail,
-                    resultBase64DecodeEmpty = resultBase64DecodeEmpty,
-                    resultBase64DecodeSuccess = resultBase64DecodeSuccess,
-                    resultBase64DecodeFail = resultBase64DecodeFail,
-                    resultBuiltinTest = resultBuiltinTest,
-                    defaultPlain = defaultPlain,
-                    defaultKey = defaultKey,
                     onResultChange = { result = it }
                 )
             }
@@ -182,23 +118,19 @@ private fun CryptoAesInputSection(
     plainText: String,
     keyText: String,
     onPlainTextChange: (String) -> Unit,
-    onKeyTextChange: (String) -> Unit,
-    labelAesPlain: String,
-    labelAesKey: String,
-    placeholderInput: String,
-    placeholderKey: String
+    onKeyTextChange: (String) -> Unit
 ) {
-    Text(labelAesPlain, fontSize = 14.sp, color = Color(0xFF666666))
+    Text("AES 明文：", fontSize = 14.sp, color = Color(0xFF666666))
     DebugTextField(
         value = plainText,
-        placeholder = placeholderInput,
+        placeholder = "输入明文",
         onValueChange = onPlainTextChange
     )
     DebugVSpacer(4.dp)
-    Text(labelAesKey, fontSize = 14.sp, color = Color(0xFF666666))
+    Text("AES 密钥：", fontSize = 14.sp, color = Color(0xFF666666))
     DebugTextField(
         value = keyText,
-        placeholder = placeholderKey,
+        placeholder = "输入密钥",
         onValueChange = onKeyTextChange
     )
 }
@@ -210,31 +142,24 @@ private fun CryptoAesActionSection(
     keyText: String,
     cipherText: String,
     onCipherTextChange: (String) -> Unit,
-    btnAesEncrypt: String,
-    btnAesDecrypt: String,
-    resultAesEncryptSuccess: String,
-    resultAesEncryptFail: String,
-    resultAesDecryptEmpty: String,
-    resultAesDecryptSuccess: String,
-    resultAesDecryptFail: String,
     onResultChange: (String) -> Unit
 ) {
     DebugVSpacer(8.dp)
-    DebugTestButton(btnAesEncrypt) {
+    DebugTestButton("AES 加密") {
         val enc = crypto.aesEncrypt(plainText, keyText)
         if (enc != null) {
             onCipherTextChange(enc)
-            onResultChange(String.format(resultAesEncryptSuccess, enc))
+            onResultChange(String.format("AES 加密结果：%1\$s", enc))
         } else {
-            onResultChange(resultAesEncryptFail)
+            onResultChange("AES 加密失败")
         }
     }
-    DebugTestButton(btnAesDecrypt) {
+    DebugTestButton("AES 解密") {
         if (cipherText.isEmpty()) {
-            onResultChange(resultAesDecryptEmpty)
+            onResultChange("请先执行 AES 加密")
         } else {
             val dec = crypto.aesDecrypt(cipherText, keyText)
-            onResultChange(if (dec != null) String.format(resultAesDecryptSuccess, dec) else resultAesDecryptFail)
+            onResultChange(if (dec != null) String.format("AES 解密结果：%1\$s", dec) else "AES 解密失败")
         }
     }
 }
@@ -244,66 +169,47 @@ private fun CryptoHashSection(
     crypto: com.kuikly.init.common.base.platform.crypto.Crypto,
     plainText: String,
     cipherText: String,
-    labelHashEncode: String,
-    placeholderHashInput: String,
-    btnMd5: String,
-    btnSha256: String,
-    btnBase64Encode: String,
-    btnBase64Decode: String,
-    btnBuiltinTest: String,
-    resultMd5Success: String,
-    resultMd5Fail: String,
-    resultSha256Success: String,
-    resultSha256Fail: String,
-    resultBase64EncodeSuccess: String,
-    resultBase64EncodeFail: String,
-    resultBase64DecodeEmpty: String,
-    resultBase64DecodeSuccess: String,
-    resultBase64DecodeFail: String,
-    resultBuiltinTest: String,
-    defaultPlain: String,
-    defaultKey: String,
     onResultChange: (String) -> Unit
 ) {
     DebugVSpacer(12.dp)
-    Text(labelHashEncode, fontSize = 14.sp, color = Color(0xFF666666))
+    Text("哈希 / 编码：", fontSize = 14.sp, color = Color(0xFF666666))
     DebugTextField(
         value = plainText,
-        placeholder = placeholderHashInput,
+        placeholder = "输入要哈希/编码的文本",
         onValueChange = {}
     )
-    DebugTestButton(btnMd5) {
+    DebugTestButton("MD5 哈希") {
         val md5 = crypto.md5(plainText)
-        onResultChange(if (md5 != null) String.format(resultMd5Success, md5) else resultMd5Fail)
+        onResultChange(if (md5 != null) String.format("MD5：%1\$s", md5) else "MD5 计算失败")
     }
-    DebugTestButton(btnSha256) {
+    DebugTestButton("SHA-256 哈希") {
         val sha = crypto.sha256(plainText)
-        onResultChange(if (sha != null) String.format(resultSha256Success, sha) else resultSha256Fail)
+        onResultChange(if (sha != null) String.format("SHA-256：%1\$s", sha) else "SHA-256 计算失败")
     }
-    DebugTestButton(btnBase64Encode) {
+    DebugTestButton("Base64 编码") {
         val enc = crypto.base64Encode(plainText)
         if (enc != null) {
-            onResultChange(String.format(resultBase64EncodeSuccess, enc))
+            onResultChange(String.format("Base64 编码：%1\$s", enc))
         } else {
-            onResultChange(resultBase64EncodeFail)
+            onResultChange("Base64 编码失败")
         }
     }
-    DebugTestButton(btnBase64Decode) {
+    DebugTestButton("Base64 解码") {
         if (cipherText.isEmpty()) {
-            onResultChange(resultBase64DecodeEmpty)
+            onResultChange("请先执行 Base64 编码")
         } else {
             val dec = crypto.base64Decode(cipherText)
-            onResultChange(if (dec != null) String.format(resultBase64DecodeSuccess, dec) else resultBase64DecodeFail)
+            onResultChange(if (dec != null) String.format("Base64 解码：%1\$s", dec) else "Base64 解码失败")
         }
     }
     DebugVSpacer(12.dp)
-    DebugTestButton(btnBuiltinTest) {
-        val sample = defaultPlain
+    DebugTestButton("内置测试用例（\"Hello Kuikly\"）") {
+        val sample = "Hello Kuikly"
         val md5 = crypto.md5(sample)
         val sha = crypto.sha256(sample)
-        val enc = crypto.aesEncrypt(sample, defaultKey)
+        val enc = crypto.aesEncrypt(sample, "1234567890123456")
         onResultChange(String.format(
-            resultBuiltinTest,
+            "测试文本：\"%1\$s\"\nMD5：%2\$s\nSHA-256：%3\$s\nAES(1234567890123456)：%4\$s",
             sample,
             md5 ?: "失败",
             sha ?: "失败",

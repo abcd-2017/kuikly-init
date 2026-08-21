@@ -43,25 +43,23 @@ public class DebugSharePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "分享"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("分享") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
+                }
+) { padding ->
                 ShareTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     bridgeModule = bridgeModule,
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -73,30 +71,8 @@ private fun ShareTestContent(
     bridgeModule: com.kuikly.init.common.widget.BridgeModule,
     onClose: () -> Unit
 ) {
-    val logPrefix = "分享日志：\n"
-    var log by remember { mutableStateOf(logPrefix) }
+    var log by remember { mutableStateOf("分享日志：\n") }
     val share = remember { provideShare() }
-
-    val btnShareText = "分享文本"
-    val btnShareLink = "分享链接"
-    val btnShareImage = "分享图片"
-    val btnShareFile = "分享文件"
-    val logTitle = "分享日志"
-    val textContent = "Hello Kuikly! 这是一条测试分享文本。"
-    val linkUrl = "https://github.com/kuikly"
-    val linkTitle = "Kuikly 跨端框架"
-    val linkDescription = "Kuikly 是腾讯推出的跨端开发框架"
-    val imagePath = "/data/local/tmp/test.png"
-    val filePath = "/data/local/tmp/test.pdf"
-    val logShareText = "[分享文本] 内容: %1\$s"
-    val logShareTextException = "[分享文本] 异常: %1\$s"
-    val logShareLink = "[分享链接] url: %1\$s"
-    val logShareLinkException = "[分享链接] 异常: %1\$s"
-    val logShareImage = "[分享图片] 路径: %1\$s (文件可能不存在)"
-    val logShareImageException = "[分享图片] 异常: %1\$s"
-    val logShareFile = "[分享文件] 路径: %1\$s, mime=application/pdf (文件可能不存在)"
-    val logShareFileException = "[分享文件] 异常: %1\$s"
-    val btnClose = "关闭页面"
 
     fun appendLog(msg: String) {
         log = "[\${bridgeModule.currentTimeStamp()}] \$msg\n\$log"
@@ -106,32 +82,14 @@ private fun ShareTestContent(
         item {
             ShareActionsSection(
                 share = share,
-                btnShareText = btnShareText,
-                btnShareLink = btnShareLink,
-                btnShareImage = btnShareImage,
-                btnShareFile = btnShareFile,
-                textContent = textContent,
-                linkUrl = linkUrl,
-                linkTitle = linkTitle,
-                linkDescription = linkDescription,
-                imagePath = imagePath,
-                filePath = filePath,
-                logShareText = logShareText,
-                logShareTextException = logShareTextException,
-                logShareLink = logShareLink,
-                logShareLinkException = logShareLinkException,
-                logShareImage = logShareImage,
-                logShareImageException = logShareImageException,
-                logShareFile = logShareFile,
-                logShareFileException = logShareFileException,
                 onLogChange = { appendLog(it) }
             )
         }
         item {
-            ShareLogSection(log = log, logTitle = logTitle)
+            ShareLogSection(log = log)
         }
         item {
-            ShareCloseButton(btnText = btnClose, onClose = onClose)
+            ShareCloseButton(onClose = onClose)
         }
     }
 }
@@ -139,71 +97,68 @@ private fun ShareTestContent(
 @Composable
 private fun ShareActionsSection(
     share: com.kuikly.init.common.base.platform.share.Share,
-    btnShareText: String,
-    btnShareLink: String,
-    btnShareImage: String,
-    btnShareFile: String,
-    textContent: String,
-    linkUrl: String,
-    linkTitle: String,
-    linkDescription: String,
-    imagePath: String,
-    filePath: String,
-    logShareText: String,
-    logShareTextException: String,
-    logShareLink: String,
-    logShareLinkException: String,
-    logShareImage: String,
-    logShareImageException: String,
-    logShareFile: String,
-    logShareFileException: String,
     onLogChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary(btnShareText) {
+    HardwareActionButtonPrimary("分享文本") {
         try {
-            share.shareText(textContent)
-            onLogChange(String.format(logShareText, textContent))
+            share.shareText("Hello Kuikly! 这是一条测试分享文本。")
+            onLogChange(
+                String.format(
+                    "[分享文本] 内容: %1\$s",
+                    "Hello Kuikly! 这是一条测试分享文本。"
+                )
+            )
         } catch (e: Exception) {
-            onLogChange(String.format(logShareTextException, e.message))
+            onLogChange(String.format("[分享文本] 异常: %1\$s", e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary(btnShareLink) {
+    HardwareActionButtonPrimary("分享链接") {
         try {
             share.shareLink(
-                url = linkUrl,
-                title = linkTitle,
-                description = linkDescription
+                url = "https://github.com/kuikly",
+                title = "Kuikly 跨端框架",
+                description = "Kuikly 是腾讯推出的跨端开发框架"
             )
-            onLogChange(String.format(logShareLink, linkUrl))
+            onLogChange(String.format("[分享链接] url: %1\$s", "https://github.com/kuikly"))
         } catch (e: Exception) {
-            onLogChange(String.format(logShareLinkException, e.message))
+            onLogChange(String.format("[分享链接] 异常: %1\$s", e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary(btnShareImage) {
+    HardwareActionButtonPrimary("分享图片") {
         try {
-            share.shareImage(imagePath)
-            onLogChange(String.format(logShareImage, imagePath))
+            share.shareImage("/data/local/tmp/test.png")
+            onLogChange(
+                String.format(
+                    "[分享图片] 路径: %1\$s (文件可能不存在)",
+                    "/data/local/tmp/test.png"
+                )
+            )
         } catch (e: Exception) {
-            onLogChange(String.format(logShareImageException, e.message))
+            onLogChange(String.format("[分享图片] 异常: %1\$s", e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary(btnShareFile) {
+    HardwareActionButtonPrimary("分享文件") {
         try {
-            share.shareFile(filePath, "application/pdf")
-            onLogChange(String.format(logShareFile, filePath))
+            share.shareFile("/data/local/tmp/test.pdf", "application/pdf")
+            onLogChange(
+                String.format(
+                    "[分享文件] 路径: %1\$s, mime=application/pdf (文件可能不存在)",
+                    "/data/local/tmp/test.pdf"
+                )
+            )
         } catch (e: Exception) {
-            onLogChange(String.format(logShareFileException, e.message))
+            onLogChange(String.format("[分享文件] 异常: %1\$s", e.message))
         }
     }
 }
 
 @Composable
-private fun ShareLogSection(log: String, logTitle: String) {
+private fun ShareLogSection(log: String) {
     Spacer(Modifier.height(16.dp))
-    Text(logTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text("分享日志", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -223,9 +178,9 @@ private fun ShareLogSection(log: String, logTitle: String) {
 }
 
 @Composable
-private fun ShareCloseButton(btnText: String, onClose: () -> Unit) {
+private fun ShareCloseButton(onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary(btnText, onClick = onClose)
+    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 

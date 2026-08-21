@@ -41,7 +41,7 @@ public class DebugNavigatePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
+
             DebugNavigateContent()
 
         }
@@ -58,27 +58,6 @@ private fun DebugNavigateContent() {
     val localPager = LocalActivity.current.getPager()
     val routerModule = localPager.acquireModule<RouterModule>(RouterModule.MODULE_NAME)
 
-    val pageTitle = "页面跳转"
-    val sectionOpenPage = "1. 跳转到指定 Page"
-    val sectionOpenWithParams = "2. 带参数跳转"
-    val sectionClosePage = "3. 关闭当前页"
-    val sectionMultiLevel = "4. 多级跳转测试"
-    val sectionLog = "5. 跳转结果日志"
-    val placeholderPageName = "输入 pageName"
-    val placeholderParamPage = "pageName"
-    val placeholderKey = "key"
-    val placeholderValue = "value"
-    val btnOpen = "跳转"
-    val btnOpenWithParams = "带参数跳转"
-    val btnClosePage = "关闭当前页"
-    val btnGotoDebugText = "跳转到 debug_text"
-    val labelNoLog = "（暂无日志）"
-    val logOpenSuccess = "✅ openPage(\"%1\$s\")"
-    val logOpenWithParamsSuccess = "✅ openPage(\"%1\$s\", %2$s)"
-    val logCloseSuccess = "✅ closePage()"
-    val logPageNameEmpty = "❌ pageName 为空"
-    val logMultiLevel = "✅ 跳转到 debug_text → 请在 debug_text 跳转到 debug_image"
-
     fun appendLog(message: String) {
         logText = if (logText.isEmpty()) message else "\$logText\n\$message"
     }
@@ -90,33 +69,33 @@ private fun DebugNavigateContent() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        NavigateHeader(pageTitle)
+        NavigateHeader("页面跳转")
         NavigateOpenPageSection(
-            sectionTitle = sectionOpenPage,
+            sectionTitle = "1. 跳转到指定 Page",
             pageName = pageName,
             onPageNameChange = { pageName = it },
-            btnText = btnOpen,
+            btnText = "跳转",
             onOpenPage = {
                 if (pageName.isNotBlank()) {
                     routerModule.openPage(pageName)
-                    appendLog(String.format(logOpenSuccess, pageName))
+                    appendLog(String.format("✅ openPage(\"%1\$s\")", pageName))
                 } else {
-                    appendLog(logPageNameEmpty)
+                    appendLog("❌ pageName 为空")
                 }
             }
         )
         NavigateOpenWithParamsSection(
-            sectionTitle = sectionOpenWithParams,
+            sectionTitle = "2. 带参数跳转",
             pageName = pageName,
             paramKey = paramKey,
             paramValue = paramValue,
-            placeholderPage = placeholderParamPage,
-            placeholderKey = placeholderKey,
-            placeholderValue = placeholderValue,
+            placeholderPage = "pageName",
+            placeholderKey = "key",
+            placeholderValue = "value",
             onPageNameChange = { pageName = it },
             onParamKeyChange = { paramKey = it },
             onParamValueChange = { paramValue = it },
-            btnText = btnOpenWithParams,
+            btnText = "带参数跳转",
             onOpenWithParams = {
                 if (pageName.isNotBlank()) {
                     val params = JSONObject()
@@ -124,29 +103,29 @@ private fun DebugNavigateContent() {
                         params.put(paramKey, paramValue)
                     }
                     routerModule.openPage(pageName, params)
-                    appendLog(String.format(logOpenWithParamsSuccess, pageName, params))
+                    appendLog(String.format("✅ openPage(\"%1\$s\", %2\$s)", pageName, params))
                 } else {
-                    appendLog(logPageNameEmpty)
+                    appendLog("❌ pageName 为空")
                 }
             }
         )
         NavigateClosePageSection(
-            sectionTitle = sectionClosePage,
-            btnText = btnClosePage,
+            sectionTitle = "3. 关闭当前页",
+            btnText = "关闭当前页",
             onClose = {
                 routerModule.closePage()
-                appendLog(logCloseSuccess)
+                appendLog("✅ closePage()")
             }
         )
         NavigateMultiLevelSection(
-            sectionTitle = sectionMultiLevel,
-            btnText = btnGotoDebugText,
+            sectionTitle = "4. 多级跳转测试",
+            btnText = "跳转到 debug_text",
             onNavigate = {
                 routerModule.openPage("debug_text")
-                appendLog(logMultiLevel)
+                appendLog("✅ 跳转到 debug_text → 请在 debug_text 跳转到 debug_image")
             }
         )
-        NavigateLogSection(sectionTitle = sectionLog, labelNoLog = labelNoLog, logText = logText)
+        NavigateLogSection(sectionTitle = "5. 跳转结果日志", labelNoLog = "（暂无日志）", logText = logText)
     }
 }
 

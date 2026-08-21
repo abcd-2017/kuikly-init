@@ -44,25 +44,23 @@ public class DebugCachePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "缓存测试"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("缓存测试") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
+                }
+            ) { padding ->
                 CacheTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     bridgeModule = bridgeModule,
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -76,28 +74,7 @@ private fun CacheTestContent(
 ) {
     var keyInput by remember { mutableStateOf("") }
     var valueInput by remember { mutableStateOf("") }
-    val logPrefix = "操作日志：\n"
-    var log by remember { mutableStateOf(logPrefix) }
-
-    val labelKey = "Key:"
-    val labelValue = "Value:"
-    val placeholderKey = "输入 key"
-    val placeholderValue = "输入 value"
-    val btnSetCache = "setCache 写入缓存"
-    val btnGetCacheSync = "getCache 同步读取"
-    val btnGetCacheAsync = "fetchCache 异步读取"
-    val btnBatchWrite = "批量写入 3 条测试数据"
-    val logSetCacheFail = "[setCache] 失败：key 为空"
-    val logSetCacheSuccess = "[setCache] key=%1\$s, value=%2\$s → 写入完成"
-    val logGetCacheFail = "[getCache] 失败：key 为空"
-    val logGetCacheSuccess = "[getCache] key=%1\$s → %2\$s"
-    val logFetchCacheFail = "[fetchCache] 失败：key 为空"
-    val logFetchCacheSuccess = "[fetchCache] key=%1\$s → %2\$s"
-    val logBatchWrite = "[批量写入] key=%1\$s, value=%2\$s"
-    val valueEmpty = "(空)"
-    val valueNull = "(null)"
-    val operationLog = "操作日志"
-    val btnClose = "关闭页面"
+    var log by remember { mutableStateOf("操作日志：\n") }
 
     fun onLogChange(newLog: String) {
         log = newLog
@@ -116,10 +93,10 @@ private fun CacheTestContent(
                 valueInput = valueInput,
                 onKeyChange = { keyInput = it },
                 onValueChange = { valueInput = it },
-                labelKey = labelKey,
-                labelValue = labelValue,
-                placeholderKey = placeholderKey,
-                placeholderValue = placeholderValue
+                labelKey = "Key:",
+                labelValue = "Value:",
+                placeholderKey = "输入 key",
+                placeholderValue = "输入 value"
             )
         }
         item {
@@ -127,27 +104,27 @@ private fun CacheTestContent(
                 bridgeModule = bridgeModule,
                 keyInput = keyInput,
                 valueInput = valueInput,
-                btnSetCache = btnSetCache,
-                btnGetCacheSync = btnGetCacheSync,
-                btnGetCacheAsync = btnGetCacheAsync,
-                btnBatchWrite = btnBatchWrite,
-                logSetCacheFail = logSetCacheFail,
-                logSetCacheSuccess = logSetCacheSuccess,
-                logGetCacheFail = logGetCacheFail,
-                logGetCacheSuccess = logGetCacheSuccess,
-                logFetchCacheFail = logFetchCacheFail,
-                logFetchCacheSuccess = logFetchCacheSuccess,
-                logBatchWrite = logBatchWrite,
-                valueEmpty = valueEmpty,
-                valueNull = valueNull,
+                btnSetCache = "setCache 写入缓存",
+                btnGetCacheSync = "getCache 同步读取",
+                btnGetCacheAsync = "fetchCache 异步读取",
+                btnBatchWrite = "批量写入 3 条测试数据",
+                logSetCacheFail = "[setCache] 失败：key 为空",
+                logSetCacheSuccess = "[setCache] key=%1\$s, value=%2\$s → 写入完成",
+                logGetCacheFail = "[getCache] 失败：key 为空",
+                logGetCacheSuccess = "[getCache] key=%1\$s → %2\$s",
+                logFetchCacheFail = "[fetchCache] 失败：key 为空",
+                logFetchCacheSuccess = "[fetchCache] key=%1\$s → %2\$s",
+                logBatchWrite = "[批量写入] key=%1\$s, value=%2\$s",
+                valueEmpty = "(空)",
+                valueNull = "(null)",
                 onAppendLog = { appendLog(it) }
             )
         }
         item {
-            CacheLogSection(log = log, operationLog = operationLog)
+            CacheLogSection(log = log, operationLog = "操作日志")
         }
         item {
-            CacheCloseButton(btnText = btnClose, onClose = onClose)
+            CacheCloseButton(btnText = "关闭页面", onClose = onClose)
         }
     }
 }

@@ -43,26 +43,24 @@ public class DebugLayoutPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "布局测试"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("布局测试") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
+                }
+) { padding ->
                 DebugLayoutContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -73,38 +71,17 @@ private fun DebugLayoutContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val sectionColumnNest = "Column 嵌套"
-    val sectionRowArrange = "Row 排列"
-    val sectionBoxOverlap = "Box 层叠"
-    val sectionWeight = "权重布局 (1:2)"
-    val sectionScroll = "滚动测试 (20 卡片)"
-    val sectionPadding = "边距对比 (8dp / 16dp / 24dp)"
-    val sectionCenterAlign = "居中对齐"
-    val textOuterColumn = "外层 Column"
-    val textInnerColumn = "内层 Column"
-    val labelRed = "红"
-    val labelBlue = "蓝"
-    val labelGreen = "绿"
-    val textWeight1 = "1"
-    val textWeight2 = "2"
-    val prefixCard = "卡片 #"
-    val label8dp = "8dp"
-    val label16dp = "16dp"
-    val label24dp = "24dp"
-    val textCenter = "中"
-    val btnClose = "关闭页面"
-
     LazyColumn(
         modifier = modifier.padding(16.dp)
     ) {
-        item { ColumnNestSection(sectionColumnNest, textOuterColumn, textInnerColumn) }
-        item { RowArrangeSection(sectionRowArrange, labelRed, labelBlue, labelGreen) }
-        item { BoxOverlapSection(sectionBoxOverlap) }
-        item { WeightLayoutSection(sectionWeight, textWeight1, textWeight2) }
-        item { ScrollSection(sectionScroll, prefixCard) }
-        item { PaddingCompareSection(sectionPadding, label8dp, label16dp, label24dp) }
-        item { CenterAlignSection(sectionCenterAlign, textCenter) }
-        item { CloseButtonSection(btnClose, onClose) }
+        item { ColumnNestSection("Column 嵌套", "外层 Column", "内层 Column") }
+        item { RowArrangeSection("Row 排列", "红", "蓝", "绿") }
+        item { BoxOverlapSection("Box 层叠") }
+        item { WeightLayoutSection("权重布局 (1:2)", "1", "2") }
+        item { ScrollSection("滚动测试 (20 卡片)", "卡片 #") }
+        item { PaddingCompareSection("边距对比 (8dp / 16dp / 24dp)", "8dp", "16dp", "24dp") }
+        item { CenterAlignSection("居中对齐", "中") }
+        item { CloseButtonSection("关闭页面", onClose) }
     }
 }
 

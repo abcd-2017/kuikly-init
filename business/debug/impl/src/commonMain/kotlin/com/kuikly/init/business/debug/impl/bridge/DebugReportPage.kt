@@ -44,25 +44,23 @@ public class DebugReportPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "上报测试"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("上报测试") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
+                }
+            ) { padding ->
                 ReportTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     bridgeModule = bridgeModule,
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -76,24 +74,7 @@ private fun ReportTestContent(
 ) {
     var eventCodeInput by remember { mutableStateOf("debug_event_test") }
     var dataInput by remember { mutableStateOf("{\"action\":\"click\",\"page\":\"debug_report\"}") }
-    val logPrefix = "上报日志：\n"
-    var log by remember { mutableStateOf(logPrefix) }
-
-    val labelEventCode = "EventCode:"
-    val labelData = "Data (JSON):"
-    val placeholderEventCode = "输入 eventCode"
-    val placeholderData = "输入 data JSON"
-    val btnReportDt = "reportDT 事件上报"
-    val btnReportRealTime = "reportRealTime 实时上报"
-    val btnBatchReport = "批量上报 5 条测试事件"
-    val logReportDtSuccess = "reportDT → eventCode=%1\$s, data=%2\$s"
-    val logReportDtFail = "reportDT 失败: %1\$s"
-    val logReportRealTimeSuccess = "reportRealTime → eventCode=%1\$s, data=%2\$s"
-    val logReportRealTimeFail = "reportRealTime 失败: %1\$s"
-    val logBatchReport = "批量上报 #%1\$d → eventCode=debug_batch_event"
-    val logBatchReportFail = "批量上报 #%1\$d 失败: %1\$s"
-    val reportLogTitle = "操作日志"
-    val btnClose = "关闭页面"
+    var log by remember { mutableStateOf("上报日志：\n") }
 
     fun onLogChange(newLog: String) {
         log = newLog
@@ -110,10 +91,10 @@ private fun ReportTestContent(
                 dataInput = dataInput,
                 onEventCodeChange = { eventCodeInput = it },
                 onDataChange = { dataInput = it },
-                labelEventCode = labelEventCode,
-                labelData = labelData,
-                placeholderEventCode = placeholderEventCode,
-                placeholderData = placeholderData
+                labelEventCode = "EventCode:",
+                labelData = "Data (JSON):",
+                placeholderEventCode = "输入 eventCode",
+                placeholderData = "输入 data JSON"
             )
         }
         item {
@@ -121,23 +102,23 @@ private fun ReportTestContent(
                 bridgeModule = bridgeModule,
                 eventCodeInput = eventCodeInput,
                 dataInput = dataInput,
-                btnReportDt = btnReportDt,
-                btnReportRealTime = btnReportRealTime,
-                btnBatchReport = btnBatchReport,
-                logReportDtSuccess = logReportDtSuccess,
-                logReportDtFail = logReportDtFail,
-                logReportRealTimeSuccess = logReportRealTimeSuccess,
-                logReportRealTimeFail = logReportRealTimeFail,
-                logBatchReport = logBatchReport,
-                logBatchReportFail = logBatchReportFail,
+                btnReportDt = "reportDT 事件上报",
+                btnReportRealTime = "reportRealTime 实时上报",
+                btnBatchReport = "批量上报 5 条测试事件",
+                logReportDtSuccess = "reportDT → eventCode=%1\$s, data=%2\$s",
+                logReportDtFail = "reportDT 失败: %1\$s",
+                logReportRealTimeSuccess = "reportRealTime → eventCode=%1\$s, data=%2\$s",
+                logReportRealTimeFail = "reportRealTime 失败: %1\$s",
+                logBatchReport = "批量上报 #%1\$d → eventCode=debug_batch_event",
+                logBatchReportFail = "批量上报 #%1\$d 失败: %1\$s",
                 onAppendLog = { appendLog(it) }
             )
         }
         item {
-            ReportLogSection(log = log, reportLogTitle = reportLogTitle)
+            ReportLogSection(log = log, reportLogTitle = "操作日志")
         }
         item {
-            ReportCloseButton(btnText = btnClose, onClose = onClose)
+            ReportCloseButton(btnText = "关闭页面", onClose = onClose)
         }
     }
 }

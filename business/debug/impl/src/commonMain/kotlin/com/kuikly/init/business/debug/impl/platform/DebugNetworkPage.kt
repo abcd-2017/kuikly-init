@@ -54,24 +54,13 @@ private fun DebugNetworkContent(onClose: () -> Unit) {
     var result by remember { mutableStateOf(placeholderText) }
     val monitor = remember { provideNetworkMonitor() }
 
-    val pageTitle = "网络监听"
-    val btnClose = "关闭"
-    val labelNetworkStatus = "网络状态检测"
-    val btnRefresh = "刷新网络状态"
-    val resultFormat = "检测时间：%1\$s\n网络连接状态：%2\$s\n网络类型：%3\$s"
-    val statusConnected = "已连接"
-    val statusDisconnected = "未连接"
-    val typeWifi = "WIFI"
-    val typeCellular = "CELLULAR"
-    val typeNone = "NONE"
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(pageTitle) },
+                title = { Text("网络监听") },
                 actions = {
                     Text(
-                        text = btnClose,
+                        text = "关闭",
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -84,21 +73,13 @@ private fun DebugNetworkContent(onClose: () -> Unit) {
                 )
             )
         }
-    ) { padding ->
+            ) { padding ->
         LazyColumn(
             Modifier.fillMaxSize().padding(padding).padding(12.dp)
         ) {
             item {
                 NetworkStatusSection(
                     monitor = monitor,
-                    labelNetworkStatus = labelNetworkStatus,
-                    btnRefresh = btnRefresh,
-                    resultFormat = resultFormat,
-                    statusConnected = statusConnected,
-                    statusDisconnected = statusDisconnected,
-                    typeWifi = typeWifi,
-                    typeCellular = typeCellular,
-                    typeNone = typeNone,
                     onResultChange = { result = it }
                 )
             }
@@ -113,31 +94,23 @@ private fun DebugNetworkContent(onClose: () -> Unit) {
 @Composable
 private fun NetworkStatusSection(
     monitor: NetworkMonitor,
-    labelNetworkStatus: String,
-    btnRefresh: String,
-    resultFormat: String,
-    statusConnected: String,
-    statusDisconnected: String,
-    typeWifi: String,
-    typeCellular: String,
-    typeNone: String,
     onResultChange: (String) -> Unit
 ) {
-    Text(labelNetworkStatus, fontSize = 16.sp, color = Color(0xFF333333))
+    Text("网络状态检测", fontSize = 16.sp, color = Color(0xFF333333))
     DebugVSpacer(8.dp)
-    DebugTestButton(btnRefresh) {
+    DebugTestButton("刷新网络状态") {
         val connected = monitor.isConnected()
         val type = monitor.getNetworkType()
         val typeLabel = when (type) {
-            NetworkType.WIFI -> typeWifi
-            NetworkType.CELLULAR -> typeCellular
-            NetworkType.NONE -> typeNone
+            NetworkType.WIFI -> "WIFI"
+            NetworkType.CELLULAR -> "CELLULAR"
+            NetworkType.NONE -> "NONE"
         }
         val ts = System.currentTimeMillis()
         onResultChange(String.format(
-            resultFormat,
+            "检测时间：%1\$s\n网络连接状态：%2\$s\n网络类型：%3\$s",
             ts,
-            if (connected) statusConnected else statusDisconnected,
+            if (connected) "已连接" else "未连接",
             typeLabel
         ))
     }

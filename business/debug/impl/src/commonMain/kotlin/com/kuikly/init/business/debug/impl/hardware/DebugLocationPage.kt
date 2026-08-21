@@ -44,24 +44,22 @@ public class DebugLocationPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "定位"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("定位") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
+                }
+            ) { padding ->
                 LocationTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -72,25 +70,8 @@ private fun LocationTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val logPrefix = "定位日志：\n提示：定位功能依赖硬件和权限，当前平台可能不支持。\n"
-    var log by remember { mutableStateOf(logPrefix) }
+    var log by remember { mutableStateOf("定位日志：\n提示：定位功能依赖硬件和权限，当前平台可能不支持。\n") }
     val locationProvider = remember { provideLocationProvider() }
-
-    val btnRequestPermission = "请求定位权限"
-    val btnGetLocationPrecise = "获取当前位置 (高精度)"
-    val btnGetLocationBalanced = "获取当前位置 (均衡)"
-    val logTitle = "定位日志"
-    val logRequestPermissionCalling = "[权限请求] 调用 requestPermission…"
-    val logRequestPermissionResult = "[权限请求] 结果: %1\$s"
-    val logRequestPermissionException = "[权限请求] 异常: %1\$s"
-    val logGetLocationCalling = "[获取位置] 调用 getCurrentLocation(%1\$s)…"
-    val logGetLocationSuccess = "[获取位置] 成功:\n%1\$s"
-    val logGetLocationNull = "[获取位置] 返回 null"
-    val logGetLocationException = "[获取位置] 异常: %1\$s"
-    val permissionGranted = "已授权"
-    val permissionDenied = "被拒绝"
-    val resultFormat = "纬度: %1\$s\n经度: %2\$s%3\$s%4\$s%5\$s%6\$s"
-    val btnClose = "关闭页面"
 
     fun appendLog(msg: String) {
         log = "\$msg\n\$log"
@@ -100,33 +81,20 @@ private fun LocationTestContent(
         item {
             LocationPermissionSection(
                 locationProvider = locationProvider,
-                btnRequestPermission = btnRequestPermission,
-                logRequestPermissionCalling = logRequestPermissionCalling,
-                logRequestPermissionResult = logRequestPermissionResult,
-                logRequestPermissionException = logRequestPermissionException,
-                permissionGranted = permissionGranted,
-                permissionDenied = permissionDenied,
                 onLogChange = { appendLog(it) }
             )
         }
         item {
             LocationGetSection(
                 locationProvider = locationProvider,
-                btnGetLocationPrecise = btnGetLocationPrecise,
-                btnGetLocationBalanced = btnGetLocationBalanced,
-                logGetLocationCalling = logGetLocationCalling,
-                logGetLocationSuccess = logGetLocationSuccess,
-                logGetLocationNull = logGetLocationNull,
-                logGetLocationException = logGetLocationException,
-                resultFormat = resultFormat,
                 onLogChange = { appendLog(it) }
             )
         }
         item {
-            LocationLogSection(log = log, logTitle = logTitle)
+            LocationLogSection(log = log)
         }
         item {
-            LocationCloseButton(btnText = btnClose, onClose = onClose)
+            LocationCloseButton(onClose = onClose)
         }
     }
 }
@@ -134,22 +102,21 @@ private fun LocationTestContent(
 @Composable
 private fun LocationPermissionSection(
     locationProvider: com.kuikly.init.common.base.platform.location.LocationProvider,
-    btnRequestPermission: String,
-    logRequestPermissionCalling: String,
-    logRequestPermissionResult: String,
-    logRequestPermissionException: String,
-    permissionGranted: String,
-    permissionDenied: String,
     onLogChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary(btnRequestPermission) {
+    HardwareActionButtonPrimary("请求定位权限") {
         try {
-            onLogChange(logRequestPermissionCalling)
+            onLogChange("[权限请求] 调用 requestPermission…")
             locationProvider.requestPermission { granted ->
-                onLogChange(String.format(logRequestPermissionResult, if (granted) permissionGranted else permissionDenied))
+                onLogChange(
+                    String.format(
+                        "[权限请求] 结果: %1\$s",
+                        if (granted) "已授权" else "被拒绝"
+                    )
+                )
             }
         } catch (e: Exception) {
-            onLogChange(String.format(logRequestPermissionException, e.message))
+            onLogChange(String.format("[权限请求] 异常: %1\$s", e.message))
         }
     }
 }
@@ -157,51 +124,44 @@ private fun LocationPermissionSection(
 @Composable
 private fun LocationGetSection(
     locationProvider: com.kuikly.init.common.base.platform.location.LocationProvider,
-    btnGetLocationPrecise: String,
-    btnGetLocationBalanced: String,
-    logGetLocationCalling: String,
-    logGetLocationSuccess: String,
-    logGetLocationNull: String,
-    logGetLocationException: String,
-    resultFormat: String,
     onLogChange: (String) -> Unit
 ) {
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary(btnGetLocationPrecise) {
+    HardwareActionButtonPrimary("获取当前位置 (高精度)") {
         try {
-            onLogChange(String.format(logGetLocationCalling, "PRECISE"))
+            onLogChange(String.format("[获取位置] 调用 getCurrentLocation(%1\$s)…", "PRECISE"))
             locationProvider.getCurrentLocation(LocationAccuracy.PRECISE) { loc ->
                 if (loc != null) {
-                    onLogChange(String.format(logGetLocationSuccess, formatLocation(loc, resultFormat)))
+                    onLogChange(String.format("[获取位置] 成功:\n%1\$s", formatLocation(loc)))
                 } else {
-                    onLogChange(logGetLocationNull)
+                    onLogChange("[获取位置] 返回 null")
                 }
             }
         } catch (e: Exception) {
-            onLogChange(String.format(logGetLocationException, e.message))
+            onLogChange(String.format("[获取位置] 异常: %1\$s", e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonSecondary(btnGetLocationBalanced) {
+    HardwareActionButtonSecondary("获取当前位置 (均衡)") {
         try {
-            onLogChange(String.format(logGetLocationCalling, "BALANCED"))
+            onLogChange(String.format("[获取位置] 调用 getCurrentLocation(%1\$s)…", "BALANCED"))
             locationProvider.getCurrentLocation(LocationAccuracy.BALANCED) { loc ->
                 if (loc != null) {
-                    onLogChange(String.format(logGetLocationSuccess, formatLocation(loc, resultFormat)))
+                    onLogChange(String.format("[获取位置] 成功:\n%1\$s", formatLocation(loc)))
                 } else {
-                    onLogChange(logGetLocationNull)
+                    onLogChange("[获取位置] 返回 null")
                 }
             }
         } catch (e: Exception) {
-            onLogChange(String.format(logGetLocationException, e.message))
+            onLogChange(String.format("[获取位置] 异常: %1\$s", e.message))
         }
     }
 }
 
 @Composable
-private fun LocationLogSection(log: String, logTitle: String) {
+private fun LocationLogSection(log: String) {
     Spacer(Modifier.height(16.dp))
-    Text(logTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text("定位日志", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -221,9 +181,9 @@ private fun LocationLogSection(log: String, logTitle: String) {
 }
 
 @Composable
-private fun LocationCloseButton(btnText: String, onClose: () -> Unit) {
+private fun LocationCloseButton(onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary(btnText, onClick = onClose)
+    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 
@@ -257,10 +217,18 @@ private fun HardwareActionButtonSecondary(text: String, onClick: () -> Unit) {
     }
 }
 
-private fun formatLocation(loc: Location, format: String): String {
+private fun formatLocation(loc: Location): String {
     val accuracyPart = loc.accuracy?.let { "\n精度: \${it}米" } ?: ""
     val altitudePart = loc.altitude?.let { "\n海拔: \${it}米" } ?: ""
     val speedPart = loc.speed?.let { "\n速度: \${it}m/s" } ?: ""
     val timestampPart = loc.timestamp?.let { "\n时间戳: \$it" } ?: ""
-    return String.format(format, loc.latitude, loc.longitude, accuracyPart, altitudePart, speedPart, timestampPart)
+    return String.format(
+        "纬度: %1\$s\n经度: %2\$s%3\$s%4\$s%5\$s%6\$s",
+        loc.latitude,
+        loc.longitude,
+        accuracyPart,
+        altitudePart,
+        speedPart,
+        timestampPart
+    )
 }

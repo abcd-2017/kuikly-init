@@ -51,27 +51,18 @@ public class DebugTimePage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugTimeContent(onClose: () -> Unit) {
-    val placeholderText = "点击刷新按钮获取时间信息"
-    var result by remember { mutableStateOf(placeholderText) }
+    var result by remember { mutableStateOf("点击刷新按钮获取时间信息") }
     val ntpClock = remember { provideNtpClock() }
     val timezone = remember { provideTimezone() }
     val scope = rememberCoroutineScope()
 
-    val pageTitle = "NTP 时钟"
-    val btnClose = "关闭"
-    val labelTimeInfo = "时间同步 / 时区信息"
-    val btnRefresh = "刷新时间信息"
-    val resultFormat = "NTP 服务器时间：%1\$s\nNTP 时间偏差（毫秒）：%2\$s\n本地时区 ID：%3\$s\n时区偏移量：%4\$d 分钟（%5\$d 小时）\n是否夏令时：%6\$s\n时区缩写：%7\$s"
-    val fetchFail = "获取失败"
-    val detecting = "检测中……"
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(pageTitle) },
+                title = { Text("NTP 时钟") },
                 actions = {
                     Text(
-                        text = btnClose,
+                        text = "关闭",
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -84,7 +75,7 @@ private fun DebugTimeContent(onClose: () -> Unit) {
                 )
             )
         }
-    ) { padding ->
+            ) { padding ->
         LazyColumn(
             Modifier.fillMaxSize().padding(padding).padding(12.dp)
         ) {
@@ -93,11 +84,6 @@ private fun DebugTimeContent(onClose: () -> Unit) {
                     ntpClock = ntpClock,
                     timezone = timezone,
                     scope = scope,
-                    labelTimeInfo = labelTimeInfo,
-                    btnRefresh = btnRefresh,
-                    resultFormat = resultFormat,
-                    fetchFail = fetchFail,
-                    detecting = detecting,
                     onResultChange = { result = it }
                 )
             }
@@ -114,18 +100,13 @@ private fun TimeInfoSection(
     ntpClock: com.kuikly.init.common.base.platform.time.NtpClock,
     timezone: com.kuikly.init.common.base.platform.time.Timezone,
     scope: kotlinx.coroutines.CoroutineScope,
-    labelTimeInfo: String,
-    btnRefresh: String,
-    resultFormat: String,
-    fetchFail: String,
-    detecting: String,
     onResultChange: (String) -> Unit
 ) {
-    Text(labelTimeInfo, fontSize = 16.sp, color = Color(0xFF333333))
+    Text("时间同步 / 时区信息", fontSize = 16.sp, color = Color(0xFF333333))
     DebugVSpacer(8.dp)
-    DebugTestButton(btnRefresh) {
+    DebugTestButton("刷新时间信息") {
         scope.launch {
-            onResultChange(detecting)
+            onResultChange("检测中……")
             val serverTime = ntpClock.getServerTime()
             val offset = ntpClock.getClockOffset()
             val tzId = timezone.getTimezoneId()
@@ -134,9 +115,9 @@ private fun TimeInfoSection(
             val isDst = timezone.isDaylightSaving()
             val abbrev = timezone.getAbbreviation()
             onResultChange(String.format(
-                resultFormat,
-                serverTime ?: fetchFail,
-                offset ?: fetchFail,
+                "NTP 服务器时间：%1\$s\nNTP 时间偏差（毫秒）：%2\$s\n本地时区 ID：%3\$s\n时区偏移量：%4\$d 分钟（%5\$d 小时）\n是否夏令时：%6\$s\n时区缩写：%7\$s",
+                serverTime ?: "获取失败",
+                offset ?: "获取失败",
                 tzId,
                 tzOffsetMin,
                 tzOffsetHour,

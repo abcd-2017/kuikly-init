@@ -40,7 +40,7 @@ public class DebugClipboardPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
+
             DebugClipboardContent { closePage() }
 
         }
@@ -54,40 +54,17 @@ public class DebugClipboardPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugClipboardContent(onClose: () -> Unit) {
-    val placeholderText = "操作结果将在此显示"
-    var result by remember { mutableStateOf(placeholderText) }
-    val defaultInput = "自定义测试文本"
-    var inputText by remember { mutableStateOf(defaultInput) }
+    var result by remember { mutableStateOf("操作结果将在此显示") }
+    var inputText by remember { mutableStateOf("自定义测试文本") }
     val clipboard = remember { provideClipboard() }
-
-    val pageTitle = "剪贴板"
-    val btnClose = "关闭"
-    val btnCopyPreset = "复制预设文本到剪贴板"
-    val btnCopyTimestamp = "复制当前时间戳到剪贴板"
-    val btnPaste = "读取剪贴板内容"
-    val btnClear = "清空剪贴板"
-    val btnCheck = "检查剪贴板是否有内容"
-    val presetText = "Kuikly Clipboard Test"
-    val resultPresetCopied = "已复制预设文本：Kuikly Clipboard Test"
-    val resultClipboardEmpty = "剪贴板为空"
-    val resultClipboardCleared = "剪贴板已清空"
-    val labelCustomInput = "自定义文本输入："
-    val placeholderCustomInput = "输入要复制到剪贴板的文本"
-    val btnCopy = "复制"
-    val btnVerify = "读取验证"
-    val resultCopyTimestamp = "已复制时间戳：%1\$s"
-    val resultPasteContent = "剪贴板内容：%1\$s"
-    val resultHasText = "剪贴板是否有内容：%1\$s"
-    val resultCopyCustom = "已复制自定义文本：%1\$s"
-    val resultVerify = "读取结果：%1\$s\n与输入一致：%2\$s"
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(pageTitle) },
+                title = { Text("剪贴板") },
                 actions = {
                     Text(
-                        text = btnClose,
+                        text = "关闭",
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -100,25 +77,25 @@ private fun DebugClipboardContent(onClose: () -> Unit) {
                 )
             )
         }
-    ) { padding ->
+            ) { padding ->
         LazyColumn(
             Modifier.fillMaxSize().padding(padding).padding(12.dp)
         ) {
             item {
                 ClipboardPresetSection(
                     clipboard = clipboard,
-                    btnCopyPreset = btnCopyPreset,
-                    btnCopyTimestamp = btnCopyTimestamp,
-                    btnPaste = btnPaste,
-                    btnClear = btnClear,
-                    btnCheck = btnCheck,
-                    presetText = presetText,
-                    resultPresetCopied = resultPresetCopied,
-                    resultClipboardEmpty = resultClipboardEmpty,
-                    resultClipboardCleared = resultClipboardCleared,
-                    resultCopyTimestamp = resultCopyTimestamp,
-                    resultPasteContent = resultPasteContent,
-                    resultHasText = resultHasText,
+                    btnCopyPreset = "复制预设文本到剪贴板",
+                    btnCopyTimestamp = "复制当前时间戳到剪贴板",
+                    btnPaste = "读取剪贴板内容",
+                    btnClear = "清空剪贴板",
+                    btnCheck = "检查剪贴板是否有内容",
+                    presetText = "Kuikly Clipboard Test",
+                    resultPresetCopied = "已复制预设文本：Kuikly Clipboard Test",
+                    resultClipboardEmpty = "剪贴板为空",
+                    resultClipboardCleared = "剪贴板已清空",
+                    resultCopyTimestamp = "已复制时间戳：%1\$s",
+                    resultPasteContent = "剪贴板内容：%1\$s",
+                    resultHasText = "剪贴板是否有内容：%1\$s",
                     onResultChange = { result = it }
                 )
             }
@@ -127,13 +104,13 @@ private fun DebugClipboardContent(onClose: () -> Unit) {
                     inputText = inputText,
                     onInputChange = { inputText = it },
                     clipboard = clipboard,
-                    labelCustomInput = labelCustomInput,
-                    placeholderCustomInput = placeholderCustomInput,
-                    btnCopy = btnCopy,
-                    btnVerify = btnVerify,
-                    resultCopyCustom = resultCopyCustom,
-                    resultVerify = resultVerify,
-                    resultClipboardEmpty = resultClipboardEmpty,
+                    labelCustomInput = "自定义文本输入：",
+                    placeholderCustomInput = "输入要复制到剪贴板的文本",
+                    btnCopy = "复制",
+                    btnVerify = "读取验证",
+                    resultCopyCustom = "已复制自定义文本：%1\$s",
+                    resultVerify = "读取结果：%1\$s\n与输入一致：%2\$s",
+                    resultClipboardEmpty = "剪贴板为空",
                     onResultChange = { result = it }
                 )
             }
@@ -162,26 +139,26 @@ private fun ClipboardPresetSection(
     resultHasText: String,
     onResultChange: (String) -> Unit
 ) {
-    DebugTestButton(btnCopyPreset) {
-        clipboard.copyText(presetText)
-        onResultChange(resultPresetCopied)
+    DebugTestButton("复制预设文本到剪贴板") {
+        clipboard.copyText("Kuikly Clipboard Test")
+        onResultChange("已复制预设文本：Kuikly Clipboard Test")
     }
-    DebugTestButton(btnCopyTimestamp) {
+    DebugTestButton("复制当前时间戳到剪贴板") {
         val ts = System.currentTimeMillis().toString()
         clipboard.copyText(ts)
-        onResultChange(String.format(resultCopyTimestamp, ts))
+        onResultChange(String.format("已复制时间戳：%1\$s", ts))
     }
-    DebugTestButton(btnPaste) {
+    DebugTestButton("读取剪贴板内容") {
         val content = clipboard.pasteText()
-        onResultChange(if (content.isEmpty()) resultClipboardEmpty else String.format(resultPasteContent, content))
+        onResultChange(if (content.isEmpty()) "剪贴板为空" else String.format("剪贴板内容：%1\$s", content))
     }
-    DebugTestButton(btnClear) {
+    DebugTestButton("清空剪贴板") {
         clipboard.clear()
-        onResultChange(resultClipboardCleared)
+        onResultChange("剪贴板已清空")
     }
-    DebugTestButton(btnCheck) {
+    DebugTestButton("检查剪贴板是否有内容") {
         val has = clipboard.hasText()
-        onResultChange(String.format(resultHasText, has))
+        onResultChange(String.format("剪贴板是否有内容：%1\$s", has))
     }
 }
 
@@ -200,24 +177,24 @@ private fun ClipboardCustomInputSection(
     onResultChange: (String) -> Unit
 ) {
     DebugVSpacer(8.dp)
-    Text(labelCustomInput, fontSize = 14.sp, color = Color(0xFF666666))
+    Text("自定义文本输入：", fontSize = 14.sp, color = Color(0xFF666666))
     DebugVSpacer(4.dp)
     DebugTextField(
         value = inputText,
-        placeholder = placeholderCustomInput,
+        placeholder = "输入要复制到剪贴板的文本",
         onValueChange = onInputChange
     )
     DebugVSpacer(8.dp)
     Row {
-        DebugTestButton(btnCopy) {
+        DebugTestButton("复制") {
             clipboard.copyText(inputText)
-            onResultChange(String.format(resultCopyCustom, inputText))
+            onResultChange(String.format("已复制自定义文本：%1\$s", inputText))
         }
         Spacer(modifier = Modifier.width(8.dp))
-        DebugTestButton(btnVerify) {
+        DebugTestButton("读取验证") {
             val content = clipboard.pasteText()
             val match = content == inputText
-            onResultChange(String.format(resultVerify, content, match))
+            onResultChange(String.format("读取结果：%1\$s\n与输入一致：%2\$s", content, match))
         }
     }
 }

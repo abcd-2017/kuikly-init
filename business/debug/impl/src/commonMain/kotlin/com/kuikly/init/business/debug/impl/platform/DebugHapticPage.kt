@@ -36,7 +36,7 @@ public class DebugHapticPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
+
             DebugHapticContent { closePage() }
 
         }
@@ -50,40 +50,16 @@ public class DebugHapticPage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugHapticContent(onClose: () -> Unit) {
-    val placeholderText = "点击按钮触发震动"
-    var result by remember { mutableStateOf(placeholderText) }
+    var result by remember { mutableStateOf("点击按钮触发震动") }
     val haptic = remember { provideHaptic() }
-
-    val pageTitle = "震动反馈"
-    val btnClose = "关闭"
-    val labelImpact = "冲击反馈（Impact）"
-    val labelNotification = "通知反馈（Notification）"
-    val btnImpactLight = "Impact Light"
-    val btnImpactMedium = "Impact Medium"
-    val btnImpactHeavy = "Impact Heavy"
-    val btnNotificationSuccess = "Notification Success"
-    val btnNotificationWarning = "Notification Warning"
-    val btnNotificationFailure = "Notification Failure"
-    val btnSelection = "Selection 震动"
-    val btnStop = "停止震动"
-    val btnContinuous = "连续震动测试"
-    val resultImpactLight = "Impact Light 已触发"
-    val resultImpactMedium = "Impact Medium 已触发"
-    val resultImpactHeavy = "Impact Heavy 已触发"
-    val resultNotificationSuccess = "Notification Success 已触发"
-    val resultNotificationWarning = "Notification Warning 已触发"
-    val resultNotificationFailure = "Notification Failure 已触发"
-    val resultSelection = "Selection 震动已触发"
-    val resultStop = "震动已停止"
-    val resultContinuous = "连续震动测试已触发（Light -> Medium -> Heavy）"
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(pageTitle) },
+                title = { Text("震动反馈") },
                 actions = {
                     Text(
-                        text = btnClose,
+                        text = "关闭",
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -96,45 +72,25 @@ private fun DebugHapticContent(onClose: () -> Unit) {
                 )
             )
         }
-    ) { padding ->
+            ) { padding ->
         LazyColumn(
             Modifier.fillMaxSize().padding(padding).padding(12.dp)
         ) {
             item {
                 HapticImpactSection(
                     haptic = haptic,
-                    labelImpact = labelImpact,
-                    btnImpactLight = btnImpactLight,
-                    btnImpactMedium = btnImpactMedium,
-                    btnImpactHeavy = btnImpactHeavy,
-                    resultImpactLight = resultImpactLight,
-                    resultImpactMedium = resultImpactMedium,
-                    resultImpactHeavy = resultImpactHeavy,
                     onResultChange = { result = it }
                 )
             }
             item {
                 HapticNotificationSection(
                     haptic = haptic,
-                    labelNotification = labelNotification,
-                    btnNotificationSuccess = btnNotificationSuccess,
-                    btnNotificationWarning = btnNotificationWarning,
-                    btnNotificationFailure = btnNotificationFailure,
-                    resultNotificationSuccess = resultNotificationSuccess,
-                    resultNotificationWarning = resultNotificationWarning,
-                    resultNotificationFailure = resultNotificationFailure,
                     onResultChange = { result = it }
                 )
             }
             item {
                 HapticOtherSection(
                     haptic = haptic,
-                    btnSelection = btnSelection,
-                    btnStop = btnStop,
-                    btnContinuous = btnContinuous,
-                    resultSelection = resultSelection,
-                    resultStop = resultStop,
-                    resultContinuous = resultContinuous,
                     onResultChange = { result = it }
                 )
             }
@@ -149,84 +105,64 @@ private fun DebugHapticContent(onClose: () -> Unit) {
 @Composable
 private fun HapticImpactSection(
     haptic: com.kuikly.init.common.base.platform.haptic.Haptic,
-    labelImpact: String,
-    btnImpactLight: String,
-    btnImpactMedium: String,
-    btnImpactHeavy: String,
-    resultImpactLight: String,
-    resultImpactMedium: String,
-    resultImpactHeavy: String,
     onResultChange: (String) -> Unit
 ) {
-    Text(labelImpact, fontSize = 16.sp, color = Color(0xFF333333))
+    Text("冲击反馈（Impact）", fontSize = 16.sp, color = Color(0xFF333333))
     DebugVSpacer(4.dp)
-    DebugTestButton(btnImpactLight) {
+    DebugTestButton("Impact Light") {
         haptic.impact(HapticStyle.LIGHT)
-        onResultChange(resultImpactLight)
+        onResultChange("Impact Light 已触发")
     }
-    DebugTestButton(btnImpactMedium) {
+    DebugTestButton("Impact Medium") {
         haptic.impact(HapticStyle.MEDIUM)
-        onResultChange(resultImpactMedium)
+        onResultChange("Impact Medium 已触发")
     }
-    DebugTestButton(btnImpactHeavy) {
+    DebugTestButton("Impact Heavy") {
         haptic.impact(HapticStyle.HEAVY)
-        onResultChange(resultImpactHeavy)
+        onResultChange("Impact Heavy 已触发")
     }
 }
 
 @Composable
 private fun HapticNotificationSection(
     haptic: com.kuikly.init.common.base.platform.haptic.Haptic,
-    labelNotification: String,
-    btnNotificationSuccess: String,
-    btnNotificationWarning: String,
-    btnNotificationFailure: String,
-    resultNotificationSuccess: String,
-    resultNotificationWarning: String,
-    resultNotificationFailure: String,
     onResultChange: (String) -> Unit
 ) {
     DebugVSpacer(12.dp)
-    Text(labelNotification, fontSize = 16.sp, color = Color(0xFF333333))
+    Text("通知反馈（Notification）", fontSize = 16.sp, color = Color(0xFF333333))
     DebugVSpacer(4.dp)
-    DebugTestButton(btnNotificationSuccess) {
+    DebugTestButton("Notification Success") {
         haptic.notification(HapticNotification.SUCCESS)
-        onResultChange(resultNotificationSuccess)
+        onResultChange("Notification Success 已触发")
     }
-    DebugTestButton(btnNotificationWarning) {
+    DebugTestButton("Notification Warning") {
         haptic.notification(HapticNotification.WARNING)
-        onResultChange(resultNotificationWarning)
+        onResultChange("Notification Warning 已触发")
     }
-    DebugTestButton(btnNotificationFailure) {
+    DebugTestButton("Notification Failure") {
         haptic.notification(HapticNotification.FAILURE)
-        onResultChange(resultNotificationFailure)
+        onResultChange("Notification Failure 已触发")
     }
 }
 
 @Composable
 private fun HapticOtherSection(
     haptic: com.kuikly.init.common.base.platform.haptic.Haptic,
-    btnSelection: String,
-    btnStop: String,
-    btnContinuous: String,
-    resultSelection: String,
-    resultStop: String,
-    resultContinuous: String,
     onResultChange: (String) -> Unit
 ) {
     DebugVSpacer(12.dp)
-    DebugTestButton(btnSelection) {
+    DebugTestButton("Selection 震动") {
         haptic.selectionChanged()
-        onResultChange(resultSelection)
+        onResultChange("Selection 震动已触发")
     }
-    DebugTestButton(btnStop) {
+    DebugTestButton("停止震动") {
         haptic.stop()
-        onResultChange(resultStop)
+        onResultChange("震动已停止")
     }
-    DebugTestButton(btnContinuous) {
+    DebugTestButton("连续震动测试") {
         haptic.impact(HapticStyle.LIGHT)
         haptic.impact(HapticStyle.MEDIUM)
         haptic.impact(HapticStyle.HEAVY)
-        onResultChange(resultContinuous)
+        onResultChange("连续震动测试已触发（Light -> Medium -> Heavy）")
     }
 }

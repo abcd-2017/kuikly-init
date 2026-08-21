@@ -48,24 +48,21 @@ public class DebugCameraPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "相机 & 相册"
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("相机 & 相册") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
+                }
+            ) { padding ->
                 CameraTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -76,34 +73,10 @@ private fun CameraTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val logPrefix = "操作日志：\n提示：相机/录像功能依赖硬件，当前平台可能不支持。\n"
-    var log by remember { mutableStateOf(logPrefix) }
+    var log by remember { mutableStateOf("操作日志：\n提示：相机/录像功能依赖硬件，当前平台可能不支持。\n") }
     val scope = rememberCoroutineScope()
     val camera = remember { provideCamera() }
     val mediaPicker = remember { provideMediaPicker() }
-
-    val btnTakePhoto = "拍照"
-    val btnRecordVideo = "录像"
-    val btnPickImage = "从相册选择图片"
-    val btnPickVideo = "从相册选择视频"
-    val logTakePhotoCalling = "[拍照] 调用中…"
-    val logTakePhotoSuccess = "[拍照] 成功:\n%1\$s"
-    val logTakePhotoFail = "[拍照] 取消或失败"
-    val logTakePhotoException = "[拍照] 异常: %1\$s"
-    val logRecordVideoCalling = "[录像] 调用中…"
-    val logRecordVideoSuccess = "[录像] 成功:\n%1\$s"
-    val logRecordVideoFail = "[录像] 取消或失败"
-    val logRecordVideoException = "[录像] 异常: %1\$s"
-    val logPickImageCalling = "[相册选图] 调用中…"
-    val logPickImageSuccess = "[相册选图] 成功:\n%1\$s"
-    val logPickImageFail = "[相册选图] 取消或失败"
-    val logPickImageException = "[相册选图] 异常: %1\$s"
-    val logPickVideoCalling = "[相册选视频] 调用中…"
-    val logPickVideoSuccess = "[相册选视频] 成功:\n%1\$s"
-    val logPickVideoFail = "[相册选视频] 取消或失败"
-    val logPickVideoException = "[相册选视频] 异常: %1\$s"
-    val logTitle = "操作日志"
-    val btnClose = "关闭页面"
 
     fun appendLog(msg: String) {
         log = "\$msg\n\$log"
@@ -114,16 +87,6 @@ private fun CameraTestContent(
             CameraActionSection(
                 scope = scope,
                 camera = camera,
-                btnTakePhoto = btnTakePhoto,
-                btnRecordVideo = btnRecordVideo,
-                logTakePhotoCalling = logTakePhotoCalling,
-                logTakePhotoSuccess = logTakePhotoSuccess,
-                logTakePhotoFail = logTakePhotoFail,
-                logTakePhotoException = logTakePhotoException,
-                logRecordVideoCalling = logRecordVideoCalling,
-                logRecordVideoSuccess = logRecordVideoSuccess,
-                logRecordVideoFail = logRecordVideoFail,
-                logRecordVideoException = logRecordVideoException,
                 onLogChange = { appendLog(it) }
             )
         }
@@ -131,24 +94,14 @@ private fun CameraTestContent(
             GalleryActionSection(
                 scope = scope,
                 mediaPicker = mediaPicker,
-                btnPickImage = btnPickImage,
-                btnPickVideo = btnPickVideo,
-                logPickImageCalling = logPickImageCalling,
-                logPickImageSuccess = logPickImageSuccess,
-                logPickImageFail = logPickImageFail,
-                logPickImageException = logPickImageException,
-                logPickVideoCalling = logPickVideoCalling,
-                logPickVideoSuccess = logPickVideoSuccess,
-                logPickVideoFail = logPickVideoFail,
-                logPickVideoException = logPickVideoException,
                 onLogChange = { appendLog(it) }
             )
         }
         item {
-            CameraLogSection(log = log, logTitle = logTitle)
+            CameraLogSection(log = log)
         }
         item {
-            CameraCloseButton(btnText = btnClose, onClose = onClose)
+            CameraCloseButton(onClose = onClose)
         }
     }
 }
@@ -157,48 +110,38 @@ private fun CameraTestContent(
 private fun CameraActionSection(
     scope: kotlinx.coroutines.CoroutineScope,
     camera: com.kuikly.init.common.base.platform.camera.Camera,
-    btnTakePhoto: String,
-    btnRecordVideo: String,
-    logTakePhotoCalling: String,
-    logTakePhotoSuccess: String,
-    logTakePhotoFail: String,
-    logTakePhotoException: String,
-    logRecordVideoCalling: String,
-    logRecordVideoSuccess: String,
-    logRecordVideoFail: String,
-    logRecordVideoException: String,
     onLogChange: (String) -> Unit
 ) {
-    HardwareActionButton(btnTakePhoto) {
+    HardwareActionButton("拍照") {
         scope.launch {
             try {
-                onLogChange(logTakePhotoCalling)
+                onLogChange("[拍照] 调用中…")
                 camera.capturePhoto { result ->
                     if (result != null) {
-                        onLogChange(String.format(logTakePhotoSuccess, mediaInfo(result)))
+                        onLogChange(String.format("[拍照] 成功:\n%1\$s", mediaInfo(result)))
                     } else {
-                        onLogChange(logTakePhotoFail)
+                        onLogChange("[拍照] 取消或失败")
                     }
                 }
             } catch (e: Exception) {
-                onLogChange(String.format(logTakePhotoException, e.message))
+                onLogChange(String.format("[拍照] 异常: %1\$s", e.message))
             }
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButton(btnRecordVideo) {
+    HardwareActionButton("录像") {
         scope.launch {
             try {
-                onLogChange(logRecordVideoCalling)
+                onLogChange("[录像] 调用中…")
                 camera.recordVideo { result ->
                     if (result != null) {
-                        onLogChange(String.format(logRecordVideoSuccess, mediaInfo(result)))
+                        onLogChange(String.format("[录像] 成功:\n%1\$s", mediaInfo(result)))
                     } else {
-                        onLogChange(logRecordVideoFail)
+                        onLogChange("[录像] 取消或失败")
                     }
                 }
             } catch (e: Exception) {
-                onLogChange(String.format(logRecordVideoException, e.message))
+                onLogChange(String.format("[录像] 异常: %1\$s", e.message))
             }
         }
     }
@@ -208,58 +151,58 @@ private fun CameraActionSection(
 private fun GalleryActionSection(
     scope: kotlinx.coroutines.CoroutineScope,
     mediaPicker: com.kuikly.init.common.base.platform.mediapicker.MediaPicker,
-    btnPickImage: String,
-    btnPickVideo: String,
-    logPickImageCalling: String,
-    logPickImageSuccess: String,
-    logPickImageFail: String,
-    logPickImageException: String,
-    logPickVideoCalling: String,
-    logPickVideoSuccess: String,
-    logPickVideoFail: String,
-    logPickVideoException: String,
     onLogChange: (String) -> Unit
 ) {
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonSecondary(btnPickImage) {
+    HardwareActionButtonSecondary("从相册选择图片") {
         scope.launch {
             try {
-                onLogChange(logPickImageCalling)
+                onLogChange("[相册选图] 调用中…")
                 mediaPicker.pickMedia(MediaMediaType.IMAGE, false) { results ->
                     if (results.isNotEmpty()) {
-                        onLogChange(String.format(logPickImageSuccess, pickedInfo(results.first())))
+                        onLogChange(
+                            String.format(
+                                "[相册选图] 成功:\n%1\$s",
+                                pickedInfo(results.first())
+                            )
+                        )
                     } else {
-                        onLogChange(logPickImageFail)
+                        onLogChange("[相册选图] 取消或失败")
                     }
                 }
             } catch (e: Exception) {
-                onLogChange(String.format(logPickImageException, e.message))
+                onLogChange(String.format("[相册选图] 异常: %1\$s", e.message))
             }
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonSecondary(btnPickVideo) {
+    HardwareActionButtonSecondary("从相册选择视频") {
         scope.launch {
             try {
-                onLogChange(logPickVideoCalling)
+                onLogChange("[相册选视频] 调用中…")
                 mediaPicker.pickMedia(MediaMediaType.VIDEO, false) { results ->
                     if (results.isNotEmpty()) {
-                        onLogChange(String.format(logPickVideoSuccess, pickedInfo(results.first())))
+                        onLogChange(
+                            String.format(
+                                "[相册选视频] 成功:\n%1\$s",
+                                pickedInfo(results.first())
+                            )
+                        )
                     } else {
-                        onLogChange(logPickVideoFail)
+                        onLogChange("[相册选视频] 取消或失败")
                     }
                 }
             } catch (e: Exception) {
-                onLogChange(String.format(logPickVideoException, e.message))
+                onLogChange(String.format("[相册选视频] 异常: %1\$s", e.message))
             }
         }
     }
 }
 
 @Composable
-private fun CameraLogSection(log: String, logTitle: String) {
+private fun CameraLogSection(log: String) {
     Spacer(Modifier.height(16.dp))
-    Text(logTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text("操作日志", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -279,9 +222,9 @@ private fun CameraLogSection(log: String, logTitle: String) {
 }
 
 @Composable
-private fun CameraCloseButton(btnText: String, onClose: () -> Unit) {
+private fun CameraCloseButton(onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary(btnText, onClick = onClose)
+    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 

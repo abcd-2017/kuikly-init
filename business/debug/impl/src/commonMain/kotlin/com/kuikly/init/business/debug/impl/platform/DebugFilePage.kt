@@ -37,7 +37,7 @@ public class DebugFilePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
+
             DebugFileContent { closePage() }
 
         }
@@ -51,47 +51,18 @@ public class DebugFilePage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugFileContent(onClose: () -> Unit) {
-    val placeholderText = "操作结果将在此显示"
-    var result by remember { mutableStateOf(placeholderText) }
-    val defaultFileName = "test.txt"
-    val defaultFileContent = "Hello Kuikly FileSystem"
-    var fileName by remember { mutableStateOf(defaultFileName) }
-    var fileContent by remember { mutableStateOf(defaultFileContent) }
+    var result by remember { mutableStateOf("操作结果将在此显示") }
+    var fileName by remember { mutableStateOf("test.txt") }
+    var fileContent by remember { mutableStateOf("Hello Kuikly FileSystem") }
     val fileSystem = remember { provideFileSystem() }
-
-    val pageTitle = "文件读写"
-    val btnClose = "关闭"
-    val labelFileName = "文件名："
-    val labelFileContent = "文件内容："
-    val labelLargeFile = "大文件写入测试："
-    val placeholderFileName = "输入文件名"
-    val placeholderFileContent = "输入文件内容"
-    val btnWriteFile = "写入文件"
-    val btnReadFile = "读取文件"
-    val btnCheckExists = "检查文件是否存在"
-    val btnDeleteFile = "删除文件"
-    val btnGetPath = "获取文件绝对路径"
-    val btnWrite1kb = "写入 1KB 文件"
-    val btnWrite10kb = "写入 10KB 文件"
-    val btnWrite100kb = "写入 100KB 文件"
-    val resultWriteSuccess = "写入成功：%1\$s\n内容：%2\$s"
-    val resultWriteFail = "写入失败：%1\$s"
-    val resultFileNotExist = "文件不存在：%1\$s"
-    val resultReadSuccess = "读取成功：%1\$s\n内容：%2\$s"
-    val resultReadFail = "读取失败：%1\$s"
-    val resultExists = "文件 %1\$s 存在：%2\$s"
-    val resultDelete = "删除 %1\$s：%2\$s"
-    val resultDeleteFail = "删除失败：%1\$s"
-    val resultGetPath = "当前测试文件路径：%1\$s\n（FileSystem 抽象层不提供目录枚举能力）"
-    val resultWriteSize = "写入 %1\$s（%2\$d 字节）成功"
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(pageTitle) },
+                title = { Text("文件读写") },
                 actions = {
                     Text(
-                        text = btnClose,
+                        text = "关闭",
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -104,7 +75,7 @@ private fun DebugFileContent(onClose: () -> Unit) {
                 )
             )
         }
-    ) { padding ->
+            ) { padding ->
         LazyColumn(
             Modifier.fillMaxSize().padding(padding).padding(12.dp)
         ) {
@@ -114,10 +85,10 @@ private fun DebugFileContent(onClose: () -> Unit) {
                     fileContent = fileContent,
                     onFileNameChange = { fileName = it },
                     onFileContentChange = { fileContent = it },
-                    labelFileName = labelFileName,
-                    labelFileContent = labelFileContent,
-                    placeholderFileName = placeholderFileName,
-                    placeholderFileContent = placeholderFileContent
+                    labelFileName = "文件名：",
+                    labelFileContent = "文件内容：",
+                    placeholderFileName = "输入文件名",
+                    placeholderFileContent = "输入文件内容"
                 )
             }
             item {
@@ -125,32 +96,32 @@ private fun DebugFileContent(onClose: () -> Unit) {
                     fileSystem = fileSystem,
                     fileName = fileName,
                     fileContent = fileContent,
-                    btnWriteFile = btnWriteFile,
-                    btnReadFile = btnReadFile,
-                    btnCheckExists = btnCheckExists,
-                    btnDeleteFile = btnDeleteFile,
-                    btnGetPath = btnGetPath,
-                    resultWriteSuccess = resultWriteSuccess,
-                    resultWriteFail = resultWriteFail,
-                    resultFileNotExist = resultFileNotExist,
-                    resultReadSuccess = resultReadSuccess,
-                    resultReadFail = resultReadFail,
-                    resultExists = resultExists,
-                    resultDelete = resultDelete,
-                    resultDeleteFail = resultDeleteFail,
-                    resultGetPath = resultGetPath,
+                    btnWriteFile = "写入文件",
+                    btnReadFile = "读取文件",
+                    btnCheckExists = "检查文件是否存在",
+                    btnDeleteFile = "删除文件",
+                    btnGetPath = "获取文件绝对路径",
+                    resultWriteSuccess = "写入成功：%1\$s\n内容：%2\$s",
+                    resultWriteFail = "写入失败：%1\$s",
+                    resultFileNotExist = "文件不存在：%1\$s",
+                    resultReadSuccess = "读取成功：%1\$s\n内容：%2\$s",
+                    resultReadFail = "读取失败：%1\$s",
+                    resultExists = "文件 %1\$s 存在：%2\$s",
+                    resultDelete = "删除 %1\$s：%2\$s",
+                    resultDeleteFail = "删除失败：%1\$s",
+                    resultGetPath = "当前测试文件路径：%1\$s\n（FileSystem 抽象层不提供目录枚举能力）",
                     onResultChange = { result = it }
                 )
             }
             item {
                 FileLargeFileSection(
                     fileSystem = fileSystem,
-                    labelLargeFile = labelLargeFile,
-                    btnWrite1kb = btnWrite1kb,
-                    btnWrite10kb = btnWrite10kb,
-                    btnWrite100kb = btnWrite100kb,
-                    resultWriteSize = resultWriteSize,
-                    resultWriteFail = resultWriteFail,
+                    labelLargeFile = "大文件写入测试：",
+                    btnWrite1kb = "写入 1KB 文件",
+                    btnWrite10kb = "写入 10KB 文件",
+                    btnWrite100kb = "写入 100KB 文件",
+                    resultWriteSize = "写入 %1\$s（%2\$d 字节）成功",
+                    resultWriteFail = "写入失败：%1\$s",
                     onResultChange = { result = it }
                 )
             }

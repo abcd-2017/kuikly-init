@@ -44,17 +44,19 @@ public class DebugPhoneKeyboardPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "电话 & 键盘"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("电话 & 键盘") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
+
+                }
+
 
                 ) { padding ->
                 PhoneKeyboardTestContent(
@@ -62,7 +64,6 @@ public class DebugPhoneKeyboardPage : BasePager() {
                     bridgeModule = bridgeModule,
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -74,22 +75,9 @@ private fun PhoneKeyboardTestContent(
     bridgeModule: com.kuikly.init.common.widget.BridgeModule,
     onClose: () -> Unit
 ) {
-    val logPrefix = "操作日志：\n"
-    var log by remember { mutableStateOf(logPrefix) }
+    var log by remember { mutableStateOf("操作日志：\n") }
     val phone = remember { providePhone() }
     val keyboard = remember { provideKeyboard() }
-
-    val btnCall = "拨打电话 10086"
-    val btnHideKeyboard = "隐藏键盘"
-    val btnShowKeyboard = "显示键盘"
-    val logTitle = "操作日志"
-    val logCall = "[拨打电话] 10086 (跳转拨号界面)"
-    val logCallException = "[拨打电话] 异常: %1\$s"
-    val logHideKeyboard = "[隐藏键盘] 已调用 hide()"
-    val logHideKeyboardException = "[隐藏键盘] 异常: %1\$s"
-    val logShowKeyboard = "[显示键盘] 已调用 show() (iOS 可能为空操作)"
-    val logShowKeyboardException = "[显示键盘] 异常: %1\$s"
-    val btnClose = "关闭页面"
 
     fun appendLog(msg: String) {
         log = "[\${bridgeModule.currentTimeStamp()}] \$msg\n\$log"
@@ -100,23 +88,14 @@ private fun PhoneKeyboardTestContent(
             PhoneActionsSection(
                 phone = phone,
                 keyboard = keyboard,
-                btnCall = btnCall,
-                btnHideKeyboard = btnHideKeyboard,
-                btnShowKeyboard = btnShowKeyboard,
-                logCall = logCall,
-                logCallException = logCallException,
-                logHideKeyboard = logHideKeyboard,
-                logHideKeyboardException = logHideKeyboardException,
-                logShowKeyboard = logShowKeyboard,
-                logShowKeyboardException = logShowKeyboardException,
                 onLogChange = { appendLog(it) }
             )
         }
         item {
-            PhoneLogSection(log = log, logTitle = logTitle)
+            PhoneLogSection(log = log)
         }
         item {
-            PhoneCloseButton(btnText = btnClose, onClose = onClose)
+            PhoneCloseButton(onClose = onClose)
         }
     }
 }
@@ -125,49 +104,40 @@ private fun PhoneKeyboardTestContent(
 private fun PhoneActionsSection(
     phone: com.kuikly.init.common.base.platform.phone.Phone,
     keyboard: com.kuikly.init.common.base.platform.keyboard.Keyboard,
-    btnCall: String,
-    btnHideKeyboard: String,
-    btnShowKeyboard: String,
-    logCall: String,
-    logCallException: String,
-    logHideKeyboard: String,
-    logHideKeyboardException: String,
-    logShowKeyboard: String,
-    logShowKeyboardException: String,
     onLogChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary(btnCall) {
+    HardwareActionButtonPrimary("拨打电话 10086") {
         try {
             phone.call("10086")
-            onLogChange(logCall)
+            onLogChange("[拨打电话] 10086 (跳转拨号界面)")
         } catch (e: Exception) {
-            onLogChange(String.format(logCallException, e.message))
+            onLogChange(String.format("[拨打电话] 异常: %1\$s", e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary(btnHideKeyboard) {
+    HardwareActionButtonPrimary("隐藏键盘") {
         try {
             keyboard.hide()
-            onLogChange(logHideKeyboard)
+            onLogChange("[隐藏键盘] 已调用 hide()")
         } catch (e: Exception) {
-            onLogChange(String.format(logHideKeyboardException, e.message))
+            onLogChange(String.format("[隐藏键盘] 异常: %1\$s", e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonPrimary(btnShowKeyboard) {
+    HardwareActionButtonPrimary("显示键盘") {
         try {
             keyboard.show()
-            onLogChange(logShowKeyboard)
+            onLogChange("[显示键盘] 已调用 show() (iOS 可能为空操作)")
         } catch (e: Exception) {
-            onLogChange(String.format(logShowKeyboardException, e.message))
+            onLogChange(String.format("[显示键盘] 异常: %1\$s", e.message))
         }
     }
 }
 
 @Composable
-private fun PhoneLogSection(log: String, logTitle: String) {
+private fun PhoneLogSection(log: String) {
     Spacer(Modifier.height(16.dp))
-    Text(logTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text("操作日志", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -187,9 +157,9 @@ private fun PhoneLogSection(log: String, logTitle: String) {
 }
 
 @Composable
-private fun PhoneCloseButton(btnText: String, onClose: () -> Unit) {
+private fun PhoneCloseButton(onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary(btnText, onClick = onClose)
+    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 

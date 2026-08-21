@@ -180,14 +180,13 @@ internal fun DebugScaffold(
     onClose: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    val closeText = "关闭"
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(title) },
                 actions = {
                     Text(
-                        text = closeText,
+                        text = "关闭",
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .clickable { onClose() }

@@ -47,7 +47,7 @@ public class DebugImagePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
+
             val pageTitle = "图片渲染测试"
             Scaffold(
                 topBar = {
@@ -58,15 +58,14 @@ public class DebugImagePage : BasePager() {
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-
-                ) { padding ->
+                }
+) { padding ->
                 DebugImageContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -213,7 +212,11 @@ private fun FixedSizeSection(
     DebugSectionTitle(title)
     val url = "https://picsum.photos/200/200?random=7"
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        listOf(50.dp to label50x50, 100.dp to label100x100, 150.dp to label150x150).forEach { (size, label) ->
+        listOf(
+            50.dp to label50x50,
+            100.dp to label100x100,
+            150.dp to label150x150
+        ).forEach { (size, label) ->
             Column {
                 Image(
                     painter = rememberAsyncImagePainter(url),

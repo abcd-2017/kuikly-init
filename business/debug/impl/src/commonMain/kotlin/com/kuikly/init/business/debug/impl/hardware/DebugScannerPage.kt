@@ -43,24 +43,23 @@ public class DebugScannerPage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
-            val pageTitle = "扫码"
+
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text(pageTitle) },
+                        title = { Text("扫码") },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
                             containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
 
-                ) { padding ->
+                }
+) { padding ->
                 ScannerTestContent(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     onClose = { acquireModule<RouterModule>(RouterModule.MODULE_NAME).closePage() }
                 )
-            }
             }
         }
     }
@@ -71,41 +70,21 @@ private fun ScannerTestContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val resultPlaceholder = "扫码结果将在此显示…\n提示：扫码功能依赖相机硬件，当前平台可能不支持。"
-    var result by remember { mutableStateOf(resultPlaceholder) }
+    var result by remember { mutableStateOf("扫码结果将在此显示…\n提示：扫码功能依赖相机硬件，当前平台可能不支持。") }
     val scanner = remember { provideScanner() }
-
-    val btnOpenScan = "打开扫码页"
-    val btnMockScan = "模拟扫码结果"
-    val resultTitle = "扫码结果"
-    val logStartScan = "启动扫码页…"
-    val logScanSuccess = "扫码成功:\n%1\$s"
-    val logScanFail = "扫码取消或失败"
-    val logScanException = "扫码异常: %1\$s"
-    val logMockScan = "模拟扫码结果:\n%1\$s"
-    val resultFormat = "内容: %1\$s\n码制: %2\$s"
-    val btnClose = "关闭页面"
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
             ScannerActionSection(
                 scanner = scanner,
-                btnOpenScan = btnOpenScan,
-                btnMockScan = btnMockScan,
-                logStartScan = logStartScan,
-                logScanSuccess = logScanSuccess,
-                logScanFail = logScanFail,
-                logScanException = logScanException,
-                logMockScan = logMockScan,
-                resultFormat = resultFormat,
                 onResultChange = { result = it }
             )
         }
         item {
-            ScannerResultSection(result = result, resultTitle = resultTitle)
+            ScannerResultSection(result = result)
         }
         item {
-            ScannerCloseButton(btnText = btnClose, onClose = onClose)
+            ScannerCloseButton(onClose = onClose)
         }
     }
 }
@@ -113,46 +92,38 @@ private fun ScannerTestContent(
 @Composable
 private fun ScannerActionSection(
     scanner: com.kuikly.init.common.base.platform.scan.Scanner,
-    btnOpenScan: String,
-    btnMockScan: String,
-    logStartScan: String,
-    logScanSuccess: String,
-    logScanFail: String,
-    logScanException: String,
-    logMockScan: String,
-    resultFormat: String,
     onResultChange: (String) -> Unit
 ) {
-    HardwareActionButtonPrimary(btnOpenScan) {
-        onResultChange(logStartScan)
+    HardwareActionButtonPrimary("打开扫码页") {
+        onResultChange("启动扫码页…")
         try {
             scanner.startScan { scanResult ->
                 onResultChange(
                     if (scanResult != null) {
-                        String.format(logScanSuccess, formatResult(scanResult, resultFormat))
+                        String.format("扫码成功:\n%1\$s", formatResult(scanResult))
                     } else {
-                        logScanFail
+                        "扫码取消或失败"
                     }
                 )
             }
         } catch (e: Exception) {
-            onResultChange(String.format(logScanException, e.message))
+            onResultChange(String.format("扫码异常: %1\$s", e.message))
         }
     }
     Spacer(Modifier.height(8.dp))
-    HardwareActionButtonSecondary(btnMockScan) {
+    HardwareActionButtonSecondary("模拟扫码结果") {
         val mock = ScanResult(
             content = "https://github.com/kuikly",
             format = "QR_CODE"
         )
-        onResultChange(String.format(logMockScan, formatResult(mock, resultFormat)))
+        onResultChange(String.format("模拟扫码结果:\n%1\$s", formatResult(mock)))
     }
 }
 
 @Composable
-private fun ScannerResultSection(result: String, resultTitle: String) {
+private fun ScannerResultSection(result: String) {
     Spacer(Modifier.height(16.dp))
-    Text(resultTitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+    Text("扫码结果", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
     Spacer(Modifier.height(4.dp))
     Box(
         modifier = Modifier
@@ -172,9 +143,9 @@ private fun ScannerResultSection(result: String, resultTitle: String) {
 }
 
 @Composable
-private fun ScannerCloseButton(btnText: String, onClose: () -> Unit) {
+private fun ScannerCloseButton(onClose: () -> Unit) {
     Spacer(Modifier.height(16.dp))
-    HardwareActionButtonSecondary(btnText, onClick = onClose)
+    HardwareActionButtonSecondary("关闭页面", onClick = onClose)
     Spacer(Modifier.height(32.dp))
 }
 
@@ -208,6 +179,6 @@ private fun HardwareActionButtonSecondary(text: String, onClick: () -> Unit) {
     }
 }
 
-private fun formatResult(r: ScanResult, format: String): String {
-    return String.format(format, r.content, r.format)
+private fun formatResult(r: ScanResult): String {
+    return String.format("内容: %1\$s\n码制: %2\$s", r.content, r.format)
 }

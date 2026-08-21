@@ -38,7 +38,6 @@ public class DebugHomePage : BasePager() {
     override fun willInit() {
         super.willInit()
         setContent {
-            
             DebugHomeContent()
 
         }
@@ -60,7 +59,6 @@ private fun DebugHomeContent() {
 
 @Composable
 private fun DebugHomeHeader(onClose: () -> Unit) {
-    val titleText = "Debug 测试中心"
     val statusBarHeight = LocalActivity.current.pageData.statusBarHeight
     Box(
         modifier = Modifier
@@ -71,7 +69,7 @@ private fun DebugHomeHeader(onClose: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = titleText,
+            text = "Debug 测试中心",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,

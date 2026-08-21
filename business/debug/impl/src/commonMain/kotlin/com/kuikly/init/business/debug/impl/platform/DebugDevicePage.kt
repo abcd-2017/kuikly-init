@@ -49,23 +49,16 @@ public class DebugDevicePage : BasePager() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DebugDeviceContent(onClose: () -> Unit) {
-    val placeholderText = "点击刷新按钮获取设备信息"
-    var result by remember { mutableStateOf(placeholderText) }
+    var result by remember { mutableStateOf("点击刷新按钮获取设备信息") }
     val deviceInfo = remember { DeviceInfo() }
-
-    val pageTitle = "设备信息"
-    val btnClose = "关闭"
-    val labelDeviceInfo = "设备信息"
-    val btnRefresh = "刷新全部信息"
-    val resultFormat = "设备 ID：%1\$s\nOS 版本：%2\$s\n设备型号：%3\$s\n屏幕宽度：%4\$d dp (%5\$d px)\n屏幕高度：%6\$d dp (%7\$d px)\n屏幕密度 DPI：%8\$d\n密度比例：%9\$s"
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(pageTitle) },
+                title = { Text("设备信息") },
                 actions = {
                     Text(
-                        text = btnClose,
+                        text = "关闭",
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .padding(10.dp)
@@ -78,16 +71,13 @@ private fun DebugDeviceContent(onClose: () -> Unit) {
                 )
             )
         }
-    ) { padding ->
+            ) { padding ->
         LazyColumn(
             Modifier.fillMaxSize().padding(padding).padding(12.dp)
         ) {
             item {
                 DeviceInfoSection(
                     deviceInfo = deviceInfo,
-                    labelDeviceInfo = labelDeviceInfo,
-                    btnRefresh = btnRefresh,
-                    resultFormat = resultFormat,
                     onResultChange = { result = it }
                 )
             }
@@ -102,20 +92,17 @@ private fun DebugDeviceContent(onClose: () -> Unit) {
 @Composable
 private fun DeviceInfoSection(
     deviceInfo: DeviceInfo,
-    labelDeviceInfo: String,
-    btnRefresh: String,
-    resultFormat: String,
     onResultChange: (String) -> Unit
 ) {
-    Text(labelDeviceInfo, fontSize = 16.sp, color = Color(0xFF333333))
+    Text("设备信息", fontSize = 16.sp, color = Color(0xFF333333))
     DebugVSpacer(8.dp)
-    DebugTestButton(btnRefresh) {
+    DebugTestButton("刷新全部信息") {
         val screen = provideScreenInfo()
         val density = screen.density
         val widthDp = (screen.widthPx / density).toInt()
         val heightDp = (screen.heightPx / density).toInt()
         onResultChange(String.format(
-            resultFormat,
+            "设备 ID：%1\$s\nOS 版本：%2\$s\n设备型号：%3\$s\n屏幕宽度：%4\$d dp (%5\$d px)\n屏幕高度：%6\$d dp (%7\$d px)\n屏幕密度 DPI：%8\$d\n密度比例：%9\$s",
             deviceInfo.getDeviceId(),
             deviceInfo.getOSVersion(),
             deviceInfo.getDeviceModel(),
